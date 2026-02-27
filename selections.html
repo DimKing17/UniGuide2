@@ -7,80 +7,117 @@
   <link rel="stylesheet" href="style.css"/>
   <style>
     /* ── Page hero ── */
-    .page-hero { background:var(--navy); color:#fff; padding:36px 24px 28px; }
-    .page-hero h1 { font-size:clamp(1.3rem,2.5vw,1.9rem); color:#fff; margin-bottom:6px; }
-    .page-hero p  { color:rgba(255,255,255,.70); font-size:.93rem; }
+    .page-hero { background:var(--navy); color:#fff; padding:32px 24px 24px; }
+    .page-hero h1 { font-size:clamp(1.2rem,2.5vw,1.7rem); color:#fff; margin-bottom:4px; }
+    .page-hero p  { color:rgba(255,255,255,.68); font-size:.90rem; }
 
-    /* ── Mobile tab bar ── */
-    .sel-tab-bar {
-      display:none; background:var(--white); border-bottom:2px solid var(--border);
-      position:sticky; top:0; z-index:100;
+    /* ── Mobile segmented control ── */
+    .sel-segmented {
+      display:none; background:var(--light); border-bottom:2px solid var(--border);
+      padding:10px 16px; gap:8px; position:sticky; top:0; z-index:100;
     }
-    @media(max-width:900px){ .sel-tab-bar { display:flex; } }
-    .sel-tab-btn {
-      flex:1; padding:14px 12px; font-size:.92rem; font-weight:800; cursor:pointer;
-      background:none; border:none; color:var(--grey); border-bottom:3px solid transparent;
-      transition:all .2s; letter-spacing:.2px;
+    @media(max-width:900px){ .sel-segmented { display:flex; } }
+    .sel-seg-btn {
+      flex:1; padding:10px 10px; font-size:.88rem; font-weight:800; cursor:pointer;
+      background:var(--white); border:2px solid var(--border); border-radius:9px;
+      color:var(--grey); transition:all .15s; display:flex; align-items:center;
+      justify-content:center; gap:6px;
     }
-    .sel-tab-btn.active { color:var(--navy); border-bottom-color:var(--red); }
-    .sel-tab-badge {
-      display:inline-block; background:var(--red); color:#fff;
-      font-size:.62rem; font-weight:800; padding:1px 7px; border-radius:50px;
-      margin-left:5px; vertical-align:middle;
+    .sel-seg-btn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .sel-seg-badge {
+      background:var(--red); color:#fff; font-size:.60rem; font-weight:800;
+      padding:1px 6px; border-radius:50px;
     }
 
-    /* ── Workspace split ── */
-    .selections-workspace {
-      display:grid; grid-template-columns:1fr 1fr; min-height:calc(100vh - 180px);
+    /* ── Layout ── */
+    .sel-layout {
+      display:grid; grid-template-columns:220px 1fr;
+      min-height:calc(100vh - 155px); align-items:start;
     }
     @media(max-width:900px){
-      .selections-workspace { grid-template-columns:1fr; }
-      .sel-panel { display:none !important; }
-      .sel-panel.mob-active { display:flex !important; }
-    }
-    .sel-panel {
-      display:flex; flex-direction:column;
-      border-right:1px solid var(--border); overflow:hidden;
-    }
-    .sel-panel:last-child { border-right:none; }
-    .sel-panel-inner { flex:1; overflow-y:auto; padding:20px 20px 40px; }
-
-    /* ── Panel headers ── */
-    .sel-panel-head {
-      background:var(--white); border-bottom:1px solid var(--border);
-      padding:14px 20px; position:sticky; top:0; z-index:20;
-      display:flex; align-items:center; gap:10px;
-    }
-    .sel-panel-head h2 { font-size:1.05rem; margin:0; }
-    .sel-panel-head .sel-count-badge {
-      background:var(--navy); color:#fff; font-size:.65rem; font-weight:800;
-      padding:2px 9px; border-radius:50px;
+      .sel-layout { grid-template-columns:1fr; }
+      .sel-sidebar { display:none !important; }
     }
 
-    /* ── Selected tray (shared) ── */
+    /* ── Sidebar ── */
+    .sel-sidebar {
+      background:var(--white); border-right:1px solid var(--border);
+      padding:22px 14px; position:sticky; top:0;
+      height:calc(100vh - 155px); overflow-y:auto;
+    }
+    .sel-sidebar-label {
+      font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:1.5px;
+      color:var(--grey); margin-bottom:12px; padding:0 6px;
+    }
+    .sel-nav-item {
+      display:flex; align-items:center; gap:10px; padding:11px 12px;
+      border-radius:10px; cursor:pointer; font-weight:700; font-size:.90rem;
+      color:var(--grey); border:2px solid transparent; transition:all .15s;
+      margin-bottom:5px; user-select:none;
+    }
+    .sel-nav-item:hover { background:var(--light); color:var(--navy); }
+    .sel-nav-item.active { background:#e8edf5; color:var(--navy); border-color:var(--border); }
+    .sel-nav-icon { font-size:1.1rem; flex-shrink:0; }
+    .sel-nav-label { flex:1; }
+    .sel-nav-badge {
+      background:var(--red); color:#fff; font-size:.60rem; font-weight:800;
+      padding:2px 7px; border-radius:50px; flex-shrink:0;
+    }
+
+    .sel-sidebar-divider { border:none; border-top:1px solid var(--border); margin:18px 0 14px; }
+    .sel-sidebar-majors-list { padding:0 4px; }
+    .sel-sidebar-major-pill {
+      display:inline-flex; align-items:center; gap:5px;
+      background:var(--navy); color:#fff; padding:4px 10px; border-radius:50px;
+      font-size:.74rem; font-weight:700; margin:3px 2px;
+    }
+    .sel-sidebar-major-pill button {
+      background:none; border:none; color:rgba(255,255,255,.7); cursor:pointer;
+      font-size:.80rem; line-height:1; padding:0;
+    }
+    .sel-sidebar-major-pill button:hover { color:#fff; }
+    .sel-sidebar-none { font-size:.78rem; color:var(--grey-lt); padding:0 4px; }
+
+    /* ── Main content ── */
+    .sel-main { min-height:calc(100vh - 155px); }
+    .sel-view { display:none; padding:28px 32px 60px; }
+    .sel-view.active { display:block; }
+    @media(max-width:900px){ .sel-view { padding:20px 16px 48px; } }
+
+    /* ── Empty state ── */
+    .sel-empty {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      min-height:420px; text-align:center; padding:40px 20px;
+    }
+    .sel-empty-icon { font-size:3.2rem; margin-bottom:18px; }
+    .sel-empty h2 { color:var(--navy); margin-bottom:10px; font-size:1.4rem; }
+    .sel-empty p { font-size:.93rem; color:var(--grey); max-width:400px; line-height:1.6; }
+    .sel-empty-actions { display:flex; gap:12px; margin-top:26px; flex-wrap:wrap; justify-content:center; }
+
+    /* ── Selected tray ── */
     .selected-tray {
       background:var(--light); border:1px solid var(--border); border-radius:var(--radius);
-      padding:14px 16px; margin-bottom:16px; display:none;
+      padding:13px 15px; margin-bottom:18px; display:none;
     }
     .selected-tray.visible { display:block; }
-    .selected-tray h4 { font-size:.83rem; margin-bottom:10px; color:var(--grey); text-transform:uppercase; letter-spacing:.5px; }
+    .selected-tray h4 { font-size:.80rem; margin-bottom:9px; color:var(--grey); text-transform:uppercase; letter-spacing:.5px; }
     .selected-pills { display:flex; gap:7px; flex-wrap:wrap; }
     .selected-pill {
       background:var(--navy); color:#fff; padding:4px 11px; border-radius:50px;
-      font-size:.78rem; font-weight:700; display:flex; align-items:center; gap:5px;
+      font-size:.77rem; font-weight:700; display:flex; align-items:center; gap:5px;
     }
-    .selected-pill button { background:none; border:none; color:rgba(255,255,255,.7); cursor:pointer; font-size:.88rem; line-height:1; padding:0; }
+    .selected-pill button { background:none; border:none; color:rgba(255,255,255,.7); cursor:pointer; font-size:.86rem; line-height:1; padding:0; }
     .selected-pill button:hover { color:#fff; }
 
     /* ── Microflow banner ── */
     .microflow-banner {
       display:none; background:linear-gradient(135deg,#e8f4fd,#d0ebff);
-      border:1px solid #93c5fd; border-radius:var(--radius); padding:14px 16px;
+      border:1px solid #93c5fd; border-radius:var(--radius); padding:13px 15px;
       margin-bottom:16px; align-items:center; gap:12px; flex-wrap:wrap;
     }
     .microflow-banner.visible { display:flex; }
-    .microflow-banner-text { flex:1; font-size:.88rem; font-weight:700; color:#1e3a8a; }
-    .microflow-banner-sub { font-size:.78rem; font-weight:400; color:#3b82f6; margin-top:2px; }
+    .microflow-banner-text { flex:1; font-size:.87rem; font-weight:700; color:#1e3a8a; }
+    .microflow-banner-sub { font-size:.77rem; font-weight:400; color:#3b82f6; margin-top:2px; }
 
     /* ── Major search ── */
     .major-search-wrap { position:relative; margin-bottom:16px; }
@@ -100,24 +137,24 @@
     .search-result-cat { font-size:.70rem; color:var(--grey); }
 
     /* ── Category grid ── */
-    .category-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:9px; margin-bottom:24px; }
+    .category-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:26px; }
     .cat-card {
-      border:2px solid var(--border); border-radius:10px;
-      padding:14px 10px; text-align:center; cursor:pointer;
+      border:2px solid var(--border); border-radius:10px; padding:16px 12px;
+      text-align:center; cursor:pointer;
       transition:border-color .18s, background .18s, transform .15s; background:var(--white);
     }
     .cat-card:hover { border-color:var(--navy); transform:translateY(-2px); }
     .cat-card.selected { border-color:var(--red); background:#fde8ec; }
-    .cat-icon { font-size:1.5rem; margin-bottom:6px; }
-    .cat-name { font-size:.78rem; font-weight:800; color:var(--navy); }
-    .cat-count { font-size:.64rem; color:var(--red); font-weight:700; margin-top:3px; }
+    .cat-icon { font-size:1.6rem; margin-bottom:7px; }
+    .cat-name { font-size:.80rem; font-weight:800; color:var(--navy); }
+    .cat-count { font-size:.65rem; color:var(--red); font-weight:700; margin-top:4px; }
 
     /* ── Major list panel ── */
     .major-list-panel { display:none; }
     .major-list-panel.visible { display:block; }
     .major-list-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
     .major-list-header h3 { margin:0; font-size:.95rem; }
-    .major-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:7px; max-height:380px; overflow-y:auto; padding:2px; }
+    .major-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:7px; max-height:400px; overflow-y:auto; padding:2px; }
     .major-item {
       padding:9px 12px; border:1.5px solid var(--border); border-radius:8px;
       background:var(--white); cursor:pointer; font-size:.85rem; font-weight:600;
@@ -127,7 +164,7 @@
     .major-item.selected { border-color:var(--red); background:#fde8ec; color:var(--red); }
     .major-item-tag { font-size:.65rem; color:var(--grey-lt); flex-shrink:0; }
 
-    /* ── Filters (universities panel) ── */
+    /* ── Filters ── */
     .filter-panel {
       background:var(--white); border:1px solid var(--border);
       border-radius:var(--radius); padding:14px 16px; margin-bottom:16px;
@@ -139,15 +176,15 @@
     .filter-panel-head h3 { font-size:.88rem; margin:0; }
     .filter-toggle-icon { font-size:.8rem; color:var(--grey); transition:transform .2s; }
     .filter-panel.collapsed .filter-toggle-icon { transform:rotate(-90deg); }
-    .filter-panel-body { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:9px; }
+    .filter-panel-body { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:9px; }
     .filter-panel.collapsed .filter-panel-body { display:none; }
 
     /* ── University grid ── */
-    .uni-grid { display:grid; grid-template-columns:1fr; gap:16px; }
+    .uni-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:18px; }
+    @media(max-width:800px){ .uni-grid { grid-template-columns:1fr; } }
     .uni-card {
       background:var(--white); border:1px solid var(--border);
-      border-radius:var(--radius); padding:18px;
-      transition:box-shadow .2s; cursor:default;
+      border-radius:var(--radius); padding:18px; transition:box-shadow .2s; cursor:default;
     }
     .uni-card:hover { box-shadow:var(--shadow); }
     .uni-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
@@ -168,13 +205,10 @@
       font-size:.67rem; font-weight:900; padding:3px 10px; border-radius:50px;
       display:inline-flex; align-items:center; gap:4px;
     }
-    .fit-score-green { background:#dcfce7; color:#166534; border:1px solid #86efac; }
+    .fit-score-green  { background:#dcfce7; color:#166534; border:1px solid #86efac; }
     .fit-score-yellow { background:#fef9c3; color:#713f12; border:1px solid #fde047; }
-    .fit-score-grey { background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; }
-    .fit-badge {
-      font-size:.65rem; font-weight:700; background:#e8edf5; color:var(--navy);
-      padding:2px 8px; border-radius:50px; border:1px solid #c5d0e0;
-    }
+    .fit-score-grey   { background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; }
+    .fit-badge { font-size:.65rem; font-weight:700; background:#e8edf5; color:var(--navy); padding:2px 8px; border-radius:50px; border:1px solid #c5d0e0; }
     .fit-badge.match { background:#e0f2fe; color:#0369a1; border-color:#7dd3fc; }
     .fit-badge.coop  { background:#f0fdf4; color:#166534; border-color:#86efac; }
     .fit-badge.calc  { background:#fdf4ff; color:#6b21a8; border-color:#d8b4fe; }
@@ -195,7 +229,7 @@
       padding:7px 12px; user-select:none; transition:background .15s;
     }
     .prog-details-toggle:hover { background:#e8edf5; }
-    .prog-details-toggle .toggle-chevron { transition:transform .2s; font-size:.7rem; }
+    .prog-details-toggle .toggle-chevron { transition:transform .2s; font-size:.7rem; margin-left:auto; }
     .prog-details-toggle.open .toggle-chevron { transform:rotate(180deg); }
     .prog-details-body {
       display:none; background:#f8f9fb; border:1px solid var(--border); border-top:none;
@@ -203,23 +237,20 @@
     }
     .prog-details-body.open { display:block; }
     .prog-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    @media(max-width:500px){ .prog-detail-grid { grid-template-columns:1fr; } }
+    @media(max-width:540px){ .prog-detail-grid { grid-template-columns:1fr; } }
     .prog-detail-item label { font-size:.64rem; color:var(--grey); text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:2px; }
-    .prog-detail-item span { font-size:.82rem; font-weight:700; color:var(--navy); }
-    .prog-detail-courses {
-      margin-top:10px; padding-top:10px; border-top:1px solid var(--border);
-      font-size:.80rem;
-    }
+    .prog-detail-item span  { font-size:.82rem; font-weight:700; color:var(--navy); }
+    .prog-detail-courses { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:.80rem; }
     .prog-detail-courses strong { font-size:.64rem; text-transform:uppercase; letter-spacing:.5px; color:var(--grey); display:block; margin-bottom:4px; }
 
     /* ── Search bar (unis) ── */
     .search-bar-wrap { position:relative; margin-bottom:14px; }
     .search-bar-wrap input { padding-left:38px; font-size:.93rem; }
     .search-bar-wrap .icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:1.1rem; pointer-events:none; }
-    .results-count { font-size:.80rem; color:var(--grey); margin-bottom:12px; }
+    .results-count { font-size:.80rem; color:var(--grey); margin-bottom:14px; }
     .dist-pill { font-size:.67rem; font-weight:800; background:#e8edf5; color:var(--navy); padding:2px 7px; border-radius:50px; margin-left:5px; }
 
-    /* ── Quiz (compact) ── */
+    /* ── Quiz ── */
     .quiz-section { display:none; }
     .quiz-section.visible { display:block; }
     .quiz-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:22px; margin-bottom:16px; }
@@ -229,7 +260,7 @@
     .quiz-opt { padding:7px 13px; border-radius:7px; border:1.5px solid var(--border); font-size:.84rem; font-weight:600; cursor:pointer; background:var(--light); transition:border-color .15s, background .15s; }
     .quiz-opt:hover { border-color:var(--navy); background:#e8edf5; }
     .quiz-opt.selected { border-color:var(--red); background:#fde8ec; color:var(--red); }
-    .checkbox-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:7px; }
+    .checkbox-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(145px,1fr)); gap:7px; }
     .cb-item { display:flex; align-items:center; gap:7px; font-size:.84rem; cursor:pointer; padding:7px 10px; border-radius:7px; border:1.5px solid var(--border); background:var(--light); }
     .cb-item input[type="checkbox"] { width:15px; height:15px; accent-color:var(--red); cursor:pointer; }
 
@@ -243,11 +274,12 @@
     .result-meta-item label { font-size:.68rem; color:var(--grey); display:block; margin-bottom:2px; }
     .result-meta-item span { font-weight:700; font-size:.87rem; }
     .result-btns { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    @media(max-width:600px){ .result-meta { grid-template-columns:1fr; } }
 
     /* ── Profile modal ── */
-    .modal-overlay { display:none; position:fixed; inset:0; z-index:999; background:rgba(0,0,0,0.55); align-items:center; justify-content:center; }
+    .modal-overlay { display:none; position:fixed; inset:0; z-index:999; background:rgba(0,0,0,.55); align-items:center; justify-content:center; }
     .modal-overlay.open { display:flex; }
-    .modal-box { background:var(--white); border-radius:18px; padding:32px 28px; max-width:540px; width:92%; position:relative; box-shadow:0 12px 60px rgba(0,0,0,0.25); max-height:90vh; overflow-y:auto; }
+    .modal-box { background:var(--white); border-radius:18px; padding:32px 28px; max-width:540px; width:92%; position:relative; box-shadow:0 12px 60px rgba(0,0,0,.25); max-height:90vh; overflow-y:auto; }
     .modal-close { position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--grey); }
     .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     @media(max-width:500px){ .form-row { grid-template-columns:1fr; } }
@@ -279,13 +311,8 @@
     .profile-banner p { font-size:.78rem; color:rgba(26,42,74,.75); margin:0; }
 
     /* ── Misc ── */
-    .sel-divider { text-align:center; color:var(--grey); font-size:.90rem; margin:20px 0 14px; }
+    .sel-divider { text-align:center; color:var(--grey); font-size:.90rem; margin:22px 0 16px; }
     .no-results { color:var(--grey); text-align:center; padding:36px 20px; font-size:.90rem; }
-    .step-num { font-size:.74rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:6px; display:block; }
-    @media(max-width:640px){
-      .prog-detail-grid { grid-template-columns:1fr; }
-      .result-meta { grid-template-columns:1fr; }
-    }
   </style>
 </head>
 <body>
@@ -306,32 +333,66 @@
 
 <div class="page-hero">
   <div class="container">
-    <span class="step-num">Steps 1 &amp; 2 of 3</span>
-    <h1>Your Selections Workspace</h1>
-    <p>Pick your majors on the left, then browse matching universities on the right. Your choices stay connected throughout.</p>
+    <h1>Selections</h1>
+    <p>Pick your majors, then explore matching universities — all in one place.</p>
   </div>
 </div>
 
-<!-- Mobile tab bar -->
-<div class="sel-tab-bar">
-  <button class="sel-tab-btn active" id="tabMajors" onclick="switchTab('majors')">
-    🎓 Majors <span class="sel-tab-badge" id="tabBadge" style="display:none;">0</span>
+<!-- Mobile segmented control -->
+<div class="sel-segmented">
+  <button class="sel-seg-btn" id="segMajors" onclick="showView('majors')">
+    🎓 Majors
+    <span class="sel-seg-badge" id="segBadge" style="display:none;">0</span>
   </button>
-  <button class="sel-tab-btn" id="tabUnis" onclick="switchTab('unis')">
+  <button class="sel-seg-btn" id="segUnis" onclick="showView('unis')">
     🏛️ Universities
   </button>
 </div>
 
-<!-- ══ WORKSPACE ══ -->
-<div class="selections-workspace">
+<!-- ══ MAIN LAYOUT ══ -->
+<div class="sel-layout">
 
-  <!-- ─────────────── LEFT: MAJORS PANEL ─────────────── -->
-  <div class="sel-panel mob-active" id="panelMajors">
-    <div class="sel-panel-head">
-      <h2>🎓 Majors</h2>
-      <span class="sel-count-badge" id="majorsCountBadge">0 selected</span>
+  <!-- ─── LEFT SIDEBAR ─── -->
+  <div class="sel-sidebar">
+    <div class="sel-sidebar-label">Browse</div>
+
+    <div class="sel-nav-item" id="sideNavMajors" onclick="showView('majors')">
+      <span class="sel-nav-icon">🎓</span>
+      <span class="sel-nav-label">Majors</span>
+      <span class="sel-nav-badge" id="sideNavBadge" style="display:none;">0</span>
     </div>
-    <div class="sel-panel-inner">
+
+    <div class="sel-nav-item" id="sideNavUnis" onclick="showView('unis')">
+      <span class="sel-nav-icon">🏛️</span>
+      <span class="sel-nav-label">Universities</span>
+    </div>
+
+    <hr class="sel-sidebar-divider"/>
+
+    <div class="sel-sidebar-label">Selected Majors</div>
+    <div class="sel-sidebar-majors-list" id="sidebarMajorsList">
+      <p class="sel-sidebar-none">None selected yet</p>
+    </div>
+  </div>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <div class="sel-main">
+
+    <!-- ── EMPTY / WELCOME state ── -->
+    <div class="sel-view active" id="viewEmpty">
+      <div class="sel-empty">
+        <div class="sel-empty-icon">🧭</div>
+        <h2>Choose Majors or Universities</h2>
+        <p>Start by exploring majors that interest you — or jump straight to browsing universities if you already know what you want to study.</p>
+        <div class="sel-empty-actions">
+          <button class="btn btn-red" onclick="showView('majors')">🎓 Choose Majors first</button>
+          <button class="btn btn-outline" onclick="showView('unis')">🏛️ Browse Universities</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ MAJORS VIEW ══════════════ -->
+    <div class="sel-view" id="viewMajors">
 
       <!-- Profile banner -->
       <div class="profile-banner" id="profileBanner" onclick="openProfileModal()">
@@ -343,35 +404,33 @@
         <span class="btn btn-navy btn-sm" id="profileBannerBtn" style="flex-shrink:0;">Fill Profile →</span>
       </div>
 
-      <!-- Microflow banner -->
+      <!-- Microflow -->
       <div class="microflow-banner" id="microflowBanner">
-        <div style="font-size:1.3rem;">✅</div>
+        <div style="font-size:1.2rem;">✅</div>
         <div class="microflow-banner-text">
           <span id="microflowText">Major selected!</span>
-          <div class="microflow-banner-sub">Add more (up to 5) or head to Universities to see matching programs.</div>
+          <div class="microflow-banner-sub">Add more (up to 5) or switch to Universities to see matching programs.</div>
         </div>
-        <button class="btn btn-navy btn-sm" onclick="switchTab('unis');highlightUnisPanel();">
-          See universities →
-        </button>
+        <button class="btn btn-navy btn-sm" onclick="showView('unis')">See universities →</button>
       </div>
 
       <!-- Selected tray -->
       <div class="selected-tray" id="selectedTray">
-        <h4>Your selected majors (<span id="selCount">0</span>/5)</h4>
+        <h4>Selected majors (<span id="selCount">0</span>/5)</h4>
         <div class="selected-pills" id="selectedPills"></div>
       </div>
 
-      <!-- Search -->
+      <!-- Major search -->
       <div class="major-search-wrap" id="searchWrap">
         <span class="icon">🔍</span>
         <input type="search" id="majorSearch" placeholder='Search 800+ programs…' oninput="searchMajors(this.value)" autocomplete="off"/>
         <div class="search-results-dropdown" id="searchDropdown" style="display:none;"></div>
       </div>
 
-      <h3 style="margin-bottom:10px;font-size:.84rem;color:var(--grey);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Browse by category</h3>
+      <h3 style="margin-bottom:12px;font-size:.84rem;color:var(--grey);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Browse by category</h3>
       <div class="category-grid" id="categoryGrid"></div>
 
-      <!-- Major list -->
+      <!-- Major list (revealed on category click) -->
       <div class="major-list-panel" id="majorListPanel">
         <div class="major-list-header">
           <button class="btn btn-outline btn-sm" onclick="closeMajorList()">← Back</button>
@@ -383,8 +442,8 @@
 
       <div class="sel-divider">— or —</div>
 
-      <div style="text-align:center;margin-bottom:28px;">
-        <button class="btn btn-outline" onclick="startQuiz()" id="quizToggleBtn">
+      <div style="text-align:center;margin-bottom:32px;">
+        <button class="btn btn-outline btn-lg" onclick="startQuiz()" id="quizToggleBtn">
           🤔 I don't know my major — Take the Discovery Quiz
         </button>
       </div>
@@ -393,8 +452,10 @@
       <div class="quiz-section" id="quizSection">
         <div style="background:var(--accent);border-radius:var(--radius);padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:12px;">
           <span style="font-size:1.4rem;">🧭</span>
-          <div><div style="font-weight:800;font-size:.95rem;">Major Discovery Quiz</div>
-          <div style="font-size:.83rem;color:var(--navy);opacity:.8;">About 4 minutes — no wrong answers.</div></div>
+          <div>
+            <div style="font-weight:800;font-size:.95rem;">Major Discovery Quiz</div>
+            <div style="font-size:.83rem;color:var(--navy);opacity:.8;">About 4 minutes — no wrong answers.</div>
+          </div>
         </div>
 
         <div class="quiz-card">
@@ -524,16 +585,10 @@
         <div id="resultsContainer"></div>
       </div>
 
-    </div>
-  </div>
+    </div><!-- end viewMajors -->
 
-  <!-- ─────────────── RIGHT: UNIVERSITIES PANEL ─────────────── -->
-  <div class="sel-panel" id="panelUnis">
-    <div class="sel-panel-head">
-      <h2>🏛️ Universities</h2>
-      <span id="uniMajorContext" style="font-size:.74rem;color:var(--grey);"></span>
-    </div>
-    <div class="sel-panel-inner">
+    <!-- ══════════════ UNIVERSITIES VIEW ══════════════ -->
+    <div class="sel-view" id="viewUnis">
 
       <!-- Search -->
       <div class="search-bar-wrap">
@@ -610,12 +665,13 @@
       </div>
 
       <div class="results-count" id="resultsCount"></div>
-      <div id="uniGrid"></div>
+      <div class="uni-grid" id="uniGrid"></div>
 
-    </div>
-  </div>
+    </div><!-- end viewUnis -->
 
-</div><!-- end workspace -->
+  </div><!-- end sel-main -->
+
+</div><!-- end sel-layout -->
 
 <!-- Toast -->
 <div class="save-toast" id="saveToast"></div>
@@ -626,7 +682,6 @@
     <button class="modal-close" onclick="closeProfileModal()">✕</button>
     <h2>Tell us about yourself</h2>
     <p style="color:var(--grey);font-size:.88rem;margin-bottom:20px;">Helps UniGuide personalise university matches, distance filtering, and scholarship eligibility.</p>
-
     <div class="form-row">
       <div class="form-group"><label>First Name</label><input type="text" id="pName" placeholder="e.g. Alex"/></div>
       <div class="form-group">
@@ -663,10 +718,7 @@
       </select>
     </div>
     <div id="parentalConsentBlock" style="display:none;background:#fff8e6;border:1px solid #f0c040;border-radius:10px;padding:12px 14px;margin:8px 0;">
-      <p style="font-size:.85rem;color:#7a5c00;margin:0 0 8px;line-height:1.5;">
-        <strong>Parent / Guardian Acknowledgement</strong> (Grade 9–10)<br>
-        A parent or guardian is aware you're using UniGuide.
-      </p>
+      <p style="font-size:.85rem;color:#7a5c00;margin:0 0 8px;line-height:1.5;"><strong>Parent / Guardian Acknowledgement</strong> (Grade 9–10)</p>
       <label style="display:flex;align-items:flex-start;gap:8px;font-size:.84rem;color:#5a4000;cursor:pointer;">
         <input type="checkbox" id="parentConsent" style="margin-top:3px;flex-shrink:0;"/>
         <span>A parent/guardian acknowledges the profile will be saved locally on this device.</span>
@@ -691,32 +743,45 @@ let selectedMajors = [];
 let quizAnswers = {};
 let lastSaved = null;
 let toastTimeout;
+let currentView = 'empty';
 
-// ── Mobile tab switching ──────────────────────────────────
-function switchTab(tab) {
-  const isMajors = tab === 'majors';
-  document.getElementById('panelMajors').classList.toggle('mob-active', isMajors);
-  document.getElementById('panelUnis').classList.toggle('mob-active', !isMajors);
-  document.getElementById('tabMajors').classList.toggle('active', isMajors);
-  document.getElementById('tabUnis').classList.toggle('active', !isMajors);
-}
-function highlightUnisPanel() {
-  const p = document.getElementById('panelUnis');
-  p.style.transition = 'box-shadow .3s';
-  p.style.boxShadow = '0 0 0 3px rgba(232,184,75,.6)';
-  setTimeout(() => { p.style.boxShadow = ''; }, 1200);
+// ════════════════════════════════════════════════════════
+//  VIEW SWITCHING
+// ════════════════════════════════════════════════════════
+function showView(view) {
+  document.querySelectorAll('.sel-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('sideNavMajors').classList.remove('active');
+  document.getElementById('sideNavUnis').classList.remove('active');
+  document.getElementById('segMajors').classList.remove('active');
+  document.getElementById('segUnis').classList.remove('active');
+
+  if (view === 'majors') {
+    document.getElementById('viewMajors').classList.add('active');
+    document.getElementById('sideNavMajors').classList.add('active');
+    document.getElementById('segMajors').classList.add('active');
+  } else if (view === 'unis') {
+    document.getElementById('viewUnis').classList.add('active');
+    document.getElementById('sideNavUnis').classList.add('active');
+    document.getElementById('segUnis').classList.add('active');
+    filterUnis();
+  } else {
+    document.getElementById('viewEmpty').classList.add('active');
+  }
+  currentView = view;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── Distance (Haversine) ──────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  DISTANCE UTILITY
+// ════════════════════════════════════════════════════════
 function haversineKm(lat1,lon1,lat2,lon2){
-  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
+  const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLon=(lon2-lon1)*Math.PI/180;
   const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
   return Math.round(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
 }
 
-// ── User location ─────────────────────────────────────────
-let userLat=null,userLng=null,userCity='';
-(function loadProfile(){
+let userLat=null, userLng=null, userCity='';
+(function loadLocation(){
   try {
     const p=JSON.parse(localStorage.getItem('ugProfile')||'{}');
     if(p.city) userCity=p.city;
@@ -734,7 +799,7 @@ let userLat=null,userLng=null,userCity='';
       "st. john's":[47.5615,-52.7126],'charlottetown':[46.2382,-63.1311],
     };
     const k=userCity.toLowerCase().trim();
-    if(CC[k]){[userLat,userLng]=CC[k];}
+    if(CC[k]) [userLat,userLng]=CC[k];
   } catch(e){}
 })();
 
@@ -782,13 +847,13 @@ function closeMajorList(){
   document.getElementById('majorListPanel').classList.remove('visible');
 }
 
-function toggleMajor(el,major){
+function toggleMajor(el, major){
   if(selectedMajors.includes(major)){
     selectedMajors=selectedMajors.filter(m=>m!==major);
     el.classList.remove('selected');
     el.querySelector('.major-item-tag').textContent='';
   } else {
-    if(selectedMajors.length>=5){alert('You can select up to 5 majors. Remove one first.');return;}
+    if(selectedMajors.length>=5){ alert('You can select up to 5 majors. Remove one first.'); return; }
     selectedMajors.push(major);
     el.classList.add('selected');
     el.querySelector('.major-item-tag').textContent='✓';
@@ -800,26 +865,38 @@ function syncMajors(){
   localStorage.setItem('selectedMajors',JSON.stringify(selectedMajors));
   if(typeof ugSave==='function') ugSave('selectedMajors',selectedMajors);
   renderSelectedTray();
+  renderSidebarMajors();
   updateMicroflow();
-  updateUniContext();
-  filterUnis();
 }
 
 function renderSelectedTray(){
   const tray=document.getElementById('selectedTray');
   const pills=document.getElementById('selectedPills');
   document.getElementById('selCount').textContent=selectedMajors.length;
-  document.getElementById('majorsCountBadge').textContent=selectedMajors.length+' selected';
-  const badge=document.getElementById('tabBadge');
+
+  const badge=document.getElementById('sideNavBadge');
+  const segBadge=document.getElementById('segBadge');
   if(selectedMajors.length>0){
     badge.textContent=selectedMajors.length; badge.style.display='';
+    segBadge.textContent=selectedMajors.length; segBadge.style.display='';
     tray.classList.add('visible');
     pills.innerHTML=selectedMajors.map(m=>
       `<div class="selected-pill">${m}<button onclick="removeMajor('${m.replace(/'/g,"\\'")}')">✕</button></div>`
     ).join('');
   } else {
-    badge.style.display='none';
+    badge.style.display='none'; segBadge.style.display='none';
     tray.classList.remove('visible');
+  }
+}
+
+function renderSidebarMajors(){
+  const el=document.getElementById('sidebarMajorsList');
+  if(selectedMajors.length===0){
+    el.innerHTML='<p class="sel-sidebar-none">None selected yet</p>';
+  } else {
+    el.innerHTML=selectedMajors.map(m=>
+      `<span class="sel-sidebar-major-pill">${m}<button onclick="removeMajor('${m.replace(/'/g,"\\'")}')">✕</button></span>`
+    ).join('');
   }
 }
 
@@ -843,22 +920,13 @@ function updateMicroflow(){
   }
 }
 
-function updateUniContext(){
-  const ctx=document.getElementById('uniMajorContext');
-  if(selectedMajors.length>0){
-    ctx.textContent='Matching: '+selectedMajors.join(', ');
-  } else {
-    ctx.textContent='';
-  }
-}
-
-// ── Major search ──────────────────────────────────────────
+// ── Major search ─────────────────────────────────────────
 function searchMajors(val){
   const dd=document.getElementById('searchDropdown');
-  if(!val.trim()){dd.style.display='none';return;}
+  if(!val.trim()){ dd.style.display='none'; return; }
   const results=[];
   Object.entries(MAJORS).forEach(([cat,list])=>{
-    list.forEach(m=>{if(m.toLowerCase().includes(val.toLowerCase())) results.push({m,cat});});
+    list.forEach(m=>{ if(m.toLowerCase().includes(val.toLowerCase())) results.push({m,cat}); });
   });
   if(!results.length){
     dd.innerHTML='<div class="search-result-item"><span style="color:var(--grey);">No matches — try different keywords</span></div>';
@@ -875,16 +943,15 @@ function selectFromSearch(major,cat){
   document.getElementById('searchDropdown').style.display='none';
   document.getElementById('majorSearch').value='';
   if(!selectedMajors.includes(major)){
-    if(selectedMajors.length>=5){alert('Max 5 majors. Remove one first.');return;}
+    if(selectedMajors.length>=5){ alert('Max 5 majors. Remove one first.'); return; }
     selectedMajors.push(major);
     syncMajors();
   }
   showMajorList(cat);
 }
 document.addEventListener('click',e=>{
-  if(!document.getElementById('searchWrap').contains(e.target)){
+  if(!document.getElementById('searchWrap').contains(e.target))
     document.getElementById('searchDropdown').style.display='none';
-  }
 });
 
 // ════════════════════════════════════════════════════════
@@ -910,7 +977,7 @@ const QUIZ_RESULTS=[
   {title:"Engineering (Mechanical / Electrical / Chemical)",icon:"⚙️",
    why:"You enjoy hands-on problem-solving, are strong in math and physics, and like building things.",
    careers:"Engineer, Project Manager, Robotics Specialist, Researcher",
-   courses:"MHF4U, MCV4U, SPH4U (required), SCH4U, ENG4U",comp:"Very Competitive — 85–94% required",salary:"$70,000–$110,000+",
+   courses:"MHF4U, MCV4U, SPH4U (required), SCH4U, ENG4U",comp:"Very Competitive — 85–94%",salary:"$70,000–$110,000+",
    triggers:a=>a.math==='strong'&&(a.build==='yes'||a.labs==='love')&&a.style!=='theory'},
   {title:"Health Sciences / Pre-Medicine",icon:"🏥",
    why:"Your interest in helping people, biology, and health points strongly toward health sciences.",
@@ -918,7 +985,7 @@ const QUIZ_RESULTS=[
    courses:"SBI4U, SCH4U, ENG4U, MHF4U",comp:"Extremely Competitive — 90%+ often required",salary:"$80,000–$300,000+",
    triggers:a=>a.people==='yes'&&(a.env==='hospital'||a.value==='helping')},
   {title:"Business / Commerce",icon:"💼",
-   why:"You value leadership, high earning potential, and a dynamic environment — business suits you.",
+   why:"You value leadership, high earning potential, and a dynamic environment.",
    careers:"Manager, Consultant, Financial Analyst, Marketing Director",
    courses:"ENG4U, MHF4U, Economics (CIA4U)",comp:"Competitive — 80–90%",salary:"$55,000–$120,000+",
    triggers:a=>a.salary==='high'&&a.team==='team'},
@@ -930,7 +997,7 @@ const QUIZ_RESULTS=[
   {title:"Arts, Media & Communication",icon:"🎨",
    why:"Your creative side, love of expression, and communication skills align with arts and media.",
    careers:"Journalist, Designer, Filmmaker, PR Specialist, Creative Director",
-   courses:"ENG4U, AVI4M or AWL4M, Media Arts",comp:"Moderate — varies by program and portfolio",salary:"$45,000–$90,000",
+   courses:"ENG4U, AVI4M or AWL4M, Media Arts",comp:"Moderate — varies by program",salary:"$45,000–$90,000",
    triggers:a=>a.writing==='yes'&&(a.value==='create'||a.value==='freedom')},
   {title:"Science (Biology / Chemistry / Physics)",icon:"🔬",
    why:"You love labs, enjoy science deeply, and think analytically — opens doors to research and medicine.",
@@ -940,7 +1007,7 @@ const QUIZ_RESULTS=[
   {title:"Education / Teaching",icon:"📚",
    why:"Your desire to help and communicate makes teaching a natural and rewarding fit.",
    careers:"Teacher, Educational Administrator, Curriculum Designer",
-   courses:"ENG4U, any subject you want to teach",comp:"Moderate — 75–85%",salary:"$50,000–$95,000",
+   courses:"ENG4U, plus any subject you want to teach",comp:"Moderate — 75–85%",salary:"$50,000–$95,000",
    triggers:a=>a.people==='yes'&&a.value==='helping'&&a.risk==='stable'},
 ];
 
@@ -965,7 +1032,7 @@ function showResults(){
       </div>
       <div class="result-btns">
         <button class="btn btn-red btn-sm" onclick="addResultMajor('${r.title.replace(/'/g,"\\'")}')">+ Add to My Majors</button>
-        <button class="btn btn-outline btn-sm" onclick="addResultMajor('${r.title.replace(/'/g,"\\'")}');switchTab('unis');">Find Universities →</button>
+        <button class="btn btn-outline btn-sm" onclick="addResultMajor('${r.title.replace(/'/g,"\\'")}');showView('unis');">Find Universities →</button>
       </div>
     </div>`
   ).join('');
@@ -973,8 +1040,7 @@ function showResults(){
 }
 function addResultMajor(major){
   if(!selectedMajors.includes(major)&&selectedMajors.length<5){
-    selectedMajors.push(major);
-    syncMajors();
+    selectedMajors.push(major); syncMajors();
   }
 }
 
@@ -984,10 +1050,10 @@ function addResultMajor(major){
 function toggleFilters(){
   document.getElementById('filterPanel').classList.toggle('collapsed');
 }
-function budgetBucket(t){return t<6000?'low':t<11000?'mid':'high';}
-function badgeClass(c){return c==='very'?'badge-high':c==='comp'?'badge-med':'badge-mod';}
+function budgetBucket(t){ return t<6000?'low':t<11000?'mid':'high'; }
+function badgeClass(c){ return c==='very'?'badge-high':c==='comp'?'badge-med':'badge-mod'; }
 
-// ── Required courses mapping ──────────────────────────────
+// ── Required courses ─────────────────────────────────────
 function getReqCourses(program){
   const p=(program||'').toLowerCase();
   if(/\b(mechanical|electrical|civil|chemical|aerospace|mechatronic|robotics|manufacturing|industrial|systems design|environmental engineering|nanotechnolog|nuclear|biomedical engineering|materials|structural)\b/.test(p))
@@ -1029,8 +1095,8 @@ function getReqCourses(program){
 
 function getDegreeType(program){
   const p=(program||'').toLowerCase();
-  if(/engineering/.test(p)) return 'Bachelor of Engineering (BEng)';
   if(/software engineering/.test(p)) return 'Bachelor of Software Engineering (BSE)';
+  if(/engineering/.test(p)) return 'Bachelor of Engineering (BEng)';
   if(/computer science|computing science/.test(p)) return 'Bachelor of Computer Science (BCS) or BSc';
   if(/data science|statistics|mathematics|actuarial/.test(p)) return 'Bachelor of Mathematics (BMath) or BSc';
   if(/business|commerce|accounting|finance|marketing|management/.test(p)) return 'Bachelor of Commerce (BCom)';
@@ -1041,7 +1107,7 @@ function getDegreeType(program){
   if(/law/.test(p)) return 'Juris Doctor (JD) or BA Pre-Law';
   if(/music/.test(p)) return 'Bachelor of Music (BMus)';
   if(/fine arts|studio|design/.test(p)) return 'Bachelor of Fine Arts (BFA)';
-  if(/architecture/.test(p)) return 'Bachelor of Architecture (BArch) or BES';
+  if(/architecture/.test(p)) return 'Bachelor of Architecture (BArch)';
   if(/science|biology|chemistry|physics|biochem|ecology/.test(p)) return 'Bachelor of Science (BSc)';
   if(/arts|humanities|psychology|sociology|political|history|economics/.test(p)) return 'Bachelor of Arts (BA)';
   return "Bachelor's Degree (varies by stream)";
@@ -1058,56 +1124,47 @@ function calcFitScore(uni){
     const words=major.toLowerCase().split(/\s+/).filter(w=>w.length>3);
     for(const prog of uni.programs){
       const progL=prog.toLowerCase();
-      const hits=words.filter(w=>progL.includes(w)).length;
-      if(hits>=1){bestMatchProg=prog;break;}
+      if(words.some(w=>progL.includes(w))){ bestMatchProg=prog; break; }
     }
     if(bestMatchProg) break;
   }
 
   if(bestMatchProg){
     score+=50;
-    const shortProg=bestMatchProg.length>28?bestMatchProg.substring(0,25)+'…':bestMatchProg;
-    badges.push({text:'offers '+shortProg,cls:'match'});
+    const s=bestMatchProg.length>28?bestMatchProg.substring(0,25)+'…':bestMatchProg;
+    badges.push({text:'offers '+s, cls:'match'});
   }
-
   if(uni.coop){
     score+=20;
-    if(badges.length<2) badges.push({text:'co-op available',cls:'coop'});
+    if(badges.length<2) badges.push({text:'co-op available', cls:'coop'});
   }
-
   if(uni.canadaRank<=3) score+=20;
   else if(uni.canadaRank<=7) score+=15;
   else if(uni.canadaRank<=12) score+=10;
   else score+=5;
 
-  // Calculus badge if major needs it and not already 2 badges
   if(badges.length<2&&bestMatchProg){
     const req=getReqCourses(bestMatchProg);
     if(req.includes('MCV4U')||req.includes('MHF4U')) badges.push({text:'requires Calculus',cls:'calc'});
   }
-
-  return {score:Math.min(score,100),badges:badges.slice(0,2),matchedProg:bestMatchProg};
+  return {score:Math.min(score,100), badges:badges.slice(0,2), matchedProg:bestMatchProg};
 }
 
 function fitScoreHtml(fit){
   if(!fit) return '';
   const cls=fit.score>=70?'fit-score-green':fit.score>=45?'fit-score-yellow':'fit-score-grey';
   const badgesHtml=fit.badges.map(b=>`<span class="fit-badge ${b.cls}">${b.text}</span>`).join('');
-  return `<div class="fit-row">
-    <span class="fit-score-pill ${cls}">🎯 ${fit.score}% fit</span>
-    ${badgesHtml}
-  </div>`;
+  return `<div class="fit-row"><span class="fit-score-pill ${cls}">🎯 ${fit.score}% fit</span>${badgesHtml}</div>`;
 }
 
 // ── Save to My List ──────────────────────────────────────
 async function saveToList(uniId, uniName){
   const sel=document.getElementById('prog-'+uniId);
   const programName=sel?sel.value:'';
-
-  // Try to match against selected majors for the label
   let labelMajor=programName;
   if(selectedMajors.length>0){
-    const fit=calcFitScore(UNIVERSITIES.find(u=>u.id===uniId)||{programs:[]});
+    const uni=UNIVERSITIES.find(u=>u.id===uniId);
+    const fit=uni?calcFitScore(uni):null;
     if(fit&&fit.matchedProg) labelMajor=fit.matchedProg;
     else {
       const matched=selectedMajors.find(m=>{
@@ -1117,56 +1174,76 @@ async function saveToList(uniId, uniName){
       if(matched) labelMajor=matched;
     }
   }
-
   const label=`${uniName} — ${labelMajor}`;
   const programSlug=labelMajor.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
   try {
     const list=await ugLoad('savedPrograms',[]);
     const alreadySaved=list.some(p=>p.uniId===uniId&&p.programSlug===programSlug);
-    if(alreadySaved){
-      showToast(`Already saved! <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`,false);
-      return;
-    }
+    if(alreadySaved){ showToast(`Already saved! <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`,false); return; }
     const itemId='prog-'+Date.now();
-    const item={id:itemId,uniId,uniName,programName:label,programSlug,tag:'target',savedMajors:[...selectedMajors]};
-    list.push(item);
+    list.push({id:itemId, uniId, uniName, programName:label, programSlug, tag:'target', savedMajors:[...selectedMajors]});
     await ugSave('savedPrograms',list);
     lastSaved={itemId};
-    showToast(`Saved: ${label}`,true);
-  } catch(e){showToast('Saved!',false);}
+    showToast(`✓ Saved: ${label}`, true);
+  } catch(e){ showToast('Saved!', false); }
 }
 
-async function saveAndView(uniId,uniName){
-  await saveToList(uniId,uniName);
-  setTimeout(()=>window.location.href='saved.html',400);
+async function saveAndView(uniId, uniName){
+  await saveToList(uniId, uniName);
+  setTimeout(()=>window.location.href='saved.html', 400);
 }
 
 async function undoSave(){
   if(!lastSaved) return;
   try {
     const list=await ugLoad('savedPrograms',[]);
-    await ugSave('savedPrograms',list.filter(p=>p.id!==lastSaved.itemId));
+    await ugSave('savedPrograms', list.filter(p=>p.id!==lastSaved.itemId));
     lastSaved=null;
     showToast('Removed from My List.',false);
-  } catch(e){showToast('Could not undo.',false);}
+  } catch(e){ showToast('Could not undo.',false); }
 }
 
-function showToast(msg,showUndo){
+function showToast(msg, showUndo){
   clearTimeout(toastTimeout);
   const t=document.getElementById('saveToast');
   t.innerHTML=msg+(showUndo?` <button class="toast-undo-btn" onclick="undoSave()">Undo</button>`:'');
   t.classList.add('show');
-  toastTimeout=setTimeout(()=>t.classList.remove('show'),4500);
+  toastTimeout=setTimeout(()=>t.classList.remove('show'), 4500);
 }
 
 // ── Expandable program details ───────────────────────────
 function toggleDetails(uniId){
   const btn=document.getElementById('dtoggle-'+uniId);
   const body=document.getElementById('dbody-'+uniId);
-  const isOpen=btn.classList.contains('open');
-  btn.classList.toggle('open',!isOpen);
-  body.classList.toggle('open',!isOpen);
-  btn.querySelector('.toggle-chevron').textContent=isOpen?'▾':'▴';
+  const open=btn.classList.contains('open');
+  btn.classList.toggle('open',!open);
+  body.classList.toggle('open',!open);
+  btn.querySelector('.toggle-chevron').textContent=open?'▾':'▴';
+}
+
+function buildDetailsHtml(u){
+  const sel=document.getElementById('prog-'+u.id);
+  const prog=sel?sel.value:(u.programs[0]||'');
+  return `
+    <div class="prog-detail-grid">
+      <div class="prog-detail-item"><label>Degree Type</label><span>${getDegreeType(prog)}</span></div>
+      <div class="prog-detail-item"><label>Co-op Available</label><span>${u.coop?'✅ '+u.coopLabel:'❌ Not available'}</span></div>
+      <div class="prog-detail-item"><label>Target Avg (admission)</label><span>${u.avgRange.low}–${u.avgRange.high}%</span></div>
+      <div class="prog-detail-item"><label>Application Deadline</label><span>${u.deadlines.main||'Check website'}</span></div>
+      <div class="prog-detail-item"><label>Domestic Tuition/yr</label><span>$${u.tuition.domestic.toLocaleString()}</span></div>
+      <div class="prog-detail-item"><label>Competitiveness</label><span>${u.compLabel}</span></div>
+    </div>
+    <div class="prog-detail-courses">
+      <strong>Required Ontario High School Courses</strong>
+      ${getReqCourses(prog)}
+    </div>`;
+}
+
+function refreshDetails(uniId){
+  const u=UNIVERSITIES.find(x=>x.id===uniId);
+  if(!u) return;
+  const body=document.getElementById('dbody-'+uniId);
+  if(body) body.innerHTML=buildDetailsHtml(u);
 }
 
 // ── Filter + Render ──────────────────────────────────────
@@ -1195,31 +1272,27 @@ function filterUnis(){
     return true;
   });
 
-  // Sort by fit score desc when majors selected
   if(selectedMajors.length>0){
     filtered.sort((a,b)=>{
-      const fa=calcFitScore(a),fb=calcFitScore(b);
+      const fa=calcFitScore(a), fb=calcFitScore(b);
       return (fb?fb.score:0)-(fa?fa.score:0);
     });
   }
 
+  const sortNote=selectedMajors.length?' · sorted by fit':'';
   document.getElementById('resultsCount').textContent=
-    `Showing ${filtered.length} of ${UNIVERSITIES.length} universities`+
-    (selectedMajors.length?' · sorted by fit':'');
+    `Showing ${filtered.length} of ${UNIVERSITIES.length} universities${sortNote}`;
 
   if(userLat===null&&dist>0){
     document.getElementById('distNote').textContent='⚠️ Distance filter requires your city in your profile.';
   } else {
     document.getElementById('distNote').textContent=userCity?`📍 Distances from ${userCity}`:'';
   }
-
   renderUnis(filtered);
 }
 
 function resetFilters(){
-  ['fProvince','fComp','fCoop','fCity','fBudget','fDist'].forEach(id=>{
-    document.getElementById(id).value='';
-  });
+  ['fProvince','fComp','fCoop','fCity','fBudget','fDist'].forEach(id=>{ document.getElementById(id).value=''; });
   document.getElementById('uniSearch').value='';
   filterUnis();
 }
@@ -1227,7 +1300,7 @@ function resetFilters(){
 function renderUnis(list){
   const grid=document.getElementById('uniGrid');
   if(!list.length){
-    grid.innerHTML='<p class="no-results">No universities match your filters. Try resetting the filters.</p>';
+    grid.innerHTML='<p class="no-results">No universities match your filters. Try resetting.</p>';
     return;
   }
   grid.innerHTML=list.map(u=>{
@@ -1236,13 +1309,8 @@ function renderUnis(list){
     const rankPills=`<span class="rank-pill">#${u.canadaRank} Canada</span>${u.worldRank?`<span class="rank-pill world">#${u.worldRank} World</span>`:''}`;
     const coopTag=u.coop?'<span class="tag tag-green">Co-op ✓</span>':'';
     const fit=calcFitScore(u);
-    const fitHtml=fitScoreHtml(fit);
-
-    // Program dropdown
-    const progOptions=u.programs.map(p=>`<option value="${p}">${p}</option>`).join('');
-
     return `
-      <div class="uni-card" id="card-${u.id}">
+      <div class="uni-card">
         <div class="uni-card-top">
           <div>
             <div class="uni-card-name">${u.name}</div>
@@ -1251,7 +1319,7 @@ function renderUnis(list){
           <span class="uni-card-badge ${badgeClass(u.comp)}">${u.compLabel}</span>
         </div>
 
-        ${fitHtml}
+        ${fitScoreHtml(fit)}
 
         <div class="uni-ranks">${rankPills}${coopTag}</div>
 
@@ -1264,16 +1332,15 @@ function renderUnis(list){
 
         <div class="uni-desc">${u.vibe}</div>
 
-        <div style="font-size:.75rem;color:var(--grey);margin-bottom:6px;"><strong>Select program:</strong></div>
+        <div style="font-size:.74rem;color:var(--grey);margin-bottom:5px;"><strong>Select program:</strong></div>
         <select id="prog-${u.id}" style="width:100%;margin-bottom:0;font-size:.82rem;padding:6px 9px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--navy);"
           onchange="refreshDetails('${u.id}')">
-          ${progOptions}
+          ${u.programs.map(p=>`<option value="${p}">${p}</option>`).join('')}
         </select>
 
-        <!-- Expandable details -->
         <div class="prog-details-toggle" id="dtoggle-${u.id}" onclick="toggleDetails('${u.id}')">
           <span>📋 Program Details</span>
-          <span style="margin-left:auto;font-size:.72rem;color:var(--grey);">expand to see requirements</span>
+          <span style="font-size:.70rem;color:var(--grey);">expand for requirements</span>
           <span class="toggle-chevron">▾</span>
         </div>
         <div class="prog-details-body" id="dbody-${u.id}">
@@ -1285,35 +1352,8 @@ function renderUnis(list){
           <button class="btn btn-outline btn-sm" onclick="saveToList('${u.id}','${u.name.replace(/'/g,"\\'")}')">+ Save to My List</button>
           <a href="${u.websiteURL}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Website ↗</a>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
-}
-
-function buildDetailsHtml(u){
-  const sel=document.getElementById('prog-'+u.id);
-  const prog=sel?sel.value:(u.programs[0]||'');
-  return `
-    <div class="prog-detail-grid">
-      <div class="prog-detail-item"><label>Degree Type</label><span>${getDegreeType(prog)}</span></div>
-      <div class="prog-detail-item"><label>Co-op Available</label><span>${u.coop?'✅ '+u.coopLabel:'❌ Not available'}</span></div>
-      <div class="prog-detail-item"><label>Target Avg (admission)</label><span>${u.avgRange.low}–${u.avgRange.high}%</span></div>
-      <div class="prog-detail-item"><label>Application Deadline</label><span>${u.deadlines.main||'Check website'}</span></div>
-      <div class="prog-detail-item"><label>Domestic Tuition/yr</label><span>$${u.tuition.domestic.toLocaleString()}</span></div>
-      <div class="prog-detail-item"><label>Competitiveness</label><span>${u.compLabel}</span></div>
-    </div>
-    <div class="prog-detail-courses">
-      <strong>Required Ontario High School Courses</strong>
-      ${getReqCourses(prog)}
-    </div>
-  `;
-}
-
-function refreshDetails(uniId){
-  const u=UNIVERSITIES.find(x=>x.id===uniId);
-  if(!u) return;
-  const body=document.getElementById('dbody-'+uniId);
-  if(body) body.innerHTML=buildDetailsHtml(u);
 }
 
 // ════════════════════════════════════════════════════════
@@ -1332,9 +1372,9 @@ function openProfileModal(){
     updateConsentBlock();
   } catch(e){}
 }
-function closeProfileModal(){document.getElementById('profileModal').classList.remove('open');document.body.style.overflow='';}
-function closeProfileModalOutside(e){if(e.target===document.getElementById('profileModal'))closeProfileModal();}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProfileModal();});
+function closeProfileModal(){ document.getElementById('profileModal').classList.remove('open'); document.body.style.overflow=''; }
+function closeProfileModalOutside(e){ if(e.target===document.getElementById('profileModal')) closeProfileModal(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeProfileModal(); });
 
 function updateConsentBlock(){
   const grade=document.getElementById('pGrade').value;
@@ -1346,29 +1386,23 @@ document.getElementById('pGrade').addEventListener('change',updateConsentBlock);
 function saveProfile(){
   const grade=document.getElementById('pGrade').value;
   const profile={
-    name:document.getElementById('pName').value.trim(),
-    grade, province:document.getElementById('pProvince').value,
+    name:document.getElementById('pName').value.trim(), grade,
+    province:document.getElementById('pProvince').value,
     city:document.getElementById('pCity').value.trim(),
     distance:document.getElementById('pDistance').value,
   };
-  if(!profile.name||!profile.grade||!profile.province){
-    alert('Please fill in at least your name, grade, and province.');return;
-  }
+  if(!profile.name||!profile.grade||!profile.province){ alert('Please fill in at least your name, grade, and province.'); return; }
   if((grade==='9'||grade==='10')&&!document.getElementById('parentConsent').checked){
-    alert('Please have a parent or guardian check the acknowledgement box.');return;
+    alert('Please have a parent or guardian check the acknowledgement box.'); return;
   }
   localStorage.setItem('ugProfile',JSON.stringify(profile));
   if(typeof ugSave==='function') ugSave('ugProfile',profile);
   closeProfileModal();
   document.getElementById('profileBannerTitle').textContent=`Welcome, ${profile.name}! ✓ Profile saved`;
-  document.getElementById('profileBannerSub').textContent=`Grade ${profile.grade} · ${profile.city?profile.city+', ':''}${profile.province} · Distance: ${profile.distance||'Any'}`;
+  document.getElementById('profileBannerSub').textContent=`Grade ${profile.grade} · ${profile.city?profile.city+', ':''}${profile.province}`;
   document.getElementById('profileBannerBtn').textContent='Edit Profile';
   document.getElementById('profileBanner').style.background='linear-gradient(135deg,#e6f7f0,#b8edd8)';
-  // Reload location for distance
-  if(profile.city){
-    userCity=profile.city;
-    filterUnis();
-  }
+  if(profile.city){ userCity=profile.city; }
 }
 function clearProfile(e){
   e.preventDefault();
@@ -1386,31 +1420,23 @@ function clearProfile(e){
 //  INIT
 // ════════════════════════════════════════════════════════
 window.addEventListener('load',()=>{
-  // Load saved majors
-  const saved=localStorage.getItem('selectedMajors');
-  if(saved){try{selectedMajors=JSON.parse(saved);}catch(e){}}
-  // Cap at 5
+  try { selectedMajors=JSON.parse(localStorage.getItem('selectedMajors')||'[]'); } catch(e){}
   if(selectedMajors.length>5) selectedMajors=selectedMajors.slice(0,5);
   renderSelectedTray();
+  renderSidebarMajors();
   updateMicroflow();
-  updateUniContext();
 
-  // Load profile
-  const profileRaw=localStorage.getItem('ugProfile');
-  if(profileRaw){
-    try{
-      const p=JSON.parse(profileRaw);
+  try {
+    const p=JSON.parse(localStorage.getItem('ugProfile')||'{}');
+    if(p.name){
       document.getElementById('profileBannerTitle').textContent=`Welcome back, ${p.name}! ✓`;
-      document.getElementById('profileBannerSub').textContent=`Grade ${p.grade} · ${p.city?p.city+', ':''}${p.province} · Distance: ${p.distance||'Any'}`;
+      document.getElementById('profileBannerSub').textContent=`Grade ${p.grade} · ${p.city?p.city+', ':''}${p.province}`;
       document.getElementById('profileBannerBtn').textContent='Edit Profile';
       document.getElementById('profileBanner').style.background='linear-gradient(135deg,#e6f7f0,#b8edd8)';
-    }catch(e){}
-  } else {
-    setTimeout(openProfileModal,900);
-  }
-
-  filterUnis();
-  if(userCity) document.getElementById('distNote').textContent=`📍 Distances from ${userCity}`;
+    } else {
+      setTimeout(openProfileModal, 900);
+    }
+  } catch(e){ setTimeout(openProfileModal, 900); }
 });
 </script>
 </body>
