@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scholarships & Funding · UniGuide</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-hero { background:var(--navy); color:#fff; padding:52px 24px 44px; }
+    .page-hero h1 { font-size:clamp(1.5rem,3vw,2.2rem); color:#fff; margin-bottom:8px; }
+    .page-hero p { color:rgba(255,255,255,0.70); font-size:1rem; }
+    .filter-bar { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; margin-bottom:24px; display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; }
+    .filter-bar .form-group { margin:0; flex:1; min-width:140px; }
+    .schol-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:18px; }
+    .schol-card { background:var(--white); border:1px solid var(--border); border-left:5px solid var(--red); border-radius:var(--radius); padding:24px; transition:box-shadow 0.2s; }
+    .schol-card:hover { box-shadow:var(--shadow); }
+    .schol-card.green { border-left-color:var(--success); }
+    .schol-card.amber { border-left-color:var(--accent); }
+    .schol-amount { font-size:1.5rem; font-weight:900; color:var(--red); }
+    .schol-card.green .schol-amount { color:var(--success); }
+    .schol-card.amber .schol-amount { color:#7a5200; }
+    .schol-name { font-size:1.02rem; font-weight:800; margin:6px 0 4px; }
+    .schol-desc { font-size:0.85rem; color:var(--grey); margin-bottom:12px; line-height:1.55; }
+    .schol-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+    .schol-deadline { font-size:0.80rem; color:var(--red); font-weight:700; }
+    .schol-deadline.ok { color:var(--success); }
+    .eligible-badge { background:#e6f7f0; border:1px solid #88d5b5; color:#1a7a52; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:50px; display:inline-block; margin-bottom:10px; }
+    .cost-calc { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:28px; margin-bottom:28px; }
+    .cost-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:0.90rem; }
+    .cost-row:last-child { border-bottom:none; font-weight:900; font-size:1rem; }
+    .cost-row span:last-child { font-weight:700; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
+  <div class="nav-links">
+    <a href="major.html">Majors</a>
+    <a href="saved.html">My List</a>
+    <a href="universities.html">Universities</a>
+    <a href="scholarships.html" class="active">Funding</a>
+    <a href="essays.html">Essays</a>
+    <a href="tracker.html">Tracker</a>
+    <span id="nav-logged-out" class="nav-auth"><a href="#" class="nav-btn-outline" onclick="ugOpenAuth('login');return false;">Log In</a></span>
+    <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
+    <a href="major.html" class="nav-btn">Start YOUR plan</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <h1>Scholarships, Grants & Funding</h1>
+    <p>500+ Canadian scholarships, bursaries, and grants — filtered to what you actually qualify for. Don't leave money on the table.</p>
+  </div>
+</div>
+
+<section style="padding:48px 24px;">
+  <div class="container">
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this,'t-browse')">🔍 Browse All</div>
+      <div class="tab" onclick="switchTab(this,'t-calc')">💸 Cost Calculator</div>
+      <div class="tab" onclick="switchTab(this,'t-osap')">🏛️ OSAP & Provincial Aid</div>
+    </div>
+
+    <!-- BROWSE -->
+    <div class="tab-panel active" id="t-browse">
+      <div class="filter-bar">
+        <div class="form-group">
+          <label>Type</label>
+          <select id="fType" onchange="filterSchol()">
+            <option value="">All Types</option>
+            <option value="merit">Merit-Based</option>
+            <option value="need">Need-Based</option>
+            <option value="sport">Sports</option>
+            <option value="stem">STEM</option>
+            <option value="community">Community/Leadership</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Province</label>
+          <select id="fProv" onchange="filterSchol()">
+            <option value="">All</option>
+            <option>Ontario</option>
+            <option>British Columbia</option>
+            <option>Alberta</option>
+            <option>National</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Program Area</label>
+          <select id="fArea" onchange="filterSchol()">
+            <option value="">All Programs</option>
+            <option value="eng">Engineering / STEM</option>
+            <option value="health">Health Sciences</option>
+            <option value="bus">Business</option>
+            <option value="arts">Arts</option>
+            <option value="any">Any Program</option>
+          </select>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="resetSchol()" style="flex-shrink:0;">Reset</button>
+      </div>
+
+      <p id="scholCount" style="font-size:0.85rem;color:var(--grey);margin-bottom:18px;">Showing all scholarships</p>
+
+      <div class="schol-grid" id="scholGrid"></div>
+    </div>
+
+    <!-- COST CALCULATOR -->
+    <div class="tab-panel" id="t-calc">
+      <div class="cost-calc">
+        <h3 style="margin-bottom:20px;">University Cost Estimator</h3>
+        <div class="grid-2" style="margin-bottom:20px;">
+          <div class="form-group">
+            <label>Target University</label>
+            <select id="calcUni" onchange="calcCost()">
+              <option value="">Select…</option>
+              <option value="uoft">University of Toronto</option>
+              <option value="waterloo">University of Waterloo</option>
+              <option value="mcmaster">McMaster University</option>
+              <option value="ubc">UBC</option>
+              <option value="mcgill">McGill University</option>
+              <option value="memorial">Memorial University (NL)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Living Situation</label>
+            <select id="calcLiving" onchange="calcCost()">
+              <option value="res">On-campus Residence</option>
+              <option value="off">Off-campus Apartment</option>
+              <option value="home">Living at Home</option>
+            </select>
+          </div>
+        </div>
+        <div id="costBreakdown" style="display:none;">
+          <div class="cost-row"><span>Tuition</span><span id="c-tuition">—</span></div>
+          <div class="cost-row"><span>Residence / Rent</span><span id="c-residence">—</span></div>
+          <div class="cost-row"><span>Meal Plan / Food</span><span id="c-food">—</span></div>
+          <div class="cost-row"><span>Books & Supplies</span><span id="c-books">—</span></div>
+          <div class="cost-row"><span>Transportation</span><span id="c-transport">—</span></div>
+          <div class="cost-row"><span>Personal / Entertainment</span><span id="c-personal">—</span></div>
+          <div class="cost-row" style="background:var(--light);border-radius:8px;padding:12px 10px;margin-top:8px;"><span>Total Estimated Annual Cost</span><span id="c-total" style="color:var(--red);">—</span></div>
+        </div>
+        <div id="costPlaceholder" style="text-align:center;padding:30px;color:var(--grey);">Select a university above to see your estimated cost breakdown.</div>
+      </div>
+    </div>
+
+    <!-- OSAP & PROVINCIAL -->
+    <div class="tab-panel" id="t-osap">
+      <div class="card-flat" style="margin-bottom:20px;">
+        <h3 style="margin-bottom:14px;">OSAP — Ontario Student Assistance Program</h3>
+        <p style="font-size:0.90rem;color:var(--grey);margin-bottom:16px;">OSAP provides a combination of <strong>non-repayable grants</strong> and repayable loans to Ontario students. Apply early — decisions are released in summer.</p>
+        <ul style="padding-left:20px;margin-bottom:16px;">
+          <li style="font-size:0.90rem;margin-bottom:8px;">Grants are based on family income — students from lower-income families can receive up to $10,000/yr non-repayable.</li>
+          <li style="font-size:0.90rem;margin-bottom:8px;">Apply at <strong>ontario.ca/osap</strong> — opens in late spring/early summer before your first year.</li>
+          <li style="font-size:0.90rem;margin-bottom:8px;">You need your parents' income tax information and your own SIN number.</li>
+          <li style="font-size:0.90rem;margin-bottom:8px;">Even if you think you won't qualify, apply — many students are surprised.</li>
+        </ul>
+        <div style="background:#e6f7f0;border-radius:10px;padding:14px 16px;">
+          <strong style="color:#1a7a52;">💡 Tip:</strong> <span style="font-size:0.88rem;">Students from families earning under $175,000 may be eligible for some grant portion. The earlier you apply, the faster your funding is confirmed.</span>
+        </div>
+      </div>
+      <div class="card-flat" style="margin-bottom:20px;">
+        <h3 style="margin-bottom:14px;">Provincial Aid by Province</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--light);border-radius:8px;flex-wrap:wrap;gap:8px;">
+            <div><strong>Ontario — OSAP</strong><div style="font-size:0.80rem;color:var(--grey);">ontario.ca/osap</div></div><span class="tag tag-green">Grants + Loans</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--light);border-radius:8px;flex-wrap:wrap;gap:8px;">
+            <div><strong>BC — StudentAid BC</strong><div style="font-size:0.80rem;color:var(--grey);">studentaidbc.ca</div></div><span class="tag tag-green">Grants + Loans</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--light);border-radius:8px;flex-wrap:wrap;gap:8px;">
+            <div><strong>Alberta — Alberta Student Aid</strong><div style="font-size:0.80rem;color:var(--grey);">studentaid.alberta.ca</div></div><span class="tag tag-green">Grants + Loans</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--light);border-radius:8px;flex-wrap:wrap;gap:8px;">
+            <div><strong>Quebec — Aide financière aux études</strong><div style="font-size:0.80rem;color:var(--grey);">afe.gouv.qc.ca</div></div><span class="tag tag-green">Grants + Loans</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--light);border-radius:8px;flex-wrap:wrap;gap:8px;">
+            <div><strong>Federal — Canada Student Grant</strong><div style="font-size:0.80rem;color:var(--grey);">canada.ca/student-grants</div></div><span class="tag tag-navy">Non-Repayable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Chatbot -->
+<div class="chatbot-bubble">
+  <div class="chatbot-panel" id="chatPanel">
+    <div class="chatbot-header">🤖 Funding Advisor <span style="margin-left:auto;cursor:pointer;opacity:0.7;" onclick="toggleChat()">✕</span></div>
+    <div class="chatbot-messages" id="chatMessages">
+      <div class="chat-msg bot">Hi! I can help you find scholarships you qualify for, explain OSAP, or estimate your real cost of attending any university. What do you need?</div>
+    </div>
+    <div class="chatbot-input-row">
+      <input type="text" id="chatInput" placeholder="e.g. 'Do I qualify for the Loran Award?'" onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button onclick="sendChat()">➤</button>
+    </div>
+  </div>
+  <button class="chatbot-btn" onclick="toggleChat()">🤖</button>
+</div>
+
+<footer class="footer">
+  <strong>UniGuide 🍁</strong> — Free Canadian University Planning · Built for Grades 9–12
+</footer>
+
+<script>
+const scholarships = [
+  { name:'Loran Award', amount:'$100,000 total ($25,000/yr)', type:'merit', area:'any', prov:'National', desc:'Canada\'s most prestigious undergraduate scholarship. For students with exceptional character, service, and leadership. Highly competitive.', deadline:'Mid-November', deadlineClass:'', tags:['Merit','Leadership','National','Full Package'] },
+  { name:'Schulich Leader Scholarship', amount:'$12,000–$20,000', type:'stem', area:'eng', prov:'National', desc:'For STEM students entering university. Awarded through high school nomination. Leadership and entrepreneurship required.', deadline:'March (school nominates)', deadlineClass:'', tags:['STEM','Leadership','Engineering'] },
+  { name:'TD Scholarship for Community Leadership', amount:'$7,500/yr (renewable)', type:'community', area:'any', prov:'National', desc:'Recognizes students who have demonstrated exceptional community involvement alongside academic achievement.', deadline:'February', deadlineClass:'', tags:['Community','Merit','Renewable'] },
+  { name:'Canada Student Grant (Federal)', amount:'Up to $10,000/yr', type:'need', area:'any', prov:'National', desc:'Non-repayable federal grant for low and middle-income students. Applied through your provincial student aid portal (e.g. OSAP).', deadline:'Apply via OSAP/provincial aid', deadlineClass:'ok', tags:['Need-Based','Non-Repayable','Federal'] },
+  { name:'RBC Future Launch Scholarship', amount:'$5,000', type:'community', area:'any', prov:'National', desc:'Supporting young Canadians in building skills. Open to students at accredited Canadian institutions.', deadline:'January', deadlineClass:'', tags:['Community','National'] },
+  { name:'Waterloo President\'s Scholarship', amount:'$2,000', type:'merit', area:'eng', prov:'Ontario', desc:'Automatic for incoming students with a 95%+ admission average. No separate application needed.', deadline:'Automatic at admission', deadlineClass:'ok', tags:['Merit','Automatic','Waterloo'] },
+  { name:'McMaster University Award of Excellence', amount:'$3,000–$5,000', type:'merit', area:'any', prov:'Ontario', desc:'Awarded automatically to incoming students with averages of 90% and above. Renewable annually.', deadline:'Automatic at admission', deadlineClass:'ok', tags:['Merit','Automatic','McMaster','Renewable'] },
+  { name:'Vanier Canada Graduate Scholarship', amount:'$50,000/yr (3 years)', type:'merit', area:'any', prov:'National', desc:'For doctoral students — not undergraduate. Plan ahead if you\'re thinking about graduate studies in research.', deadline:'November (graduate)', deadlineClass:'', tags:['Graduate','Research','Merit'] },
+  { name:'UBC Trek Excellence Scholarship', amount:'$4,000', type:'merit', area:'any', prov:'British Columbia', desc:'Awarded to academically excellent incoming students at UBC. Renewable based on continued academic performance.', deadline:'Automatic — no separate application', deadlineClass:'ok', tags:['Merit','UBC','BC','Automatic'] },
+  { name:'McGill Renewable Entrance Award', amount:'$3,000/yr', type:'merit', area:'any', prov:'National', desc:'For students entering McGill with strong academic standing. Renewable each year if minimum average maintained.', deadline:'Automatic at admission', deadlineClass:'ok', tags:['Merit','McGill','Renewable'] },
+  { name:'Scotiabank Scholarship for STEM Students', amount:'$2,500', type:'stem', area:'eng', prov:'National', desc:'For students entering STEM programs. Apply online with a short essay and transcript.', deadline:'January 15', deadlineClass:'', tags:['STEM','Engineering','Banking'] },
+  { name:'BMO First Canadian Scholarship', amount:'$4,000', type:'need', area:'any', prov:'National', desc:'For students demonstrating financial need who are the first in their family to attend post-secondary education.', deadline:'March', deadlineClass:'', tags:['Need-Based','First-Gen','National'] },
+];
+
+function renderSchol(list) {
+  document.getElementById('scholCount').textContent = `Showing ${list.length} scholarships`;
+  document.getElementById('scholGrid').innerHTML = list.map(s => `
+    <div class="schol-card ${s.type==='need'?'green':s.type==='stem'?'amber':''}">
+      <div class="schol-amount">${s.amount}</div>
+      <div class="schol-name">${s.name}</div>
+      <div class="schol-desc">${s.desc}</div>
+      <div class="schol-tags">${s.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="schol-deadline ${s.deadlineClass}">📅 Admission Date: ${s.deadline}</div>
+    </div>
+  `).join('');
+}
+
+function filterSchol() {
+  const type = document.getElementById('fType').value;
+  const prov = document.getElementById('fProv').value;
+  const area = document.getElementById('fArea').value;
+  const f = scholarships.filter(s => {
+    if (type && s.type !== type) return false;
+    if (prov && s.prov !== prov) return false;
+    if (area && s.area !== area && s.area !== 'any') return false;
+    return true;
+  });
+  renderSchol(f);
+}
+function resetSchol() {
+  ['fType','fProv','fArea'].forEach(id => document.getElementById(id).value = '');
+  renderSchol(scholarships);
+}
+renderSchol(scholarships);
+
+const costData = {
+  uoft:     { tuition:15000, res_res:12000, res_off:14000, res_home:0, food_res:5000, food_off:4500, food_home:2000 },
+  waterloo: { tuition:14500, res_res:11000, res_off:12000, res_home:0, food_res:5000, food_off:4000, food_home:2000 },
+  mcmaster: { tuition:11000, res_res:10500, res_off:11500, res_home:0, food_res:4500, food_off:4000, food_home:2000 },
+  ubc:      { tuition:7500,  res_res:11000, res_off:15000, res_home:0, food_res:5000, food_off:5500, food_home:2500 },
+  mcgill:   { tuition:6000,  res_res:9500,  res_off:12000, res_home:0, food_res:4500, food_off:4000, food_home:2000 },
+  memorial: { tuition:3500,  res_res:7000,  res_off:8000,  res_home:0, food_res:4000, food_off:3500, food_home:1800 },
+};
+
+function calcCost() {
+  const uni = document.getElementById('calcUni').value;
+  const living = document.getElementById('calcLiving').value;
+  if (!uni) return;
+  const d = costData[uni];
+  const books = 1500, transport = living === 'home' ? 2000 : 800, personal = 2500;
+  const tuition = d.tuition;
+  const residence = living === 'res' ? d.res_res : living === 'off' ? d.res_off : d.res_home;
+  const food = living === 'res' ? d.food_res : living === 'off' ? d.food_off : d.food_home;
+  const total = tuition + residence + food + books + transport + personal;
+  const fmt = n => n === 0 ? 'Free (living at home)' : '$' + n.toLocaleString();
+  document.getElementById('c-tuition').textContent = fmt(tuition);
+  document.getElementById('c-residence').textContent = fmt(residence);
+  document.getElementById('c-food').textContent = fmt(food);
+  document.getElementById('c-books').textContent = fmt(books);
+  document.getElementById('c-transport').textContent = fmt(transport);
+  document.getElementById('c-personal').textContent = fmt(personal);
+  document.getElementById('c-total').textContent = '$' + total.toLocaleString() + '/year';
+  document.getElementById('costBreakdown').style.display = 'block';
+  document.getElementById('costPlaceholder').style.display = 'none';
+}
+
+function switchTab(el, tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+function toggleChat() { document.getElementById('chatPanel').classList.toggle('open'); }
+const chatResponses = [
+  "For the Loran Award, you need to apply through your school and demonstrate character, service, and leadership — not just grades. The deadline is typically mid-November in Grade 12.",
+  "OSAP eligibility is based on your family's income and assets. Even families earning up to $175,000 may receive some grant money. I'd highly recommend applying regardless — it's free to apply.",
+  "The Schulich Leader Scholarship is school-nominated — only one student per school can be nominated. Talk to your guidance counsellor early to see if your school is participating.",
+  "For need-based funding, always apply to your provincial program (OSAP in Ontario, StudentAid BC in BC) first. Then layer on external scholarships on top.",
+  "Automatic scholarships (like Waterloo's or McMaster's entrance awards) are the easiest money you'll get — no application needed, just maintain your grades.",
+];
+let chatIdx = 0;
+function sendChat() {
+  const inp = document.getElementById('chatInput');
+  const msgs = document.getElementById('chatMessages');
+  if (!inp.value.trim()) return;
+  msgs.innerHTML += `<div class="chat-msg user">${inp.value}</div>`;
+  inp.value = '';
+  setTimeout(() => {
+    msgs.innerHTML += `<div class="chat-msg bot">${chatResponses[chatIdx % chatResponses.length]}</div>`;
+    chatIdx++;
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 700);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+</script>
+<script src="auth.js"></script>
+</body>
+</html>
