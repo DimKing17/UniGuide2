@@ -129,15 +129,14 @@
 <nav class="nav">
   <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
   <div class="nav-links">
-    <a href="major.html" class="active">Majors</a>
+    <a href="selections.html">Selections</a>
     <a href="saved.html">My List</a>
-    <a href="universities.html">Universities</a>
     <a href="scholarships.html">Funding</a>
     <a href="essays.html">Essays</a>
     <a href="tracker.html">Tracker</a>
     <span id="nav-logged-out" class="nav-auth"><a href="#" class="nav-btn-outline" onclick="ugOpenAuth('login');return false;">Log In</a></span>
     <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
-    <a href="major.html" class="nav-btn">Start YOUR plan</a>
+    <a href="selections.html" class="nav-btn">Start YOUR plan</a>
   </div>
 </nav>
 
@@ -183,7 +182,7 @@
     <div class="selected-tray" id="selectedTray">
       <h4>Your selected majors (<span id="selCount">0</span>/10)</h4>
       <div class="selected-pills" id="selectedPills"></div>
-      <a href="universities.html" class="btn btn-red btn-sm" style="margin-top:14px;display:inline-block;">Find Matching Universities →</a>
+      <a href="selections.html" class="btn btn-red btn-sm" style="margin-top:14px;display:inline-block;">Find Matching Universities →</a>
     </div>
 
     <!-- OPTION A: Know your major -->
@@ -360,13 +359,13 @@
       <div style="text-align:center;margin-top:12px;">
         <p style="color:var(--grey);font-size:0.90rem;margin-bottom:14px;">Still unsure? Explore a broader field:</p>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <a href="universities.html?area=stem" class="btn btn-outline btn-sm">🔬 STEM</a>
-          <a href="universities.html?area=health" class="btn btn-outline btn-sm">🏥 Health</a>
-          <a href="universities.html?area=business" class="btn btn-outline btn-sm">💼 Business</a>
-          <a href="universities.html?area=arts" class="btn btn-outline btn-sm">🎨 Arts</a>
-          <a href="universities.html?area=social" class="btn btn-outline btn-sm">🌍 Social Sciences</a>
-          <a href="universities.html?area=trades" class="btn btn-outline btn-sm">🔧 Trades & Applied</a>
-          <a href="universities.html?area=undecided" class="btn btn-outline btn-sm">🤷 Undecided</a>
+          <a href="selections.html" class="btn btn-outline btn-sm">🔬 STEM</a>
+          <a href="selections.html" class="btn btn-outline btn-sm">🏥 Health</a>
+          <a href="selections.html" class="btn btn-outline btn-sm">💼 Business</a>
+          <a href="selections.html" class="btn btn-outline btn-sm">🎨 Arts</a>
+          <a href="selections.html" class="btn btn-outline btn-sm">🌍 Social Sciences</a>
+          <a href="selections.html" class="btn btn-outline btn-sm">🔧 Trades & Applied</a>
+          <a href="selections.html" class="btn btn-outline btn-sm">🤷 Undecided</a>
         </div>
       </div>
     </div>
@@ -703,7 +702,7 @@ const QUIZ_RESULTS = [
     courses:"Math (MHF4U, MCV4U), Computer Science (ICS4U), Physics optional",
     comp:"Very Competitive — most programs require 90%+",
     salary:"$75,000–$120,000+",
-    link:"universities.html",
+    link:"selections.html",
     triggers: a => (a.math==='strong'||a.math==='ok') && (a.cs||a.math) && a.style!=='people'
   },
   { title:"Engineering (Mechanical / Electrical / Chemical)", icon:"⚙️",
@@ -712,7 +711,7 @@ const QUIZ_RESULTS = [
     courses:"MHF4U, MCV4U, SPH4U (required), SCH4U, ENG4U",
     comp:"Very Competitive — 85–94% required at top schools",
     salary:"$70,000–$110,000+",
-    link:"universities.html",
+    link:"selections.html",
     triggers: a => a.math==='strong' && (a.build==='yes'||a.labs==='love') && a.style!=='theory'
   },
   { title:"Health Sciences / Pre-Medicine", icon:"🏥",
@@ -721,7 +720,7 @@ const QUIZ_RESULTS = [
     courses:"SBI4U, SCH4U, ENG4U, MHF4U",
     comp:"Extremely Competitive — 90%+ often required; strong ECs essential",
     salary:"$80,000–$300,000+ (varies by field)",
-    link:"universities.html",
+    link:"selections.html",
     triggers: a => a.people==='yes' && (a.env==='hospital'||a.value==='helping')
   },
   { title:"Business / Commerce", icon:"💼",
@@ -730,7 +729,7 @@ const QUIZ_RESULTS = [
     courses:"ENG4U, MHF4U, Economics (CIA4U or CIE4U)",
     comp:"Competitive — 80–90% typically required",
     salary:"$55,000–$120,000+",
-    link:"universities.html",
+    link:"selections.html",
     triggers: a => a.salary==='high' && a.team==='team'
   },
   { title:"Psychology / Social Sciences", icon:"🧠",
@@ -739,7 +738,7 @@ const QUIZ_RESULTS = [
     courses:"ENG4U, HSB4U, SBI4U optional, HHG4M",
     comp:"Moderate — 75–85% typical",
     salary:"$50,000–$90,000",
-    link:"universities.html",
+    link:"selections.html",
     triggers: a => a.writing==='yes' && a.people==='yes' && a.value==='helping'
   },
   { title:"Arts, Media & Communication", icon:"🎨",
@@ -748,7 +747,7 @@ const QUIZ_RESULTS = [
     courses:"ENG4U, AVI4M or AWL4M, Media Arts (ASM4M)",
     comp:"Moderate — varies by program and portfolio requirements",
     salary:"$45,000–$90,000",
-    link:"universities.html",
+    link:"selections.html",
     triggers: a => a.writing==='yes' && (a.value==='create'||a.value==='freedom')
   },
   { title:"Science (Biology / Chemistry / Physics)", icon:"🔬",
@@ -757,7 +756,7 @@ const QUIZ_RESULTS = [
     courses:"SBI4U, SCH4U, SPH4U, MHF4U",
     comp:"Competitive — 80–90% typical",
     salary:"$55,000–$100,000",
-    link:"universities.html",
+    link:"selections.html",
     triggers: a => a.labs==='love' && a.math==='strong'
   },
   { title:"Education / Teaching", icon:"📚",
@@ -766,7 +765,7 @@ const QUIZ_RESULTS = [
     courses:"ENG4U, any subject you want to teach",
     comp:"Moderate — 75–85% typical",
     salary:"$50,000–$95,000 (Ontario top salary ~$95k)",
-    link:"universities.html",
+    link:"selections.html",
     triggers: a => a.people==='yes' && a.value==='helping' && a.risk==='stable'
   },
 ];
