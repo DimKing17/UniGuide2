@@ -12,6 +12,12 @@ const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(64).toString('he
 const db = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 
 app.use(express.json());
+app.use((req, res, next) => {
+  if (req.path.match(/\.(css|js)$/)) {
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  }
+  next();
+});
 app.use(express.static(path.join(__dirname)));
 
 // ── JWT helpers ──────────────────────────────────────────────────
