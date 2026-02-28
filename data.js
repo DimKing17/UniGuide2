@@ -294,7 +294,7 @@ const UNIVERSITIES = [
     coop: true, coopLabel: "Yes (varies by program)",
     campusSize: "Large (Urban)",
     vibe: "Academically intense, extremely diverse, urban campus. One of the world's top research universities. Best for students who thrive in large, competitive environments.",
-    programs: ["Mechanical Engineering","Electrical Engineering","Computer Engineering","Chemical Engineering","Civil Engineering","Engineering Science","Industrial Engineering","Computer Science","Software Engineering","Data Science","Mathematics","Statistics","Business (Rotman)","Commerce","Economics","Medicine","Law","Architecture","Nursing","Pharmacy","Dentistry","Education","Social Work","Arts & Science","Psychology","Biochemistry","Physics","Biology","English","Political Science","History","Music"],
+    programs: ["Mechanical Engineering","Electrical Engineering","Computer Engineering","Chemical Engineering","Civil Engineering","Engineering Science (incl. Aerospace)","Industrial Engineering","Computer Science","Software Engineering","Data Science","Mathematics","Statistics","Business (Rotman)","Commerce","Economics","Medicine","Law","Architecture","Nursing","Pharmacy","Dentistry","Education","Social Work","Arts & Science","Psychology","Biochemistry","Physics","Biology","English","Political Science","History","Music"],
     scholarships: ["University of Toronto Excellence Award ($5,000–$7,500, automatic 95%+)","National Scholarship Program ($10,000+)","Lester B. Pearson International Scholarship (full tuition)"],
     applyURL: "https://www.ouac.on.ca",
     websiteURL: "https://www.utoronto.ca",

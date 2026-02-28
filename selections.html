@@ -210,6 +210,7 @@
     .fit-score-grey   { background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; }
     .fit-badge { font-size:.65rem; font-weight:700; background:#e8edf5; color:var(--navy); padding:2px 8px; border-radius:50px; border:1px solid #c5d0e0; }
     .fit-badge.match { background:#e0f2fe; color:#0369a1; border-color:#7dd3fc; }
+    .fit-badge.near  { background:#fff7ed; color:#9a3412; border-color:#fed7aa; }
     .fit-badge.coop  { background:#f0fdf4; color:#166534; border-color:#86efac; }
     .fit-badge.calc  { background:#fdf4ff; color:#6b21a8; border-color:#d8b4fe; }
 
@@ -1115,40 +1116,115 @@ function getDegreeType(program){
 }
 
 // ── Fit score ────────────────────────────────────────────
+const _STOPWORDS = new Set([
+  'engineering','science','arts','studies','health','business','social',
+  'applied','general','technology','management','education','design',
+  'environmental','systems','advanced','honours','integrated','combined'
+]);
+
+const _SYNONYMS = {
+  aeronautical:  ['aerospace'],
+  astronautical: ['aerospace'],
+  automotive:    ['mechanical'],
+  mechatronic:   ['mechatronics'],
+  mechatronics:  ['mechatronic'],
+  biomedical:    ['biomedical','medical'],
+  petroleum:     ['chemical','petroleum'],
+  geotechnical:  ['civil','geological'],
+  photonics:     ['electrical','optical'],
+  nanotech:      ['materials','chemical'],
+  nanotechnology:['materials','chemical'],
+  informatics:   ['computer','computing','data'],
+  computational: ['computer','computing','mathematics'],
+  actuarial:     ['mathematics','statistics','actuarial'],
+  neuroscience:  ['neuroscience','biology','psychology'],
+  biochemistry:  ['biochemistry','biology','chemistry'],
+  bioinformatics:['computer','biology','data'],
+};
+
+// Match a single major name against one university's program list.
+// Returns { level: 0-3, pts: 0-50, matchedProg: string|null }
+function _matchMajorToUni(major, uni){
+  const words = major.toLowerCase().split(/\W+/).filter(w=>w.length>3);
+  const specific = words.filter(w=>!_STOPWORDS.has(w));
+  const generic  = words.filter(w=>_STOPWORDS.has(w));
+
+  // Level 1 — at least one specific word directly in a program name
+  if(specific.length>0){
+    for(const prog of uni.programs){
+      const pl=prog.toLowerCase();
+      if(specific.some(w=>pl.includes(w))) return {level:1, pts:50, matchedProg:prog};
+    }
+  }
+
+  // Level 2 — synonym of a specific word found in a program name
+  for(const sw of specific){
+    const aliases = _SYNONYMS[sw] || [];
+    for(const alias of aliases){
+      for(const prog of uni.programs){
+        const pl=prog.toLowerCase();
+        if(pl.includes(alias)) return {level:2, pts:30, matchedProg:prog};
+      }
+    }
+  }
+
+  // Level 3 — only generic/field words match
+  if(generic.length>0){
+    for(const prog of uni.programs){
+      const pl=prog.toLowerCase();
+      if(generic.some(w=>pl.includes(w))) return {level:3, pts:15, matchedProg:null};
+    }
+  }
+
+  return {level:0, pts:0, matchedProg:null};
+}
+
 function calcFitScore(uni){
   if(!selectedMajors.length) return null;
-  let score=0;
+
+  // Score every selected major independently
+  const results = selectedMajors.map(m=>({major:m, ..._matchMajorToUni(m,uni)}));
+
+  // Program pts = average across all majors (rewards schools that offer more of them)
+  const avgProgPts = Math.round(results.reduce((s,r)=>s+r.pts,0) / results.length);
+
+  // Ranking pts (once)
+  const rankPts = uni.canadaRank<=3?20 : uni.canadaRank<=7?15 : uni.canadaRank<=12?10 : 5;
+
+  // Co-op pts (once)
+  const coopPts = uni.coop?20:0;
+
+  const total = Math.min(avgProgPts + rankPts + coopPts, 100);
+
+  // Build up to 2 badges from Level-1 and Level-2 matches (one per major)
   const badges=[];
-  let bestMatchProg=null;
-
-  for(const major of selectedMajors){
-    const words=major.toLowerCase().split(/\s+/).filter(w=>w.length>3);
-    for(const prog of uni.programs){
-      const progL=prog.toLowerCase();
-      if(words.some(w=>progL.includes(w))){ bestMatchProg=prog; break; }
+  for(const r of results){
+    if(badges.length>=2) break;
+    if(r.level===1&&r.matchedProg){
+      const s=r.matchedProg.length>28?r.matchedProg.substring(0,25)+'…':r.matchedProg;
+      badges.push({text:'✓ '+s, cls:'match'});
+    } else if(r.level===2&&r.matchedProg){
+      const s=r.matchedProg.length>28?r.matchedProg.substring(0,25)+'…':r.matchedProg;
+      badges.push({text:'nearest: '+s, cls:'near'});
     }
-    if(bestMatchProg) break;
   }
 
-  if(bestMatchProg){
-    score+=50;
-    const s=bestMatchProg.length>28?bestMatchProg.substring(0,25)+'…':bestMatchProg;
-    badges.push({text:'offers '+s, cls:'match'});
+  // Fill remaining badge slot with co-op or calculus note
+  if(badges.length<2){
+    if(uni.coop) badges.push({text:'co-op available', cls:'coop'});
+    else {
+      const bestProg=(results.find(r=>r.matchedProg)||{}).matchedProg||null;
+      if(bestProg){
+        const req=getReqCourses(bestProg);
+        if(req.includes('MCV4U')||req.includes('MHF4U')) badges.push({text:'requires Calculus',cls:'calc'});
+      }
+    }
   }
-  if(uni.coop){
-    score+=20;
-    if(badges.length<2) badges.push({text:'co-op available', cls:'coop'});
-  }
-  if(uni.canadaRank<=3) score+=20;
-  else if(uni.canadaRank<=7) score+=15;
-  else if(uni.canadaRank<=12) score+=10;
-  else score+=5;
 
-  if(badges.length<2&&bestMatchProg){
-    const req=getReqCourses(bestMatchProg);
-    if(req.includes('MCV4U')||req.includes('MHF4U')) badges.push({text:'requires Calculus',cls:'calc'});
-  }
-  return {score:Math.min(score,100), badges:badges.slice(0,2), matchedProg:bestMatchProg};
+  // Best matched program (prefer Level 1 > Level 2 > null)
+  const best = results.find(r=>r.level===1) || results.find(r=>r.level===2) || null;
+
+  return {score:total, badges:badges.slice(0,2), matchedProg:best?best.matchedProg:null, results};
 }
 
 function fitScoreHtml(fit){
@@ -1336,7 +1412,7 @@ function renderUnis(list){
         <div style="font-size:.74rem;color:var(--grey);margin-bottom:5px;"><strong>Select program:</strong></div>
         <select id="prog-${u.id}" style="width:100%;margin-bottom:0;font-size:.82rem;padding:6px 9px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--navy);"
           onchange="refreshDetails('${u.id}')">
-          ${u.programs.map(p=>`<option value="${p}">${p}</option>`).join('')}
+          ${u.programs.map(p=>`<option value="${p}"${fit&&fit.matchedProg===p?' selected':''}>${p}</option>`).join('')}
         </select>
 
         <div class="prog-details-toggle" id="dtoggle-${u.id}" onclick="toggleDetails('${u.id}')">
