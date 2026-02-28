@@ -37,7 +37,7 @@ body {
   position: sticky; top: 0; z-index: 200;
   background: var(--navy);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 32px; height: 62px;
+  padding: 0 40px; height: 62px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.20);
 }
 .nav-logo {
@@ -46,27 +46,15 @@ body {
   display: flex; align-items: center; gap: 6px;
 }
 .nav-logo span { color: var(--accent); }
-.nav-links {
-  display: none;
-  position: absolute; top: 62px; left: 0; right: 0;
-  background: var(--navy);
-  flex-direction: column;
-  padding: 8px 16px 16px;
-  z-index: 199;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.30);
-  gap: 2px;
-}
-.nav-links.open { display: flex; }
+.nav-links { display: flex; align-items: center; gap: 2px; }
 .nav-links a {
-  color: rgba(255,255,255,0.75); font-size: 0.9rem; font-weight: 500;
-  text-decoration: none; padding: 10px 16px; border-radius: 8px;
+  color: rgba(255,255,255,0.75); font-size: 0.875rem; font-weight: 500;
+  text-decoration: none; padding: 6px 12px; border-radius: 8px;
   transition: background 0.18s, color 0.18s;
-  white-space: nowrap; width: 100%;
+  white-space: nowrap;
 }
 .nav-links a:hover { background: rgba(255,255,255,0.10); color: #fff; }
 .nav-links a.active { color: #fff; background: rgba(255,255,255,0.12); }
-.nav-links .nav-auth { width: 100%; padding: 8px 0 0; }
-.nav-links .nav-btn { margin-left: 0 !important; text-align: center; }
 .nav-btn {
   background: var(--red); color: #fff !important;
   font-weight: 700 !important; padding: 7px 18px !important;
@@ -321,13 +309,6 @@ label {
 .justify-between { justify-content: space-between; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
-/* ── Hamburger button (always visible) ──────────────────────── */
-.nav-hamburger {
-  display: flex; align-items: center;
-  background: none; border: none; color: #fff;
-  font-size: 1.5rem; cursor: pointer; padding: 4px 8px; line-height: 1;
-}
-
 @media (max-width: 768px) {
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .sidebar-layout { grid-template-columns: 1fr; }
