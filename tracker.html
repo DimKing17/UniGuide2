@@ -67,7 +67,7 @@
     <a href="essays.html">Essays</a>
     <a href="tracker.html" class="active">Tracker</a>
     <span id="nav-logged-out" class="nav-auth"><a href="#" class="nav-btn-outline" onclick="ugOpenAuth('login');return false;">Log In</a></span>
-    <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
+    <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill" onclick="ugOpenProfile()" style="cursor:pointer;"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><button class="nav-logout-btn" onclick="ugLogOut();location.reload()">Log Out</button></span>
     <a href="selections.html" class="nav-btn">Start YOUR plan</a>
   </div>
 </nav>
