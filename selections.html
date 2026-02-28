@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Selections — Majors &amp; Universities · UniGuide</title>
-  <link rel="stylesheet" href="style.css?v=5"/>
+  <link rel="stylesheet" href="style.css"/>
   <style>
     /* ── Page hero ── */
     .page-hero { background:var(--navy); color:#fff; padding:32px 24px 24px; }
@@ -326,7 +326,7 @@
     <a href="essays.html">Essays</a>
     <a href="tracker.html">Tracker</a>
     <span id="nav-logged-out" class="nav-auth"><a href="#" class="nav-btn-outline" onclick="ugOpenAuth('login');return false;">Log In</a></span>
-    <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill" onclick="ugOpenProfile()" style="cursor:pointer;"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><button class="nav-logout-btn" onclick="ugLogOut();location.reload()">Log Out</button></span>
+    <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
     <a href="selections.html" class="nav-btn">Start YOUR plan</a>
   </div>
 </nav>
@@ -734,7 +734,7 @@
 </footer>
 
 <script src="data.js"></script>
-<script src="auth.js?v=4"></script>
+<script src="auth.js"></script>
 <script>
 // ════════════════════════════════════════════════════════
 //  SHARED STATE
@@ -1433,8 +1433,10 @@ window.addEventListener('load',()=>{
       document.getElementById('profileBannerSub').textContent=`Grade ${p.grade} · ${p.city?p.city+', ':''}${p.province}`;
       document.getElementById('profileBannerBtn').textContent='Edit Profile';
       document.getElementById('profileBanner').style.background='linear-gradient(135deg,#e6f7f0,#b8edd8)';
+    } else {
+      setTimeout(openProfileModal, 900);
     }
-  } catch(e){}
+  } catch(e){ setTimeout(openProfileModal, 900); }
 });
 </script>
 </body>
