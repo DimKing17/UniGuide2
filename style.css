@@ -309,11 +309,33 @@ label {
 .justify-between { justify-content: space-between; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+/* ── Hamburger button (mobile only) ─────────────────────────── */
+.nav-hamburger {
+  display: none;
+  background: none; border: none; color: #fff;
+  font-size: 1.5rem; cursor: pointer; padding: 4px 8px; line-height: 1;
+  margin-left: auto;
+}
+
 @media (max-width: 768px) {
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .sidebar-layout { grid-template-columns: 1fr; }
-  .nav { padding: 0 16px; }
-  .nav-links a:not(.nav-btn):not(.nav-btn-outline) { display: none; }
+  .nav { padding: 0 16px; position: relative; flex-wrap: wrap; height: auto; min-height: 62px; }
+  .nav-hamburger { display: flex; align-items: center; }
+  .nav-links {
+    display: none;
+    position: absolute; top: 62px; left: 0; right: 0;
+    background: var(--navy);
+    flex-direction: column;
+    padding: 8px 16px 16px;
+    z-index: 199;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.30);
+    gap: 2px;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { width: 100%; padding: 10px 16px; border-radius: 8px; }
+  .nav-links .nav-auth { width: 100%; padding: 8px 0 0; }
+  .nav-links .nav-btn { margin-left: 0 !important; text-align: center; }
 }
 
 /* ── Auth Nav ─────────────────────────────────────────────────── */
@@ -339,7 +361,10 @@ label {
 .auth-modal-overlay {
   position:fixed; inset:0; z-index:9999;
   background:rgba(26,42,74,0.55); backdrop-filter:blur(4px);
-  display:flex; align-items:center; justify-content:center;
+  display:none; align-items:center; justify-content:center;
+}
+.auth-modal-overlay.open {
+  display:flex;
   animation: authFadeIn .2s ease;
 }
 @keyframes authFadeIn { from{opacity:0} to{opacity:1} }
