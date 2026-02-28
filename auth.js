@@ -335,7 +335,7 @@ function _friendlyError(serverMsg) {
 
   </div>
 </div>`;
-  document.body.appendChild(el.firstElementChild);
+  document.body.insertAdjacentHTML('beforeend', el.innerHTML);
 })();
 
 // ── Auth Modal Controls ──────────────────────────────────────────
@@ -527,7 +527,7 @@ function ugOpenProfile() {
     </p>
   </div>
 </div>`;
-  document.body.appendChild(el.firstElementChild);
+  document.body.insertAdjacentHTML('beforeend', el.innerHTML);
   document.body.style.overflow = 'hidden';
   _populateProfileModal(u);
 }

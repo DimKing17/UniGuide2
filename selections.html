@@ -1433,10 +1433,8 @@ window.addEventListener('load',()=>{
       document.getElementById('profileBannerSub').textContent=`Grade ${p.grade} · ${p.city?p.city+', ':''}${p.province}`;
       document.getElementById('profileBannerBtn').textContent='Edit Profile';
       document.getElementById('profileBanner').style.background='linear-gradient(135deg,#e6f7f0,#b8edd8)';
-    } else {
-      setTimeout(openProfileModal, 900);
     }
-  } catch(e){ setTimeout(openProfileModal, 900); }
+  } catch(e){}
 });
 </script>
 </body>
