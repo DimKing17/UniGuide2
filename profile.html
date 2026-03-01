@@ -279,8 +279,51 @@
           <label class="field-label">Email Address</label>
           <input class="field-input readonly-email" id="accEmail" type="email" disabled/>
         </div>
+        <div class="field-full">
+          <label class="field-label">Password</label>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input class="field-input readonly-email" type="password" value="placeholder" disabled
+              style="flex:1;letter-spacing:3px;" aria-label="Password hidden for security"/>
+            <button class="action-btn" onclick="toggleChangePw()" id="changePwToggleBtn" style="white-space:nowrap;flex-shrink:0;">Change Password</button>
+          </div>
+        </div>
       </div>
-      <div class="save-row" style="margin-top:18px;">
+
+      <!-- Change Password form (hidden by default) -->
+      <div id="changePwForm" style="display:none;margin-top:18px;padding:18px;background:var(--light);border-radius:10px;border:1px solid var(--border);">
+        <div style="font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--grey);margin-bottom:14px;">Update Password</div>
+        <div style="margin-bottom:12px;">
+          <label class="field-label">Current Password</label>
+          <div style="position:relative;">
+            <input class="field-input" id="pwCurrent" type="password" placeholder="Enter current password" autocomplete="current-password" style="padding-right:44px;"/>
+            <button type="button" onclick="togglePwVis('pwCurrent','eyeCurrent')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;color:var(--grey);" id="eyeCurrent">👁</button>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label class="field-label">New Password</label>
+          <div style="position:relative;">
+            <input class="field-input" id="pwNew" type="password" placeholder="Min. 6 characters" autocomplete="new-password" style="padding-right:44px;"/>
+            <button type="button" onclick="togglePwVis('pwNew','eyeNew')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;color:var(--grey);" id="eyeNew">👁</button>
+          </div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <label class="field-label">Confirm New Password</label>
+          <div style="position:relative;">
+            <input class="field-input" id="pwConfirm" type="password" placeholder="Repeat new password" autocomplete="new-password" style="padding-right:44px;"/>
+            <button type="button" onclick="togglePwVis('pwConfirm','eyeConfirm')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;color:var(--grey);" id="eyeConfirm">👁</button>
+          </div>
+        </div>
+        <div class="save-row" style="margin-top:0;">
+          <button class="save-btn" id="updatePwBtn" onclick="updatePassword()">Update Password</button>
+          <button class="action-btn" onclick="toggleChangePw()">Cancel</button>
+          <span class="save-msg" id="pwMsg"></span>
+        </div>
+        <p style="font-size:.76rem;color:var(--grey-lt);margin-top:10px;">
+          If the update fails, try signing out and back in first, or use the reset email option below.
+        </p>
+      </div>
+
+      <div class="save-row" style="margin-top:16px;">
         <button class="action-btn" id="resetPwBtn" onclick="sendPasswordReset()">Send Password Reset Email</button>
         <span class="save-msg" id="resetMsg"></span>
       </div>
@@ -331,9 +374,19 @@
             <option>Yukon</option>
           </select>
         </div>
-        <div class="field-full">
+        <div>
           <label class="field-label">City <span class="opt-tag">optional</span></label>
           <input class="field-input" id="profCity" type="text" placeholder="e.g. Toronto"/>
+        </div>
+        <div>
+          <label class="field-label">Postal Code <span class="opt-tag">optional</span></label>
+          <input class="field-input" id="profPostal" type="text" placeholder="e.g. M5V 3A8" maxlength="7" style="text-transform:uppercase;"
+            oninput="validatePostalCode(this)"/>
+          <div id="postalMsg" style="font-size:.75rem;margin-top:4px;display:none;"></div>
+        </div>
+        <div class="field-full">
+          <label class="field-label">Street Address <span class="opt-tag">optional</span></label>
+          <input class="field-input" id="profStreet" type="text" placeholder="e.g. 123 Main St"/>
         </div>
       </div>
       <div class="save-row">
@@ -620,11 +673,13 @@ async function loadProfile() {
       'Member since ' + d.toLocaleDateString('en-CA', { month:'long', year:'numeric' });
   }
 
-  const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; };
   set('profName',     profile.displayName || user.displayName || '');
   set('profGrade',    profile.grade       || '');
   set('profProvince', profile.province    || '');
   set('profCity',     profile.city        || '');
+  set('profPostal',   profile.postalCode  || '');
+  set('profStreet',   profile.street      || '');
   set('profMajor',    profile.intendedMajor || '');
   set('profEthnicity',profile.ethnicity   || '');
 
@@ -639,11 +694,18 @@ async function savePersonal() {
   const msg = document.getElementById('personalMsg');
   btn.disabled = true; btn.textContent = 'Saving…';
   try {
+    const rawPostal = document.getElementById('profPostal').value.trim().toUpperCase();
+    if (rawPostal && !/^[A-Z]\d[A-Z][ -]?\d[A-Z]\d$/.test(rawPostal)) {
+      msg.className = 'save-msg err'; msg.textContent = 'Invalid postal code — use format A1A 1A1';
+      btn.disabled = false; btn.textContent = 'Save Personal Info'; return;
+    }
     const fields = {
       displayName:  document.getElementById('profName').value.trim(),
       grade:        document.getElementById('profGrade').value,
       province:     document.getElementById('profProvince').value,
       city:         document.getElementById('profCity').value.trim(),
+      postalCode:   rawPostal,
+      street:       document.getElementById('profStreet').value.trim(),
       updatedAt:    new Date().toISOString(),
     };
     await ugSaveProfile(fields);
@@ -721,6 +783,74 @@ async function sendPasswordReset() {
   }
   btn.disabled = false; btn.textContent = 'Send Password Reset Email';
   setTimeout(() => { msg.textContent = ''; }, 5000);
+}
+
+// ── Change password helpers ──────────────────────────────
+function toggleChangePw() {
+  const form = document.getElementById('changePwForm');
+  const open = form.style.display === 'block';
+  form.style.display = open ? 'none' : 'block';
+  if (!open) {
+    document.getElementById('pwCurrent').value = '';
+    document.getElementById('pwNew').value = '';
+    document.getElementById('pwConfirm').value = '';
+    document.getElementById('pwMsg').textContent = '';
+  }
+}
+
+function togglePwVis(inputId, btnId) {
+  const input = document.getElementById(inputId);
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  document.getElementById(btnId).textContent = isHidden ? '🙈' : '👁';
+}
+
+async function updatePassword() {
+  const btn = document.getElementById('updatePwBtn');
+  const msg = document.getElementById('pwMsg');
+  const current = document.getElementById('pwCurrent').value;
+  const newPw   = document.getElementById('pwNew').value;
+  const confirm = document.getElementById('pwConfirm').value;
+
+  msg.textContent = '';
+  if (!current) { msg.className = 'save-msg err'; msg.textContent = 'Enter your current password.'; return; }
+  if (newPw.length < 6) { msg.className = 'save-msg err'; msg.textContent = 'New password must be at least 6 characters.'; return; }
+  if (newPw !== confirm) { msg.className = 'save-msg err'; msg.textContent = 'Passwords do not match.'; return; }
+
+  btn.disabled = true; btn.textContent = 'Updating…';
+  try {
+    const user = ugCurrentUser();
+    if (!user) throw new Error('Not signed in');
+    const cred = firebase.auth.EmailAuthProvider.credential(user.email, current);
+    await user.reauthenticateWithCredential(cred);
+    await user.updatePassword(newPw);
+    msg.className = 'save-msg ok'; msg.textContent = '✓ Password updated successfully';
+    document.getElementById('pwCurrent').value = '';
+    document.getElementById('pwNew').value = '';
+    document.getElementById('pwConfirm').value = '';
+    setTimeout(() => toggleChangePw(), 2500);
+  } catch(e) {
+    const friendlyMap = {
+      'auth/wrong-password':         'Current password is incorrect.',
+      'auth/too-many-requests':      'Too many attempts — please wait a few minutes.',
+      'auth/requires-recent-login':  'Session expired. Sign out and back in, then try again.',
+      'auth/weak-password':          'New password is too weak. Use at least 6 characters.',
+    };
+    msg.className = 'save-msg err';
+    msg.textContent = friendlyMap[e.code] || 'Could not update password. Try the reset email option.';
+  }
+  btn.disabled = false; btn.textContent = 'Update Password';
+}
+
+// ── Postal code live validation ──────────────────────────
+function validatePostalCode(input) {
+  const val = input.value.trim().toUpperCase();
+  const msgEl = document.getElementById('postalMsg');
+  if (!val) { msgEl.style.display = 'none'; return; }
+  const ok = /^[A-Z]\d[A-Z][ -]?\d[A-Z]\d$/.test(val);
+  msgEl.style.display = 'block';
+  msgEl.style.color = ok ? 'var(--success)' : '#b91c1c';
+  msgEl.textContent = ok ? '✓ Valid Canadian postal code' : 'Format: A1A 1A1 (e.g. M5V 3A8)';
 }
 
 // ── Download data ────────────────────────────────────────

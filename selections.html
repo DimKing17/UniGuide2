@@ -708,6 +708,16 @@
       </div>
       <div class="form-group"><label>City / Town</label><input type="text" id="pCity" placeholder="e.g. Mississauga"/></div>
     </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Street Address <span style="font-size:.75rem;font-weight:400;color:var(--grey);">(optional)</span></label>
+        <input type="text" id="pStreet" placeholder="e.g. 123 Main St"/>
+      </div>
+      <div class="form-group">
+        <label>Postal Code <span style="font-size:.75rem;font-weight:400;color:var(--grey);">(optional)</span></label>
+        <input type="text" id="pPostal" placeholder="e.g. M5V 3A8" maxlength="7" style="text-transform:uppercase;"/>
+      </div>
+    </div>
     <div class="form-group">
       <label>Distance preference</label>
       <select id="pDistance">
@@ -717,13 +727,6 @@
         <option value="far">Far (5+ hrs, any province)</option>
         <option value="anywhere">Anywhere in Canada</option>
       </select>
-    </div>
-    <div id="parentalConsentBlock" style="display:none;background:#fff8e6;border:1px solid #f0c040;border-radius:10px;padding:12px 14px;margin:8px 0;">
-      <p style="font-size:.85rem;color:#7a5c00;margin:0 0 8px;line-height:1.5;"><strong>Parent / Guardian Acknowledgement</strong> (Grade 9–10)</p>
-      <label style="display:flex;align-items:flex-start;gap:8px;font-size:.84rem;color:#5a4000;cursor:pointer;">
-        <input type="checkbox" id="parentConsent" style="margin-top:3px;flex-shrink:0;"/>
-        <span>A parent/guardian acknowledges the profile will be saved locally on this device.</span>
-      </label>
     </div>
     <button class="btn btn-red" style="width:100%;margin-top:10px;" onclick="saveProfile()">Save My Profile →</button>
     <p style="font-size:.75rem;color:var(--grey);text-align:center;margin:8px 0 0;">Saved only in this browser. <a href="#" onclick="clearProfile(event)" style="color:var(--red);">Clear my data</a></p>
@@ -1454,30 +1457,26 @@ function closeProfileModal(){ document.getElementById('profileModal').classList.
 function closeProfileModalOutside(e){ if(e.target===document.getElementById('profileModal')) closeProfileModal(); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeProfileModal(); });
 
-function updateConsentBlock(){
-  const grade=document.getElementById('pGrade').value;
-  document.getElementById('parentalConsentBlock').style.display=(grade==='9'||grade==='10')?'block':'none';
-  if(grade!=='9'&&grade!=='10') document.getElementById('parentConsent').checked=false;
-}
-document.getElementById('pGrade').addEventListener('change',updateConsentBlock);
 
 function saveProfile(){
   const grade=document.getElementById('pGrade').value;
+  const rawPostal=document.getElementById('pPostal').value.trim().toUpperCase();
+  const postalOk=!rawPostal||/^[A-Z]\d[A-Z][ -]?\d[A-Z]\d$/.test(rawPostal);
+  if(!postalOk){ alert('Please enter a valid Canadian postal code (e.g. M5V 3A8), or leave it blank.'); return; }
   const profile={
     name:document.getElementById('pName').value.trim(), grade,
     province:document.getElementById('pProvince').value,
     city:document.getElementById('pCity').value.trim(),
+    street:document.getElementById('pStreet').value.trim(),
+    postalCode:rawPostal,
     distance:document.getElementById('pDistance').value,
   };
   if(!profile.name||!profile.grade||!profile.province){ alert('Please fill in at least your name, grade, and province.'); return; }
-  if((grade==='9'||grade==='10')&&!document.getElementById('parentConsent').checked){
-    alert('Please have a parent or guardian check the acknowledgement box.'); return;
-  }
   localStorage.setItem('ugProfile',JSON.stringify(profile));
   if(typeof ugSave==='function') ugSave('ugProfile',profile);
   closeProfileModal();
   document.getElementById('profileBannerTitle').textContent=`Welcome, ${profile.name}! ✓ Profile saved`;
-  document.getElementById('profileBannerSub').textContent=`Grade ${profile.grade} · ${profile.city?profile.city+', ':''}${profile.province}`;
+  document.getElementById('profileBannerSub').textContent=`Grade ${profile.grade} · ${profile.city?profile.city+', ':''}${profile.province}${profile.postalCode?' · '+profile.postalCode:''}`;
   document.getElementById('profileBannerBtn').textContent='Edit Profile';
   document.getElementById('profileBanner').style.background='linear-gradient(135deg,#e6f7f0,#b8edd8)';
   if(profile.city){ userCity=profile.city; }
