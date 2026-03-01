@@ -659,8 +659,8 @@ function _patchNavForProfile() {
   const nm = document.getElementById('nav-user-name');
   if (nm && !nm._profilePatched) {
     nm.style.cursor = 'pointer';
-    nm.title = 'View/edit your profile';
-    nm.addEventListener('click', () => { ugOpenAuth('profile'); });
+    nm.title = 'View your profile';
+    nm.addEventListener('click', () => { window.location.href = 'profile.html'; });
     nm._profilePatched = true;
   }
 }

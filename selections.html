@@ -327,7 +327,7 @@
     <a href="essays.html">Essays</a>
     <a href="tracker.html">Tracker</a>
     <span id="nav-logged-out" class="nav-auth"><a href="#" class="nav-btn-outline" onclick="ugOpenAuth('login');return false;">Log In</a></span>
-    <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
+    <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><a href="profile.html" class="nav-profile-link">Profile</a><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
     <a href="selections.html" class="nav-btn">Start YOUR plan</a>
   </div>
 </nav>
@@ -1018,6 +1018,7 @@ function showResults(){
   document.getElementById('resultSection').classList.add('visible');
   const checked=Array.from(document.querySelectorAll('.checkbox-grid input:checked')).map(i=>i.value);
   const a={...quizAnswers,...Object.fromEntries(checked.map(v=>[v,true]))};
+  ugSave('quizAnswers', a);
   const scored=QUIZ_RESULTS.map(r=>({...r,score:r.triggers(a)?2:Math.random()}));
   scored.sort((a,b)=>b.score-a.score);
   const ranks=['🥇 Top Match','🥈 Second Match','🥉 Third Match'];

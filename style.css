@@ -334,6 +334,15 @@ label {
   cursor:pointer; transition:background .15s;
 }
 .nav-logout-btn:hover { background:rgba(255,255,255,0.15); }
+.nav-profile-link {
+  color:rgba(255,255,255,0.85) !important; font-size:.82rem !important;
+  font-weight:700 !important; padding:5px 12px !important;
+  border-radius:50px !important; border:1px solid rgba(255,255,255,0.22) !important;
+  text-decoration:none; transition:background .15s, color .15s !important;
+}
+.nav-profile-link:hover, .nav-profile-link.active {
+  background:rgba(255,255,255,0.14) !important; color:#fff !important;
+}
 
 /* ── Auth Modal ───────────────────────────────────────────────── */
 .auth-modal-overlay {
