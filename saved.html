@@ -893,6 +893,76 @@ document.addEventListener('click', e => {
 });
 
 // ─────────────────────────────────────────────────────────────
+//  ACADEMICS PERCENTAGE CALCULATOR
+// ─────────────────────────────────────────────────────────────
+function buildAcadSummaryInner(r) {
+  const pctColor = r.pct >= 80 ? '#1a7a52' : r.pct >= 55 ? '#b07000' : '#c0392b';
+  const avgTxt   = r.avg !== null ? `${r.avg}% avg` : 'No avg yet';
+  const prereqTxt = r.prereqTotal > 1 ? `Prereqs ${r.prereqDone}/${r.prereqTotal}` : 'No fixed prereqs';
+  return `
+    <span style="font-size:.78rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;">Academics</span>
+    <span style="font-size:1.25rem;font-weight:900;color:${pctColor};margin:0 8px;">${r.pct}%</span>
+    <span style="font-size:.78rem;color:var(--grey);">${avgTxt} · ${prereqTxt}</span>
+    <div style="flex:1;min-width:80px;max-width:160px;background:var(--border);border-radius:50px;height:7px;margin-left:10px;">
+      <div style="width:${r.pct}%;background:${pctColor};border-radius:50px;height:7px;transition:width .4s;"></div>
+    </div>`;
+}
+
+function computeAcademicsPct(progId) {
+  const prog = savedPrograms.find(p => p.id === progId);
+  if (!prog) return { pct: 0, avgPart: 0, prereqPart: 0, prereqDone: 0, prereqTotal: 0, avg: null };
+  const pd    = getProgramData(prog.uniId, prog.programSlug);
+  const state = getCLState(progId);
+
+  // ── Grade average component (60 pts) ──────────────────────
+  const reqCodes = pd ? (pd.requiredCourses || []) : [];
+  const reqMarks = getReqMarks(progId);
+  const optional = JSON.parse(state['gr12_selected'] || '[]');
+  const reqVals  = reqCodes.map(c => parseFloat(reqMarks[c])).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  const optVals  = optional.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  const allVals  = [...reqVals, ...optVals];
+  let avg = allVals.length ? Math.round(allVals.reduce((a,b)=>a+b,0)/allVals.length) : null;
+  if (avg === null && state['gr12Avg']) avg = parseFloat(state['gr12Avg']) || null;
+
+  const targetLow  = pd ? (pd.targetAvg.low  || 80) : 80;
+  const targetHigh = pd ? (pd.targetAvg.high || 90) : 90;
+  const targetMid  = (targetLow + targetHigh) / 2;
+
+  let avgPart = 0;
+  if (avg !== null) {
+    avgPart = Math.min(avg / targetMid, 1.05) * 60;
+    avgPart = Math.round(Math.min(avgPart, 60));
+  }
+
+  // ── Prerequisite component (40 pts) ───────────────────────
+  const gr11selected = JSON.parse(state['gr11_selected'] || '[]').map(c => c.code);
+  let prereqDone = 0, prereqTotal = 0;
+  if (reqCodes.length > 0) {
+    prereqTotal = reqCodes.length;
+    prereqDone  = reqCodes.filter(code => {
+      const prereq = GR11_GR12_PREREQ_MAP[code];
+      return !prereq || gr11selected.includes(prereq.gr11Code);
+    }).length;
+  } else {
+    prereqDone  = 1;
+    prereqTotal = 1;
+  }
+  const prereqPart = prereqTotal > 0 ? Math.round((prereqDone / prereqTotal) * 40) : 40;
+  const pct = avgPart + prereqPart;
+
+  return { pct, avgPart, prereqPart, prereqDone, prereqTotal, avg, targetLow, targetHigh };
+}
+
+// Persist academics % so tracker.html can read it
+function saveAcademicsPct(progId) {
+  const r = computeAcademicsPct(progId);
+  const state = getCLState(progId);
+  state['academicsPct']      = String(r.pct);
+  state['academicsPctBreak'] = JSON.stringify(r);
+  saveCLState(progId, state);
+}
+
+// ─────────────────────────────────────────────────────────────
 //  GRADE AVERAGE CALCULATOR
 // ─────────────────────────────────────────────────────────────
 function recalcAvg(progId) {
@@ -932,6 +1002,15 @@ function recalcAvg(progId) {
   // Refresh Gr12 section to update prereq errors when Gr11 selection changes
   const s12 = document.getElementById('gs12-section');
   if (s12) s12.outerHTML = buildGrade12Section(progId, pd);
+
+  // Persist + update compact summary bar
+  saveAcademicsPct(progId);
+  const r = computeAcademicsPct(progId);
+  const sumEl = document.getElementById('prog-acad-summary');
+  if (sumEl) {
+    const clr = r.pct >= 80 ? '#1a7a52' : r.pct >= 55 ? '#7a5200' : 'var(--red)';
+    sumEl.innerHTML = buildAcadSummaryInner(r);
+  }
 }
 
 // Re-render grade sections; Gr12 also refreshed inside recalcAvg
@@ -2685,6 +2764,11 @@ ${(()=>{
       </div>
     </div>
 
+    <!-- Compact Academics summary bar -->
+    <div id="prog-acad-summary" style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;background:var(--light);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:16px;">
+      ${buildAcadSummaryInner(computeAcademicsPct(prog.id))}
+    </div>
+
     <!-- Snapshot Grid (Fix #3) -->
     <div class="snapshot-grid">
       ${makeSnap('Degree', degreeType.split('—')[0].trim(), degreeDetail)}
@@ -2694,7 +2778,7 @@ ${(()=>{
       ${makeSnap('Tuition / yr', tuition, tuitionDetail)}
       ${makeSnap('Competitiveness', comp.label, compDetail, comp.color)}
     </div>
-    <p style="font-size:.74rem;color:var(--grey);margin-bottom:20px;margin-top:-8px;">💡 Click any card above to expand details</p>
+    <p style="font-size:.74rem;color:var(--grey);margin-bottom:20px;margin-top:-8px;">💡 Click any card above to expand details &nbsp;·&nbsp; Academics score updates live as you enter grades below</p>
 
     <!-- Tabs -->
     <div class="tabs" id="progTabs">
