@@ -90,117 +90,9 @@
 
     <!-- TRACKER -->
     <div class="tab-panel active" id="t-tracker">
-
-      <!-- University of Waterloo -->
-      <div class="tracker-card">
-        <div class="tracker-header">
-          <div class="tracker-name">
-            <h3>Mechanical Engineering</h3>
-            <p>University of Waterloo · Admission Date: Feb 1, 2026 · <span style="color:var(--red);font-weight:700;">Dream School</span></p>
-          </div>
-          <select class="status-select status-in-progress" onchange="updateStatus(this)">
-            <option value="not-started">Not Started</option>
-            <option value="in-progress" selected>In Progress</option>
-            <option value="submitted">Submitted</option>
-            <option value="accepted">Accepted ✓</option>
-            <option value="rejected">Not Accepted</option>
-          </select>
-        </div>
-
-        <!-- Application strength -->
-        <div style="margin-bottom:16px;">
-          <div style="font-size:0.82rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Application Strength</div>
-          <div class="strength-row"><span class="strength-label">Academics</span><div class="strength-bar-wrap"><div class="strength-bar-fill" style="width:70%;background:var(--accent);"></div></div><span class="strength-pct">70%</span></div>
-          <div class="strength-row"><span class="strength-label">Extracurriculars</span><div class="strength-bar-wrap"><div class="strength-bar-fill" style="width:55%;background:var(--warn);"></div></div><span class="strength-pct">55%</span></div>
-          <div class="strength-row"><span class="strength-label">AIF / Essays</span><div class="strength-bar-wrap"><div class="strength-bar-fill" style="width:20%;background:var(--red);"></div></div><span class="strength-pct">20%</span></div>
-          <div class="strength-row"><span class="strength-label">Overall</span><div class="strength-bar-wrap"><div class="strength-bar-fill" style="width:52%;background:var(--navy);"></div></div><span class="strength-pct">52%</span></div>
-        </div>
-
-        <div class="tracker-meta">
-          <div class="tracker-meta-item"><label>Days Until Admission Date</label><span id="daysWaterloo" style="color:var(--red);">calculating…</span></div>
-          <div class="tracker-meta-item"><label>Target Average</label><span>92%+</span></div>
-          <div class="tracker-meta-item"><label>Your Average</label><span>88%</span></div>
-          <div class="tracker-meta-item"><label>Missing Items</label><span style="color:var(--red);">3 items</span></div>
-        </div>
-
-        <div style="font-size:0.82rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Checklist</div>
-        <div class="mini-checklist">
-          <div class="mini-item done" onclick="this.classList.toggle('done')">✓ OUAC Account Created</div>
-          <div class="mini-item done" onclick="this.classList.toggle('done')">✓ School Added to OUAC</div>
-          <div class="mini-item done" onclick="this.classList.toggle('done')">✓ Transcript Requested</div>
-          <div class="mini-item warn" onclick="this.classList.remove('warn');this.classList.add('done')">⚠ AIF Not Submitted</div>
-          <div class="mini-item" onclick="this.classList.add('done')">○ Reference Letters</div>
-          <div class="mini-item" onclick="this.classList.add('done')">○ Application Fee Paid</div>
-        </div>
-
-        <div style="margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <span class="risk-badge risk-high">⚠️ High Risk — AIF not started</span>
-          <a href="saved.html" class="btn btn-outline btn-sm">Open Full Dashboard →</a>
-        </div>
+      <div id="trackerCards">
+        <div style="text-align:center;padding:48px 24px;color:var(--grey);">Loading your saved programs…</div>
       </div>
-
-      <!-- McMaster -->
-      <div class="tracker-card">
-        <div class="tracker-header">
-          <div class="tracker-name">
-            <h3>Engineering I</h3>
-            <p>McMaster University · Admission Date: Feb 1, 2026 · <span style="color:#7a5200;font-weight:700;">Target School</span></p>
-          </div>
-          <select class="status-select status-in-progress" onchange="updateStatus(this)">
-            <option value="not-started">Not Started</option>
-            <option value="in-progress" selected>In Progress</option>
-            <option value="submitted">Submitted</option>
-            <option value="accepted">Accepted ✓</option>
-            <option value="rejected">Not Accepted</option>
-          </select>
-        </div>
-        <div class="tracker-meta">
-          <div class="tracker-meta-item"><label>Days Until Admission Date</label><span id="daysMcMaster" style="color:var(--warn);">calculating…</span></div>
-          <div class="tracker-meta-item"><label>Target Average</label><span>88%+</span></div>
-          <div class="tracker-meta-item"><label>Your Average</label><span>88%</span></div>
-          <div class="tracker-meta-item"><label>Missing Items</label><span style="color:var(--warn);">1 item</span></div>
-        </div>
-        <div class="mini-checklist">
-          <div class="mini-item done">✓ OUAC Account</div>
-          <div class="mini-item done">✓ School Added</div>
-          <div class="mini-item done">✓ Transcript Submitted</div>
-          <div class="mini-item done">✓ Application Fee Paid</div>
-          <div class="mini-item" onclick="this.classList.add('done')">○ Personal Statement</div>
-        </div>
-        <div style="margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <span class="risk-badge risk-med">⚡ Medium Risk — Almost there</span>
-        </div>
-      </div>
-
-      <!-- Western -->
-      <div class="tracker-card">
-        <div class="tracker-header">
-          <div class="tracker-name">
-            <h3>General Engineering</h3>
-            <p>Western University · Admission Date: Feb 1, 2026 · <span style="color:#1a7a52;font-weight:700;">Safety School</span></p>
-          </div>
-          <select class="status-select status-submitted" onchange="updateStatus(this)">
-            <option value="not-started">Not Started</option>
-            <option value="in-progress">In Progress</option>
-            <option value="submitted" selected>Submitted</option>
-            <option value="accepted">Accepted ✓</option>
-            <option value="rejected">Not Accepted</option>
-          </select>
-        </div>
-        <div class="tracker-meta">
-          <div class="tracker-meta-item"><label>Status</label><span style="color:var(--navy);">Submitted ✓</span></div>
-          <div class="tracker-meta-item"><label>Target Average</label><span>84%+</span></div>
-          <div class="tracker-meta-item"><label>Your Average</label><span>88%</span></div>
-          <div class="tracker-meta-item"><label>Estimated Decision</label><span>March 2026</span></div>
-        </div>
-        <div class="mini-checklist">
-          <div class="mini-item done">✓ All items submitted</div>
-        </div>
-        <div style="margin-top:14px;">
-          <span class="risk-badge risk-low">✅ Low Risk — Submitted, looking good</span>
-        </div>
-      </div>
-
     </div>
 
     <!-- TIMELINE -->
@@ -310,6 +202,7 @@
   <strong>UniGuide 🍁</strong> — Free Canadian University Planning · Built for Grades 9–12
 </footer>
 
+<script src="data.js"></script>
 <script>
 function switchTab(el, tabId) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -319,16 +212,236 @@ function switchTab(el, tabId) {
 }
 
 function updateStatus(sel) {
+  const old = sel.className.replace('status-select','').trim();
   sel.className = 'status-select status-' + sel.value;
+  // Persist
+  const progId = sel.dataset.progid;
+  if (progId) {
+    try {
+      const raw = JSON.parse(localStorage.getItem('tracker_status') || '{}');
+      raw[progId] = sel.value;
+      localStorage.setItem('tracker_status', JSON.stringify(raw));
+    } catch(e) {}
+  }
 }
 
-// Countdown
 function daysUntil(dateStr) {
-  const diff = new Date(dateStr) - new Date();
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d)) return null;
+  const diff = d - new Date();
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 }
-document.getElementById('daysWaterloo').textContent = daysUntil('2026-02-01') + ' days';
-document.getElementById('daysMcMaster').textContent = daysUntil('2026-02-01') + ' days';
+
+// ── Academics Score (mirrors saved.html computeAcademicsScore) ──
+function computeTrackerAcademicsScore(progId) {
+  try {
+    const state   = JSON.parse(localStorage.getItem('cl_' + progId) || '{}');
+    const mcState = JSON.parse(localStorage.getItem('mc_' + progId) || '{}');
+
+    // Saved programs list to get pd
+    const progs = JSON.parse(localStorage.getItem('savedPrograms') || '[]');
+    const prog  = progs.find(p => p.id === progId);
+    let pd = null;
+    if (prog && typeof PROGRAM_DATA !== 'undefined') {
+      pd = PROGRAM_DATA[prog.uniId + '__' + prog.programSlug] || null;
+    }
+
+    // Gr12 average
+    const gr12picked = JSON.parse(state['gr12_selected'] || '[]');
+    const vals = gr12picked.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+    let avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+    if (avg === null && state['gr12Avg']) avg = parseFloat(state['gr12Avg']) || null;
+
+    const targetLow  = pd ? pd.targetAvg.low  : 80;
+    const targetHigh = pd ? pd.targetAvg.high : 90;
+    const targetMid  = (targetLow + targetHigh) / 2;
+
+    const required     = pd ? (pd.requiredCourses || []) : [];
+    const totalRequired = required.length;
+    const haveCount    = required.filter(c => mcState[c] === 'have').length;
+    const willCount    = required.filter(c => mcState[c] === 'will').length;
+
+    // Gr11→Gr12 prereq errors
+    const gr11picked = JSON.parse(state['gr11_selected'] || '[]');
+    const gr11Names  = new Set(gr11picked.map(c => c.name));
+    const prereqMap  = (typeof GR11_GR12_PREREQ_MAP !== 'undefined') ? GR11_GR12_PREREQ_MAP : {};
+    const prereqErrCount = gr12picked.filter(c => {
+      const p = prereqMap[c.code];
+      return p && !gr11Names.has(p.gr11);
+    }).length;
+
+    let avgPart = 0, prereqPart = 0;
+    if (avg !== null) avgPart = Math.min(avg / targetMid, 1.05) * 60;
+    avgPart = Math.min(avgPart, 60);
+
+    if (totalRequired > 0) {
+      prereqPart = ((haveCount + willCount * 0.5) / totalRequired) * 40;
+    } else if (avg !== null) {
+      prereqPart = Math.min(avg / targetMid, 1) * 40;
+    }
+
+    const penalty = Math.min(prereqErrCount * 5, 20);
+    let score = Math.max(0, Math.min(100, Math.round(avgPart + prereqPart - penalty)));
+
+    const avgStr = avg !== null ? `Average: ${avg}%` : 'Average: not entered';
+    const reqStr = totalRequired > 0
+      ? `Prereqs: ${haveCount}/${totalRequired} done`
+      : 'No required courses';
+    const errStr = prereqErrCount > 0 ? ` · ${prereqErrCount} prereq error(s)` : '';
+    const breakdown = `${avgStr} / ${reqStr}${errStr} → ${score}%`;
+
+    return { score, avg, haveCount, totalRequired, prereqErrCount, breakdown, targetLow, targetHigh };
+  } catch(e) {
+    return { score: 0, avg: null, haveCount: 0, totalRequired: 0, prereqErrCount: 0, breakdown: 'No data', targetLow: 80, targetHigh: 90 };
+  }
+}
+
+// ── Render tracker cards from savedPrograms ──────────────────
+function renderTrackerCards() {
+  const container = document.getElementById('trackerCards');
+  let progs = [];
+  try { progs = JSON.parse(localStorage.getItem('savedPrograms') || '[]'); } catch(e) {}
+
+  if (!progs.length) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:60px 24px;color:var(--grey);">
+        <div style="font-size:3rem;margin-bottom:14px;">📋</div>
+        <h3 style="margin-bottom:8px;">No saved programs yet</h3>
+        <p style="margin-bottom:20px;">Save universities from <a href="selections.html" style="color:var(--red);">Selections</a> to track them here.</p>
+        <a href="selections.html" class="btn btn-red">Browse Universities →</a>
+      </div>`;
+    return;
+  }
+
+  let statusMap = {};
+  try { statusMap = JSON.parse(localStorage.getItem('tracker_status') || '{}'); } catch(e) {}
+
+  const tagColors = { dream:'var(--red)', target:'#7a5200', safety:'#1a7a52' };
+  const tagLabels = { dream:'Dream School', target:'Target School', safety:'Safety School' };
+
+  const APP_KEYS = ['ouac-account','ouac-add','transcript','aif','references','essay','fee','deadline','portal','osap'];
+
+  container.innerHTML = progs.map(prog => {
+    const tagClass = prog.tag || 'target';
+    const tagColor = tagColors[tagClass] || '#7a5200';
+    const tagLabel = tagLabels[tagClass] || 'Target School';
+
+    // Checklist progress
+    let clState = {};
+    try { clState = JSON.parse(localStorage.getItem('cl_' + prog.id) || '{}'); } catch(e) {}
+    const checkedKeys = APP_KEYS.filter(k => clState['app_' + k]);
+    const appPct = Math.round(checkedKeys.length / APP_KEYS.length * 100);
+
+    // Academics
+    const { score: acadScore, avg, breakdown: acadBreakdown, targetLow, targetHigh, prereqErrCount } = computeTrackerAcademicsScore(prog.id);
+    const acadColor = acadScore >= 75 ? 'var(--accent)' : acadScore >= 50 ? 'var(--warn)' : 'var(--red)';
+
+    // EC / Essay placeholders (no data yet — shown as dashes)
+    const ecPct   = 0;
+    const aifPct  = clState['app_aif'] ? 50 : 0;
+    const overall = Math.round((acadScore + appPct + ecPct) / 3);
+
+    // Status
+    const status  = statusMap[prog.id] || 'not-started';
+
+    // Days to deadline
+    let pd = null;
+    if (typeof PROGRAM_DATA !== 'undefined') {
+      pd = PROGRAM_DATA[prog.uniId + '__' + prog.programSlug] || null;
+    }
+    const deadlineStr = pd && pd.deadline ? pd.deadline + ', 2026' : (prog.deadline || null);
+    let deadlineHtml = '—';
+    if (deadlineStr) {
+      const days = daysUntil(deadlineStr.replace(',',''));
+      if (days !== null) {
+        deadlineHtml = days === 0 ? '<span style="color:var(--red);font-weight:800;">TODAY</span>'
+          : days <= 7 ? `<span style="color:var(--red);font-weight:800;">${days} days</span>`
+          : days <= 30 ? `<span style="color:var(--warn);font-weight:700;">${days} days</span>`
+          : `${days} days`;
+      } else {
+        deadlineHtml = deadlineStr;
+      }
+    }
+
+    // Risk
+    const risk = status === 'submitted' || status === 'accepted' ? 'low'
+      : overall >= 65 ? 'med' : 'high';
+    const riskLabel = { low: '✅ Low Risk', med: '⚡ Medium Risk', high: '⚠️ High Risk' }[risk];
+    const riskClass = 'risk-' + risk;
+
+    // Missing items from checklist
+    const missing = APP_KEYS.length - checkedKeys.length;
+
+    // Prereq warning
+    const prereqWarning = prereqErrCount > 0
+      ? `<div style="background:#fde8ec;border:1px solid #f7aab8;border-radius:8px;padding:7px 12px;margin-bottom:12px;font-size:.80rem;color:var(--red);">
+          ⛔ ${prereqErrCount} Gr11 prerequisite error(s) — open My List to fix.
+         </div>` : '';
+
+    return `
+      <div class="tracker-card">
+        <div class="tracker-header">
+          <div class="tracker-name">
+            <h3>${prog.programName}</h3>
+            <p>${deadlineStr ? `Admission Date: ${deadlineStr} · ` : ''}<span style="color:${tagColor};font-weight:700;">${tagLabel}</span></p>
+          </div>
+          <select class="status-select status-${status}" data-progid="${prog.id}" onchange="updateStatus(this)">
+            <option value="not-started" ${status==='not-started'?'selected':''}>Not Started</option>
+            <option value="in-progress" ${status==='in-progress'?'selected':''}>In Progress</option>
+            <option value="submitted"   ${status==='submitted'?'selected':''}>Submitted</option>
+            <option value="accepted"    ${status==='accepted'?'selected':''}>Accepted ✓</option>
+            <option value="rejected"    ${status==='rejected'?'selected':''}>Not Accepted</option>
+          </select>
+        </div>
+
+        ${prereqWarning}
+
+        <!-- Application strength -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:0.82rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Application Strength</div>
+          <div class="strength-row">
+            <span class="strength-label">Academics</span>
+            <div class="strength-bar-wrap"><div class="strength-bar-fill" style="width:${acadScore}%;background:${acadColor};"></div></div>
+            <span class="strength-pct">${acadScore}%</span>
+          </div>
+          <div style="font-size:.73rem;color:var(--grey);margin:-4px 0 10px 132px;font-style:italic;">${acadBreakdown}</div>
+          <div class="strength-row">
+            <span class="strength-label">Application</span>
+            <div class="strength-bar-wrap"><div class="strength-bar-fill" style="width:${appPct}%;background:${appPct>=75?'var(--accent)':appPct>=40?'var(--warn)':'var(--red)'};"></div></div>
+            <span class="strength-pct">${appPct}%</span>
+          </div>
+          <div class="strength-row">
+            <span class="strength-label">Overall</span>
+            <div class="strength-bar-wrap"><div class="strength-bar-fill" style="width:${overall}%;background:var(--navy);"></div></div>
+            <span class="strength-pct">${overall}%</span>
+          </div>
+        </div>
+
+        <div class="tracker-meta">
+          <div class="tracker-meta-item"><label>Days Until Deadline</label><span>${deadlineHtml}</span></div>
+          ${pd && pd.targetAvg ? `<div class="tracker-meta-item"><label>Target Average</label><span>${pd.targetAvg.low}–${pd.targetAvg.high}%</span></div>` : ''}
+          ${avg !== null ? `<div class="tracker-meta-item"><label>Your Gr12 Avg</label><span style="${avg >= (pd?pd.targetAvg.low:80) ? 'color:var(--success)' : 'color:var(--red)'}">${avg}%</span></div>` : ''}
+          <div class="tracker-meta-item"><label>Missing Items</label><span style="color:${missing===0?'var(--success)':missing<=2?'var(--warn)':'var(--red)'}">${missing===0?'✓ All done':missing+' items'}</span></div>
+        </div>
+
+        <div style="font-size:0.82rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Checklist Progress</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="flex:1;height:8px;background:var(--border);border-radius:50px;overflow:hidden;">
+            <div style="height:100%;width:${appPct}%;background:${appPct===100?'var(--success)':appPct>=50?'var(--warn)':'var(--red)'};border-radius:50px;transition:width .4s;"></div>
+          </div>
+          <span style="font-size:.78rem;font-weight:800;min-width:34px;">${appPct}%</span>
+        </div>
+
+        <div style="margin-top:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="risk-badge ${riskClass}">${riskLabel}</span>
+          <a href="saved.html?prog=${prog.id}" class="btn btn-outline btn-sm">Open Full Dashboard →</a>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+renderTrackerCards();
 
 // Timeline generator
 const timelineData = {

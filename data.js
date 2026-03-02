@@ -3096,3 +3096,21 @@ const SCHOLARSHIPS = [
   { name:"Rotary Foundation Scholarships", amount:"Varies (often full programs)", type:"merit", area:"any", prov:"National", desc:"Various Rotary-sponsored scholarships for community leaders. Apply through your local Rotary Club.", deadline:"Varies by chapter", link:"https://www.rotary.org/en/our-programs/scholarships", tags:["Community","Leadership","Merit","National","International"] },
   { name:"Mining Industry Human Resources Council Award", amount:"$2,500–$5,000", type:"merit", area:"eng", prov:"National", desc:"For students entering Mining Engineering, Geological Engineering, or related resource industry programs.", deadline:"April", link:"https://mihr.ca/", tags:["Mining","Engineering","STEM","Merit","National"] }
 ];
+
+// ───────────────────────────────────────────────────────────
+//  GRADE 11 → GRADE 12 PREREQUISITE CHAIN
+//  Maps each Gr12 course code to the Gr11 subject that must
+//  be present first (Ontario curriculum).
+// ───────────────────────────────────────────────────────────
+const GR11_GR12_PREREQ_MAP = {
+  'MHF4U': { gr11: 'Functions (Gr 11)',         errCode: 'ERR-PREREQ-01', desc: 'MCR3U (Grade 11 Functions) is required before MHF4U Advanced Functions.' },
+  'MCV4U': { gr11: 'Functions (Gr 11)',         errCode: 'ERR-PREREQ-02', desc: 'Grade 11 Functions is the foundational prerequisite for MCV4U Calculus & Vectors.' },
+  'SPH4U': { gr11: 'Physics (Gr 11)',           errCode: 'ERR-PREREQ-03', desc: 'SPH3U (Grade 11 Physics) is required before SPH4U Grade 12 Physics.' },
+  'SCH4U': { gr11: 'Chemistry (Gr 11)',         errCode: 'ERR-PREREQ-04', desc: 'SCH3U (Grade 11 Chemistry) is required before SCH4U Grade 12 Chemistry.' },
+  'SBI4U': { gr11: 'Biology (Gr 11)',           errCode: 'ERR-PREREQ-05', desc: 'SBI3U (Grade 11 Biology) is required before SBI4U Grade 12 Biology.' },
+  'ICS4U': { gr11: 'Computer Science (Gr 11)', errCode: 'ERR-PREREQ-06', desc: 'ICS3U/ICS3C (Grade 11 Computer Science) is recommended before ICS4U.' },
+  'ENG4U': { gr11: 'English (Gr 11)',           errCode: 'ERR-PREREQ-07', desc: 'ENG3U (Grade 11 English) is required before ENG4U Grade 12 English.' },
+  'MDM4U': { gr11: 'Mathematics of Data Management (Gr 11)', errCode: 'ERR-PREREQ-08', desc: 'A Grade 11 Math course is required before MDM4U Data Management.' },
+  'SES4U': { gr11: 'Physics (Gr 11)',           errCode: 'ERR-PREREQ-09', desc: 'Grade 11 Physics or Science is recommended before SES4U Earth & Space Science.' },
+  'PSK4U': { gr11: 'Exercise Science (Gr 11)', errCode: 'ERR-PREREQ-10', desc: 'Grade 11 Health & Physical Education or Exercise Science is recommended before PSK4U Kinesiology.' },
+};
