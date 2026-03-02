@@ -161,6 +161,12 @@
     .gs-opt:hover { background:var(--light); }
     .gs-opt .co-cat { font-size:.70rem; color:var(--grey); float:right; }
     .gs-max-note { font-size:.80rem; color:var(--grey); font-style:italic; margin-top:6px; }
+    .gs-prereq-err {
+      grid-column:1/-1; font-size:.79rem; font-weight:700; color:var(--red);
+      background:#fde8ec; border:1px solid #f7aab8; border-radius:7px;
+      padding:6px 12px; margin-top:2px; margin-bottom:4px;
+    }
+    .gs-required-row { border-color:#88d5b5; background:#edfbf5; }
     .gs-req-hint {
       font-size:.78rem; color:#b06000; background:#fffbe6;
       border:1px solid #f0c040; border-radius:8px; padding:7px 12px; margin-bottom:10px;
@@ -650,38 +656,77 @@ function getAllGr12Courses() {
 
 // Returns all course codes currently selected in BOTH sections (to prevent duplicates)
 function getSelectedCodes(progId) {
+  const state    = getCLState(progId);
+  const gr11     = JSON.parse(state['gr11_selected'] || '[]');
+  const gr12     = JSON.parse(state['gr12_selected'] || '[]');
+  const prog     = savedPrograms.find(p => p.id === progId);
+  const pd       = prog ? getProgramData(prog.uniId, prog.programSlug) : null;
+  const reqCodes = pd ? (pd.requiredCourses || []) : [];
+  return new Set([...gr11.map(c=>c.code), ...gr12.map(c=>c.code), ...reqCodes]);
+}
+
+// Gr11 → Gr12 prerequisite map (Ontario curriculum)
+const GR11_GR12_PREREQ_MAP = {
+  'MHF4U': { gr11:'Functions (Gr 11)',        errCode:'ERR-PREREQ-01', errMsg:'Grade 11 Functions (MCR3U) is required before Grade 12 Advanced Functions — add it in Grade 11 subjects above.' },
+  'MCV4U': { gr11:'Functions (Gr 11)',        errCode:'ERR-PREREQ-02', errMsg:'Grade 11 Functions (MCR3U) is required before Grade 12 Calculus & Vectors — add it in Grade 11 subjects above.' },
+  'MDM4U': { gr11:'Functions (Gr 11)',        errCode:'ERR-PREREQ-03', errMsg:'Grade 11 Functions (MCR3U) is required before Grade 12 Data Management — add it in Grade 11 subjects above.' },
+  'SPH4U': { gr11:'Physics (Gr 11)',          errCode:'ERR-PREREQ-04', errMsg:'Grade 11 Physics (SPH3U) is required before Grade 12 Physics — add it in Grade 11 subjects above.' },
+  'SCH4U': { gr11:'Chemistry (Gr 11)',        errCode:'ERR-PREREQ-05', errMsg:'Grade 11 Chemistry (SCH3U) is required before Grade 12 Chemistry — add it in Grade 11 subjects above.' },
+  'SBI4U': { gr11:'Biology (Gr 11)',          errCode:'ERR-PREREQ-06', errMsg:'Grade 11 Biology (SBI3U) is required before Grade 12 Biology — add it in Grade 11 subjects above.' },
+  'ENG4U': { gr11:'English (Gr 11)',          errCode:'ERR-PREREQ-07', errMsg:'Grade 11 English (ENG3U) is required before Grade 12 English — add it in Grade 11 subjects above.' },
+  'ICS4U': { gr11:'Computer Science (Gr 11)', errCode:'ERR-PREREQ-08', errMsg:'Grade 11 Computer Science (ICS3U) is required before Grade 12 Computer Science — add it in Grade 11 subjects above.' },
+};
+
+// Required-course mark helpers (stored separately from optional picks)
+function getReqMarks(progId) {
   const state = getCLState(progId);
-  const gr11 = JSON.parse(state['gr11_selected'] || '[]');
-  const gr12 = JSON.parse(state['gr12_selected'] || '[]');
-  return new Set([...gr11.map(c=>c.code), ...gr12.map(c=>c.code)]);
+  try { return JSON.parse(state['gr12_req_marks'] || '{}'); } catch(e){ return {}; }
+}
+function saveReqMark(progId, code, val) {
+  let v = parseFloat(val);
+  if (isNaN(v)) v = '';
+  else v = Math.min(100, Math.max(0, Math.round(v)));
+  const state = getCLState(progId);
+  const marks = getReqMarks(progId);
+  marks[code] = v === '' ? '' : String(v);
+  state['gr12_req_marks'] = JSON.stringify(marks);
+  saveCLState(progId, state);
+  recalcAvg(progId);
+}
+
+// Projected average (fallback when no course marks entered)
+function saveGrAvg(level, progId, val) {
+  let v = parseFloat(val);
+  if (isNaN(v)) v = '';
+  else v = Math.min(100, Math.max(0, Math.round(v)));
+  const state = getCLState(progId);
+  state[level === 'gr11' ? 'gr11Avg' : 'gr12Avg'] = v === '' ? '' : String(v);
+  saveCLState(progId, state);
+  recalcAvg(progId);
 }
 
 // ── Build the Grade 11 subject picker section ──────────────────
 function buildGrade11Section(progId, pd) {
   const state  = getCLState(progId);
-  const picked = JSON.parse(state['gr11_selected'] || '[]'); // [{code,name,mark}]
+  const picked = JSON.parse(state['gr11_selected'] || '[]');
   const max    = 8;
   const canAdd = picked.length < max;
 
-  const rows = picked.map((c, i) => {
-    const markVal = c.mark || '';
-    return `
-      <div class="gs-row" id="gs11-row-${i}">
-        <span class="gs-name">${c.name}</span>
-        <input class="gs-input" type="number" min="0" max="100" value="${markVal}" placeholder="—"
-          title="Grade 11 mark for ${c.name}"
-          onchange="saveGsGrade('gr11','${progId}',${i},this.value)"/>
-        <button class="gs-remove" onclick="removeGsCourse('gr11','${progId}',${i})" title="Remove">✕</button>
-      </div>`;
-  }).join('');
+  const rows = picked.map((c, i) => `
+    <div class="gs-row" id="gs11-row-${i}">
+      <span class="gs-name">${c.name}</span>
+      <input class="gs-input" type="number" min="0" max="100" value="${c.mark||''}" placeholder="—"
+        title="Grade 11 mark for ${c.name}"
+        onchange="saveGsGrade('gr11','${progId}',${i},this.value)"/>
+      <button class="gs-remove" onclick="removeGsCourse('gr11','${progId}',${i})" title="Remove">✕</button>
+    </div>`).join('');
 
   return `
     <div class="grade-section" id="gs11-section">
       <div class="gs-header">
-        <h4>📘 Grade 11 Subjects <span class="gs-count">${picked.length}/${max}</span></h4>
-        <p>Select up to ${max} Grade 11 subjects and enter your actual or projected mark for each.</p>
+        <h4>Grade 11 Subjects <span class="gs-count">${picked.length}/${max}</span></h4>
       </div>
-      ${picked.length ? `<div class="gs-rows" id="gs11-rows">${rows}</div>` : ''}
+      ${rows ? `<div class="gs-rows">${rows}</div>` : ''}
       ${canAdd ? `
         <div class="gs-search-wrap">
           <input type="text" class="gs-search" id="gs11-search" placeholder="Search Grade 11 subjects…"
@@ -694,46 +739,66 @@ function buildGrade11Section(progId, pd) {
 // ── Build the Grade 12 subject picker section ──────────────────
 function buildGrade12Section(progId, pd) {
   const state    = getCLState(progId);
-  const picked   = JSON.parse(state['gr12_selected'] || '[]');
-  const max      = 6;
-  const canAdd   = picked.length < max;
-  const required = pd ? (pd.requiredCourses || []) : [];
+  const gr11Set  = new Set(JSON.parse(state['gr11_selected'] || '[]').map(c => c.name));
+  const optional = JSON.parse(state['gr12_selected'] || '[]');
+  const reqCodes = pd ? (pd.requiredCourses || []) : [];
+  const reqMarks = getReqMarks(progId);
   const courseMap = {};
   getAllGr12Courses().forEach(c => { courseMap[c.code] = c.name; });
 
-  const rows = picked.map((c, i) => {
-    const markVal  = c.mark || '';
-    const isReq    = required.includes(c.code);
-    return `
-      <div class="gs-row${isReq ? ' gs-required' : ''}" id="gs12-row-${i}">
-        <span class="gs-name">${c.name}${isReq ? ' <span class="gs-req-badge">Required</span>' : ''}</span>
-        <input class="gs-input" type="number" min="0" max="100" value="${markVal}" placeholder="—"
-          title="Grade 12 mark for ${c.name}"
-          onchange="saveGsGrade('gr12','${progId}',${i},this.value)"/>
-        <button class="gs-remove" onclick="removeGsCourse('gr12','${progId}',${i})" title="Remove">✕</button>
-      </div>`;
-  }).join('');
+  const maxOptional = reqCodes.length ? Math.max(0, 8 - reqCodes.length) : 8;
+  const canAdd      = optional.length < maxOptional;
 
-  // Hint about required courses
-  const missingReq = required.filter(code => !picked.some(c => c.code === code));
-  const reqHint = missingReq.length
-    ? `<div class="gs-req-hint">⚠ Required for this program: ${missingReq.map(c => `<strong>${c}</strong>`).join(', ')} — add them above.</div>`
-    : (required.length ? `<div class="gs-req-hint gs-req-ok">✓ All required courses added.</div>` : '');
+  // Required course rows — fixed, non-removable, with inline prereq errors
+  let reqHtml = '';
+  if (reqCodes.length) {
+    const reqRows = reqCodes.map(code => {
+      const name    = courseMap[code] || code;
+      const mark    = reqMarks[code] || '';
+      const prereq  = GR11_GR12_PREREQ_MAP[code];
+      const errHtml = (prereq && !gr11Set.has(prereq.gr11))
+        ? `<div class="gs-prereq-err" style="grid-column:1/-1"><strong>${prereq.errCode}</strong>: ${prereq.errMsg}</div>`
+        : '';
+      return `
+        <div class="gs-row gs-required-row" id="gs12-req-${code}">
+          <span class="gs-name"><span class="gs-req-badge">Required</span> ${code} — ${name}</span>
+          <input class="gs-input" type="number" min="0" max="100" value="${mark}" placeholder="—"
+            title="Grade 12 mark for ${name}"
+            onchange="saveReqMark('${progId}','${code}',this.value)"/>
+        </div>
+        ${errHtml}`;
+    }).join('');
+    reqHtml = `<div class="gs-rows">${reqRows}</div>`;
+  }
+
+  // Optional course rows
+  const optRows = optional.map((c, i) => `
+    <div class="gs-row" id="gs12-opt-row-${i}">
+      <span class="gs-name">${c.code} — ${c.name}</span>
+      <input class="gs-input" type="number" min="0" max="100" value="${c.mark||''}" placeholder="—"
+        title="Grade 12 mark for ${c.name}"
+        onchange="saveGsGrade('gr12','${progId}',${i},this.value)"/>
+      <button class="gs-remove" onclick="removeGsCourse('gr12','${progId}',${i})" title="Remove">✕</button>
+    </div>`).join('');
+
+  const headLabel = reqCodes.length
+    ? `Grade 12 Subjects — Required (${reqCodes.length}) + Optional (${optional.length}/${maxOptional})`
+    : `Grade 12 Subjects <span class="gs-count">${optional.length}/${maxOptional}</span>`;
 
   return `
     <div class="grade-section" id="gs12-section">
       <div class="gs-header">
-        <h4>📗 Grade 12 Subjects <span class="gs-count">${picked.length}/${max}</span></h4>
-        <p>Select up to ${max} Grade 12 subjects. Your top 6 marks form your admission average.</p>
+        <h4>${headLabel}</h4>
+        ${reqCodes.length && maxOptional > 0 ? `<p style="font-size:.80rem;color:var(--grey);margin-bottom:8px;">Required courses are fixed — enter your grade. Add up to ${maxOptional} more optional courses below.</p>` : ''}
       </div>
-      ${picked.length ? `<div class="gs-rows" id="gs12-rows">${rows}</div>` : ''}
-      ${reqHint}
+      ${reqHtml}
+      ${optRows ? `<div class="gs-rows" style="margin-top:${reqHtml?'8px':'0'}">${optRows}</div>` : ''}
       ${canAdd ? `
-        <div class="gs-search-wrap">
+        <div class="gs-search-wrap" style="margin-top:8px;">
           <input type="text" class="gs-search" id="gs12-search" placeholder="Search Grade 12 courses (e.g. MHF4U, Biology…)"
             oninput="searchGsCourses('gr12','${progId}',this.value)" autocomplete="off"/>
           <div class="gs-dropdown" id="gs12-drop" style="display:none;"></div>
-        </div>` : `<p class="gs-max-note">Maximum ${max} subjects reached.</p>`}
+        </div>` : `<p class="gs-max-note">Maximum subjects reached.</p>`}
     </div>`;
 }
 
@@ -818,17 +883,6 @@ function saveGsGrade(level, progId, idx, val) {
   recalcAvg(progId);
 }
 
-// Re-render only the grade sections (without full detail re-render)
-function reRenderGradeSections(progId) {
-  const prog = savedPrograms.find(p => p.id === progId);
-  if (!prog) return;
-  const pd   = getProgramData(prog.uniId, prog.programSlug);
-  const s11  = document.getElementById('gs11-section');
-  const s12  = document.getElementById('gs12-section');
-  if (s11) s11.outerHTML = buildGrade11Section(progId, pd);
-  if (s12) s12.outerHTML = buildGrade12Section(progId, pd);
-}
-
 // Close grade dropdowns on outside click
 document.addEventListener('click', e => {
   ['gs11-drop','gs12-drop'].forEach(id => {
@@ -839,9 +893,58 @@ document.addEventListener('click', e => {
 });
 
 // ─────────────────────────────────────────────────────────────
-//  MANDATORY COURSES SECTION (3-state checkbox + remediation)
+//  GRADE AVERAGE CALCULATOR
 // ─────────────────────────────────────────────────────────────
-// States: 'have' | 'will' | 'need' | '' (unset)
+function recalcAvg(progId) {
+  const prog = savedPrograms.find(p => p.id === progId);
+  if (!prog) return;
+  const pd    = getProgramData(prog.uniId, prog.programSlug);
+  const state = getCLState(progId);
+
+  // Collect all Gr12 marks: required-course marks + optional marks
+  const reqCodes = pd ? (pd.requiredCourses || []) : [];
+  const reqMarks = getReqMarks(progId);
+  const optional = JSON.parse(state['gr12_selected'] || '[]');
+  const reqVals  = reqCodes.map(c => parseFloat(reqMarks[c])).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  const optVals  = optional.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  const allVals  = [...reqVals, ...optVals];
+
+  // Average from entered marks; fall back to projected average input
+  let avg = allVals.length ? Math.round(allVals.reduce((a,b)=>a+b,0)/allVals.length) : null;
+  if (avg === null && state['gr12Avg']) avg = parseFloat(state['gr12Avg']) || null;
+
+  const el = document.getElementById('avgStatusLine');
+  if (!el) return;
+
+  const targetLow  = pd ? pd.targetAvg.low  : 80;
+  const targetHigh = pd ? pd.targetAvg.high : 90;
+
+  if (avg !== null) {
+    let status = '', color = '';
+    if (avg >= targetHigh)      { status = 'On track ✓';         color = '#1a7a52'; }
+    else if (avg >= targetLow)  { status = 'Within range ✓';     color = '#7a5200'; }
+    else                        { status = `${targetLow-avg}% gap to close`; color = 'var(--red)'; }
+    el.innerHTML = `Your Gr12 Avg: <strong>${avg}%</strong> &nbsp;→&nbsp; Target: <strong>${targetLow}–${targetHigh}%</strong> <span style="color:${color};font-weight:700;margin-left:6px;">${status}</span>`;
+  } else {
+    el.innerHTML = `Target: <strong>${targetLow}–${targetHigh}%</strong> — enter grades or a projected average above.`;
+  }
+
+  // Refresh Gr12 section to update prereq errors when Gr11 selection changes
+  const s12 = document.getElementById('gs12-section');
+  if (s12) s12.outerHTML = buildGrade12Section(progId, pd);
+}
+
+// Re-render grade sections; Gr12 also refreshed inside recalcAvg
+function reRenderGradeSections(progId) {
+  const prog = savedPrograms.find(p => p.id === progId);
+  if (!prog) return;
+  const pd  = getProgramData(prog.uniId, prog.programSlug);
+  const s11 = document.getElementById('gs11-section');
+  if (s11) s11.outerHTML = buildGrade11Section(progId, pd);
+  recalcAvg(progId);
+}
+
+// ─── placeholder kept so nothing else breaks ──────────────────
 const COURSE_STATES = [
   { val:'have',  label:'I have',        color:'#1a7a52', bg:'#e6f7f0', border:'#88d5b5' },
   { val:'will',  label:'I will take',   color:'#7a5200', bg:'#fff4e0', border:'#f7c948' },
@@ -943,42 +1046,6 @@ function buildMandatoryCourses(progId, pd) {
       <p style="font-size:.79rem;color:var(--grey);margin-bottom:10px;">Mark each required course with your current status. Missing courses show ways to complete them.</p>
       <div class="mc-rows">${rows}</div>
     </div>`;
-}
-
-// ─────────────────────────────────────────────────────────────
-//  GRADE AVERAGE CALCULATOR (updated — uses Gr12 section)
-// ─────────────────────────────────────────────────────────────
-function recalcAvg(progId) {
-  const prog = savedPrograms.find(p => p.id === progId);
-  if (!prog) return;
-  const pd    = getProgramData(prog.uniId, prog.programSlug);
-  const state = getCLState(progId);
-
-  // Collect Grade 12 marks entered
-  const gr12picked = JSON.parse(state['gr12_selected'] || '[]');
-  const vals = gr12picked.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
-
-  const avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
-
-  const el = document.getElementById('calcAvgDisplay');
-  if (!el) return;
-
-  if (avg !== null) {
-    el.textContent = avg + '%';
-    const targetLow  = pd ? pd.targetAvg.low  : (prog._uniAvgLow  || 0);
-    const targetHigh = pd ? pd.targetAvg.high : (prog._uniAvgHigh || 0);
-    const target     = targetLow && targetHigh ? Math.round((targetLow + targetHigh) / 2) : null;
-    const statusEl   = document.getElementById('calcAvgStatus');
-    if (statusEl && target) {
-      if      (avg >= target)      { statusEl.textContent='On track ✓';           statusEl.className='avg-status on-track'; }
-      else if (avg >= target - 4)  { statusEl.textContent='Close — push harder';  statusEl.className='avg-status close'; }
-      else                         { statusEl.textContent=`${target-avg}% gap to close`; statusEl.className='avg-status gap'; }
-    }
-  } else {
-    el.textContent = '—';
-    const statusEl = document.getElementById('calcAvgStatus');
-    if (statusEl) { statusEl.textContent='Enter Grade 12 marks below ↓'; statusEl.className='avg-status close'; }
-  }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -2588,8 +2655,10 @@ ${(()=>{
   // Build EC Guide
   const ecGuideHtml = buildECGuide(prog, pd);
 
-  // Build mandatory courses section + grade input sections
-  const mandatoryCoursesHtml = buildMandatoryCourses(prog.id, pd);
+  // Grade sections + projected avg values
+  const clSt           = getCLState(prog.id);
+  const gr11Avg        = clSt['gr11Avg'] || '';
+  const gr12Avg        = clSt['gr12Avg'] || '';
   const gr11SectionHtml = buildGrade11Section(prog.id, pd);
   const gr12SectionHtml = buildGrade12Section(prog.id, pd);
 
@@ -2638,45 +2707,42 @@ ${(()=>{
     <!-- ── ACADEMICS TAB ── -->
     <div class="tab-panel active" id="tab-academics">
 
-      <!-- Projected average tracker (top — updates live as marks entered below) -->
-      <div class="card-flat" style="margin-bottom:16px;">
-        <h3 style="margin-bottom:4px;">Projected Grade Average</h3>
-        <p style="font-size:.82rem;color:var(--grey);margin-bottom:14px;">Based on your Grade 12 marks below. Your top 6 Grade 12 marks determine your admission average.</p>
-        <div class="avg-bar-row">
-          <div style="text-align:center;">
-            <div class="avg-num" id="calcAvgDisplay">—</div>
-            <div class="avg-lbl">Your Gr 12 Avg</div>
+      <!-- Grade averages -->
+      <div class="card-flat" style="margin-bottom:14px;">
+        <h3 style="margin-bottom:12px;">Grade Averages</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:10px;">
+          <div>
+            <label style="font-size:.74rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px;">Grade 11 Average (projected)</label>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="number" min="0" max="100" value="${gr11Avg}" id="gr11AvgInput"
+                oninput="saveGrAvg('gr11','${prog.id}',this.value)"
+                style="width:78px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;font-weight:800;text-align:center;"
+                placeholder="e.g. 87"/>
+              <span style="color:var(--grey);">%</span>
+            </div>
           </div>
-          <div class="avg-arrow">→</div>
-          <div style="text-align:center;">
-            <div class="avg-target">${pd ? pd.targetAvg.low + '–' + pd.targetAvg.high : (uni ? uni.avgRange.low + '–' + uni.avgRange.high : '??')}%</div>
-            <div class="avg-lbl">Target Avg</div>
+          <div>
+            <label style="font-size:.74rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px;">Grade 12 Average (projected)</label>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="number" min="0" max="100" value="${gr12Avg}" id="gr12AvgInput"
+                oninput="saveGrAvg('gr12','${prog.id}',this.value)"
+                style="width:78px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;font-weight:800;text-align:center;"
+                placeholder="e.g. 92"/>
+              <span style="color:var(--grey);">%</span>
+            </div>
           </div>
-          <span class="avg-status close" id="calcAvgStatus">Enter Grade 12 marks below ↓</span>
         </div>
-        <p class="projection-note">📌 This is a projection — official averages may vary.</p>
+        <p id="avgStatusLine" style="font-size:.83rem;color:var(--grey);margin:0;">
+          Target: <strong>${pd ? pd.targetAvg.low + '–' + pd.targetAvg.high : '??'}%</strong> — enter grades or a projected average above.
+        </p>
       </div>
 
-      <!-- Mandatory courses -->
-      ${mandatoryCoursesHtml}
+      <!-- Grade 11 subjects -->
+      ${gr11SectionHtml}
 
-      <!-- Grade entry sections -->
-      <div class="card-flat" style="margin-bottom:16px;">
-        <h3 style="margin-bottom:4px;">Course Grades</h3>
-        <p style="font-size:.82rem;color:var(--grey);margin-bottom:16px;">Add your Grade 11 subjects (up to 8) and Grade 12 subjects (up to 6). Enter actual or projected marks — blanks are allowed for courses you haven't taken yet.</p>
-        ${gr11SectionHtml}
-        ${gr12SectionHtml}
-      </div>
+      <!-- Grade 12 subjects -->
+      ${gr12SectionHtml}
 
-      <div class="card-flat" style="margin-bottom:16px;">
-        <div style="font-weight:800;font-size:.88rem;margin-bottom:8px;">📈 Improvement Tips for ${prog.programName}</div>
-        <ul style="padding-left:18px;font-size:.85rem;color:var(--navy);line-height:1.7;">
-          ${pd && pd.requiredCourses ? `<li>The required courses (${pd.requiredCourses.join(', ')}) count toward your admission average — add these to your Grade 12 section and keep them strong.</li>` : '<li>Focus on the specific courses required by this program.</li>'}
-          <li>A 1–2% improvement in your weakest Grade 12 subject can raise your overall average significantly.</li>
-          <li>Seek tutoring or office hours early — don't wait until exams.</li>
-          ${pd && pd.aifRequired ? `<li>${prog.uniName} heavily weighs the supplementary form — plan ahead for it regardless of your grades.</li>` : ''}
-        </ul>
-      </div>
     </div>
 
     <!-- ── EC TAB ── -->
