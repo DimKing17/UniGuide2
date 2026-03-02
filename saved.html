@@ -705,6 +705,13 @@ function saveGrAvg(level, progId, val) {
   recalcAvg(progId);
 }
 
+function saveSelfScore(type, progId, val) {
+  const state = getCLState(progId);
+  state[type === 'ec' ? 'ecScore' : 'essayScore'] = String(Math.round(Number(val)));
+  saveCLState(progId, state);
+  saveAcademicsPct(progId);
+}
+
 // ── Build the Grade 11 subject picker section ──────────────────
 function buildGrade11Section(progId, pd) {
   const state  = getCLState(progId);
@@ -971,33 +978,60 @@ function recalcAvg(progId) {
   const pd    = getProgramData(prog.uniId, prog.programSlug);
   const state = getCLState(progId);
 
-  // Collect all Gr12 marks: required-course marks + optional marks
+  // ── Collect Gr12 marks ──────────────────────────────────
   const reqCodes = pd ? (pd.requiredCourses || []) : [];
   const reqMarks = getReqMarks(progId);
   const optional = JSON.parse(state['gr12_selected'] || '[]');
   const reqVals  = reqCodes.map(c => parseFloat(reqMarks[c])).filter(v => !isNaN(v) && v >= 0 && v <= 100);
   const optVals  = optional.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
-  const allVals  = [...reqVals, ...optVals];
+  const allGr12  = [...reqVals, ...optVals];
 
-  // Average from entered marks; fall back to projected average input
-  let avg = allVals.length ? Math.round(allVals.reduce((a,b)=>a+b,0)/allVals.length) : null;
+  // Computed Gr12 avg from entered marks; fall back to manual input
+  const computedGr12 = allGr12.length ? Math.round(allGr12.reduce((a,b)=>a+b,0)/allGr12.length) : null;
+  let   avg = computedGr12;
   if (avg === null && state['gr12Avg']) avg = parseFloat(state['gr12Avg']) || null;
 
-  const el = document.getElementById('avgStatusLine');
-  if (!el) return;
+  // Push computed Gr12 avg back into the input field (live update)
+  if (computedGr12 !== null) {
+    const inp12 = document.getElementById('gr12AvgInput');
+    if (inp12 && String(inp12.value) !== String(computedGr12)) {
+      inp12.value = computedGr12;
+      state['gr12Avg'] = String(computedGr12);
+    }
+  }
 
+  // ── Collect Gr11 marks and update Gr11 avg input ────────
+  const gr11list  = JSON.parse(state['gr11_selected'] || '[]');
+  const gr11Vals  = gr11list.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  if (gr11Vals.length) {
+    const computedGr11 = Math.round(gr11Vals.reduce((a,b)=>a+b,0)/gr11Vals.length);
+    const inp11 = document.getElementById('gr11AvgInput');
+    if (inp11 && String(inp11.value) !== String(computedGr11)) {
+      inp11.value = computedGr11;
+      state['gr11Avg'] = String(computedGr11);
+    }
+  }
+
+  // ── Status line below the avg inputs ────────────────────
+  const el = document.getElementById('avgStatusLine');
   const targetLow  = pd ? pd.targetAvg.low  : 80;
   const targetHigh = pd ? pd.targetAvg.high : 90;
 
-  if (avg !== null) {
-    let status = '', color = '';
-    if (avg >= targetHigh)      { status = 'On track ✓';         color = '#1a7a52'; }
-    else if (avg >= targetLow)  { status = 'Within range ✓';     color = '#7a5200'; }
-    else                        { status = `${targetLow-avg}% gap to close`; color = 'var(--red)'; }
-    el.innerHTML = `Your Gr12 Avg: <strong>${avg}%</strong> &nbsp;→&nbsp; Target: <strong>${targetLow}–${targetHigh}%</strong> <span style="color:${color};font-weight:700;margin-left:6px;">${status}</span>`;
-  } else {
-    el.innerHTML = `Target: <strong>${targetLow}–${targetHigh}%</strong> — enter grades or a projected average above.`;
+  if (el) {
+    if (avg !== null) {
+      let status = '', color = '';
+      if (avg >= targetHigh)      { status = 'On track ✓';                  color = '#1a7a52'; }
+      else if (avg >= targetLow)  { status = 'Within range ✓';              color = '#b07000'; }
+      else                        { status = `${targetLow - avg}% gap to close`; color = 'var(--red)'; }
+      el.innerHTML = `<strong>${avg}%</strong> vs target <strong>${targetLow}–${targetHigh}%</strong> <span style="color:${color};font-weight:700;margin-left:8px;">${status}</span>`;
+      el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
   }
+
+  // Persist state (gr11Avg/gr12Avg may have been auto-filled)
+  saveCLState(progId, state);
 
   // Refresh Gr12 section to update prereq errors when Gr11 selection changes
   const s12 = document.getElementById('gs12-section');
@@ -1132,8 +1166,34 @@ function buildMandatoryCourses(progId, pd) {
 // ─────────────────────────────────────────────────────────────
 function getProgramData(uniId, programSlug) {
   if (typeof PROGRAM_DATA === 'undefined') return null;
-  const key = uniId + '__' + programSlug;
-  return PROGRAM_DATA[key] || null;
+  const direct = PROGRAM_DATA[uniId + '__' + programSlug];
+  if (direct) return direct;
+
+  // Slug-normalization fallback: map program variants to nearest PROGRAM_DATA key
+  const s = programSlug.toLowerCase();
+  const fallbackSlug =
+    (s.includes('mechanical') || s.includes('mech') || s.includes('civil') ||
+     s.includes('electrical') || s.includes('chemical') || s.includes('aerospace') ||
+     s.includes('engineer')) ? 'engineering' :
+    (s.includes('computer-science') || s.includes('software') || s.includes('computing'))
+      ? 'computer-science' :
+    (s.includes('life-sci') || s.includes('bio') || s.includes('human-biology') ||
+     s.includes('neurosci') || s.includes('biochem')) ? 'science' :
+    (s.includes('commerce') || s.includes('business') || s.includes('accounting') ||
+     s.includes('finance') || s.includes('economics')) ? 'commerce' :
+    null;
+
+  if (fallbackSlug) {
+    const fallback = PROGRAM_DATA[uniId + '__' + fallbackSlug];
+    if (fallback) return fallback;
+    // Cross-university last resort for very common slugs
+    const peers = ['waterloo','uoft','mcmaster','queens','western','ubc','mcgill'];
+    for (const peer of peers) {
+      const pd = PROGRAM_DATA[peer + '__' + fallbackSlug];
+      if (pd) return pd;
+    }
+  }
+  return null;
 }
 function getUniData(uniId) {
   if (typeof UNIVERSITIES === 'undefined') return null;
@@ -2792,33 +2852,63 @@ ${(()=>{
     <div class="tab-panel active" id="tab-academics">
 
       <!-- Grade averages -->
-      <div class="card-flat" style="margin-bottom:14px;">
-        <h3 style="margin-bottom:12px;">Grade Averages</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:10px;">
-          <div>
-            <label style="font-size:.74rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px;">Grade 11 Average (projected)</label>
-            <div style="display:flex;align-items:center;gap:8px;">
+      <div class="card-flat" style="margin-bottom:16px;">
+        <h3 style="margin-bottom:16px;">Grade Averages</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:12px;">
+          <div style="background:var(--light);border-radius:12px;padding:16px 18px;border:1.5px solid var(--border);">
+            <label style="font-size:.72rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:10px;">Grade 11 Average</label>
+            <div style="display:flex;align-items:center;gap:10px;">
               <input type="number" min="0" max="100" value="${gr11Avg}" id="gr11AvgInput"
                 oninput="saveGrAvg('gr11','${prog.id}',this.value)"
-                style="width:78px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;font-weight:800;text-align:center;"
-                placeholder="e.g. 87"/>
-              <span style="color:var(--grey);">%</span>
+                style="width:90px;padding:10px 12px;border:2px solid var(--border);border-radius:10px;font-size:1.5rem;font-weight:900;text-align:center;color:var(--navy);background:#fff;"
+                placeholder="—"/>
+              <span style="font-size:1.3rem;font-weight:800;color:var(--grey);">%</span>
             </div>
+            <div style="font-size:.74rem;color:var(--grey);margin-top:8px;">Updates automatically from subjects below</div>
           </div>
-          <div>
-            <label style="font-size:.74rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px;">Grade 12 Average (projected)</label>
-            <div style="display:flex;align-items:center;gap:8px;">
+          <div style="background:var(--light);border-radius:12px;padding:16px 18px;border:1.5px solid var(--border);">
+            <label style="font-size:.72rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:10px;">Grade 12 Average</label>
+            <div style="display:flex;align-items:center;gap:10px;">
               <input type="number" min="0" max="100" value="${gr12Avg}" id="gr12AvgInput"
                 oninput="saveGrAvg('gr12','${prog.id}',this.value)"
-                style="width:78px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.95rem;font-weight:800;text-align:center;"
-                placeholder="e.g. 92"/>
-              <span style="color:var(--grey);">%</span>
+                style="width:90px;padding:10px 12px;border:2px solid var(--border);border-radius:10px;font-size:1.5rem;font-weight:900;text-align:center;color:var(--navy);background:#fff;"
+                placeholder="—"/>
+              <span style="font-size:1.3rem;font-weight:800;color:var(--grey);">%</span>
             </div>
+            <div style="font-size:.74rem;color:var(--grey);margin-top:8px;">Target: <strong>${pd ? pd.targetAvg.low + '–' + pd.targetAvg.high : '??'}%</strong></div>
+            <div id="avgStatusLine" style="font-size:.80rem;margin-top:6px;font-weight:600;${(clSt['gr12Avg'] || clSt['gr11Avg']) ? '' : 'display:none;'}"></div>
           </div>
         </div>
-        <p id="avgStatusLine" style="font-size:.83rem;color:var(--grey);margin:0;">
-          Target: <strong>${pd ? pd.targetAvg.low + '–' + pd.targetAvg.high : '??'}%</strong> — enter grades or a projected average above.
-        </p>
+      </div>
+
+      <!-- Self-rating: Extracurriculars & Essays -->
+      <div class="card-flat" style="margin-bottom:16px;">
+        <h3 style="margin-bottom:4px;">Application Strength Self-Rating</h3>
+        <p style="font-size:.82rem;color:var(--grey);margin-bottom:16px;">These ratings appear in your Application Tracker. Be honest — they help you spot what needs work.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <label style="font-size:.74rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px;">⚽ Extracurriculars &amp; Leadership</label>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input type="range" min="0" max="100" step="5" value="${clSt['ecScore'] || 0}"
+                id="ecScoreSlider"
+                oninput="document.getElementById('ecScoreVal').textContent=this.value+'%';saveSelfScore('ec','${prog.id}',this.value)"
+                style="flex:1;accent-color:var(--accent);"/>
+              <span id="ecScoreVal" style="font-weight:800;font-size:.95rem;min-width:42px;color:var(--navy);">${clSt['ecScore'] ? clSt['ecScore']+'%' : '0%'}</span>
+            </div>
+            <div style="font-size:.73rem;color:var(--grey);margin-top:4px;">0 = no ECs · 50 = solid involvement · 100 = exceptional leadership</div>
+          </div>
+          <div>
+            <label style="font-size:.74rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px;">✍️ Essays &amp; Interview Readiness</label>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input type="range" min="0" max="100" step="5" value="${clSt['essayScore'] || 0}"
+                id="essayScoreSlider"
+                oninput="document.getElementById('essayScoreVal').textContent=this.value+'%';saveSelfScore('essay','${prog.id}',this.value)"
+                style="flex:1;accent-color:var(--accent);"/>
+              <span id="essayScoreVal" style="font-weight:800;font-size:.95rem;min-width:42px;color:var(--navy);">${clSt['essayScore'] ? clSt['essayScore']+'%' : '0%'}</span>
+            </div>
+            <div style="font-size:.73rem;color:var(--grey);margin-top:4px;">0 = not started · 50 = drafted · 100 = polished &amp; ready</div>
+          </div>
+        </div>
       </div>
 
       <!-- Grade 11 subjects -->

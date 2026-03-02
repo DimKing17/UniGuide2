@@ -278,17 +278,36 @@ function renderTrackerCards() {
     const daysTxt  = daysLeft !== null ? daysLeft + ' days' : '—';
 
     // Academics %
-    const acadPct = parseInt(st['academicsPct'] || '0', 10);
+    const acadPct   = parseInt(st['academicsPct'] || '0', 10);
     const acadBreak = st['academicsPctBreak'] ? JSON.parse(st['academicsPctBreak']) : null;
     const acadColor = acadPct >= 80 ? 'var(--accent)' : acadPct >= 55 ? 'var(--warn)' : 'var(--red)';
-    const breakdownTxt = acadBreak
-      ? `Average: ${acadBreak.avg !== null ? acadBreak.avg + '%' : 'not set'} · Prereqs ${acadBreak.prereqDone}/${acadBreak.prereqTotal} → Academics ${acadPct}%`
-      : `Enter grades in My List to see your Academics score`;
+    const acadSub   = acadBreak
+      ? `Avg: ${acadBreak.avg !== null ? acadBreak.avg + '%' : '—'} · Prereqs ${acadBreak.prereqDone}/${acadBreak.prereqTotal}`
+      : `Rate grades in My List to track`;
+
+    // EC and Essay scores
+    const ecPct     = parseInt(st['ecScore']    || '0', 10);
+    const essayPct  = parseInt(st['essayScore'] || '0', 10);
+    const ecColor    = ecPct    >= 70 ? 'var(--accent)' : ecPct    >= 40 ? 'var(--warn)' : 'var(--red)';
+    const essayColor = essayPct >= 70 ? 'var(--accent)' : essayPct >= 40 ? 'var(--warn)' : 'var(--red)';
+    const ecHint     = ecPct === 0    ? `<span style="font-size:.72rem;color:var(--grey);margin-left:4px;">Rate in My List →</span>` : '';
+    const essayHint  = essayPct === 0 ? `<span style="font-size:.72rem;color:var(--grey);margin-left:4px;">Rate in My List →</span>` : '';
+
+    // Overall score (weighted: Academics 50%, EC 30%, Essays 20%)
+    const overall    = Math.round(acadPct * 0.5 + ecPct * 0.3 + essayPct * 0.2);
+    const overallClr = overall >= 70 ? 'var(--accent)' : overall >= 45 ? 'var(--warn)' : 'var(--red)';
 
     // Risk badge
-    const risk = acadPct >= 75 && status === 'submitted' ? { cls:'risk-low', txt:'✅ Submitted — looking good' }
-               : acadPct >= 55                          ? { cls:'risk-med', txt:'⚡ In Progress — keep going' }
-               :                                          { cls:'risk-high', txt:'⚠️ Academics needs attention' };
+    const risk = overall >= 70 && status === 'submitted' ? { cls:'risk-low', txt:'✅ Submitted — looking good' }
+               : overall >= 50                           ? { cls:'risk-med', txt:'⚡ In Progress — keep going' }
+               :                                           { cls:'risk-high', txt:'⚠️ Application needs attention' };
+
+    const strengthRow = (label, pct, color, sub) =>
+      `<div class="strength-row">
+         <span class="strength-label" style="font-size:.79rem;">${label}</span>
+         <div class="strength-bar-wrap"><div class="strength-bar-fill" style="width:${pct}%;background:${color};"></div></div>
+         <span class="strength-pct">${pct}%</span>
+       </div>${sub ? `<div style="font-size:.71rem;color:var(--grey);margin:-4px 0 6px 132px;">${sub}</div>` : ''}`;
 
     return `<div class="tracker-card">
       <div class="tracker-header">
@@ -304,12 +323,10 @@ function renderTrackerCards() {
       <!-- Application Strength -->
       <div style="margin-bottom:14px;">
         <div style="font-size:0.78rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Application Strength</div>
-        <div class="strength-row">
-          <span class="strength-label">Academics</span>
-          <div class="strength-bar-wrap"><div class="strength-bar-fill" style="width:${acadPct}%;background:${acadColor};"></div></div>
-          <span class="strength-pct">${acadPct}%</span>
-        </div>
-        <p style="font-size:.75rem;color:var(--grey);margin:4px 0 0 132px;">${breakdownTxt}</p>
+        ${strengthRow('Academics', acadPct, acadColor, acadSub)}
+        ${strengthRow('Extracurriculars', ecPct, ecColor, ecHint)}
+        ${strengthRow('Essays &amp; Interview', essayPct, essayColor, essayHint)}
+        ${strengthRow('<strong>Overall</strong>', overall, overallClr, '')}
       </div>
 
       <div class="tracker-meta">
