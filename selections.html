@@ -1449,9 +1449,8 @@ function openProfileModal(){
     document.getElementById('pGrade').value=p.grade||'';
     document.getElementById('pProvince').value=p.province||'';
     document.getElementById('pCity').value=p.city||'';
-    document.getElementById('pStreet').value=p.street||'';
-    document.getElementById('pPostal').value=p.postalCode||'';
     document.getElementById('pDistance').value=p.distance||'';
+    updateConsentBlock();
   } catch(e){}
 }
 function closeProfileModal(){ document.getElementById('profileModal').classList.remove('open'); document.body.style.overflow=''; }
