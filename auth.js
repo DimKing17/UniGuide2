@@ -98,6 +98,7 @@ async function ugLogOut() {
   if (_auth) await _auth.signOut();
   _user = null;
   _updateNavUI();
+  window.location.href = 'index.html';
 }
 
 async function ugResetPassword(email) {
