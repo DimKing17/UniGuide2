@@ -161,6 +161,8 @@
     .gs-opt:hover { background:var(--light); }
     .gs-opt .co-cat { font-size:.70rem; color:var(--grey); float:right; }
     .gs-max-note { font-size:.80rem; color:var(--grey); font-style:italic; margin-top:6px; }
+    .gs-recommended { margin-top:10px; padding:10px 12px; background:#f8f7fd; border:1px dashed #c0b4e0; border-radius:7px; font-size:.79rem; color:var(--grey); }
+    .gs-recommended strong { color:var(--navy); }
     .gs-prereq-err {
       grid-column:1/-1; font-size:.79rem; font-weight:700; color:var(--red);
       background:#fde8ec; border:1px solid #f7aab8; border-radius:7px;
@@ -428,6 +430,7 @@
 <nav class="nav">
   <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
   <div class="nav-links">
+    <a href="explore.html">Explore</a>
     <a href="selections.html">Selections</a>
     <a href="saved.html" class="active">My List</a>
     <a href="scholarships.html">Funding</a>
@@ -510,6 +513,8 @@
 
 <!-- ═══ DATA + SHARED ═══ -->
 <script src="data.js"></script>
+<script src="data-additions.js"></script>
+<script src="data-enrichment.js"></script>
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
 
@@ -522,7 +527,20 @@ function getSavedPrograms() {
     const raw = localStorage.getItem('savedPrograms');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // T009: Enforce one program per university (keep most recent)
+        const uniMap = new Map();
+        // Sort by id timestamp (format: prog-123456789)
+        parsed.sort((a, b) => {
+          const tsA = parseInt(a.id.split('-')[1]) || 0;
+          const tsB = parseInt(b.id.split('-')[1]) || 0;
+          return tsA - tsB;
+        });
+        parsed.forEach(p => {
+          uniMap.set(p.uniId, p);
+        });
+        return Array.from(uniMap.values());
+      }
     }
   } catch(e){}
   // No demo fallback — show empty state so users browse and save their own programs
@@ -820,6 +838,12 @@ function buildGrade12Section(progId, pd) {
             oninput="searchGsCourses('gr12','${progId}',this.value)" autocomplete="off"/>
           <div class="gs-dropdown" id="gs12-drop" style="display:none;"></div>
         </div>` : `<p class="gs-max-note">Maximum subjects reached.</p>`}
+      ${(pd && pd.recommendedSubjects && pd.recommendedSubjects.length) ? `
+        <div class="gs-recommended">
+          <strong>Recommended (not required):</strong>
+          <em>${pd.recommendedSubjects.join(' · ')}</em>
+          <span style="font-size:.72rem;margin-left:4px;color:var(--grey);">(strengthens your application)</span>
+        </div>` : ''}
     </div>`;
 }
 
