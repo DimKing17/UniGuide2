@@ -15,11 +15,7 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 | `scholarships.html` | Scholarship / Funding finder (100+ scholarships, "Apply →" links) |
 | `essays.html` | Essay writing guidance |
 | `tracker.html` | Application tracker |
-| `data.js` | All shared data: MAJORS (370+ programs, Law + Trades added), UNIVERSITIES (60 schools — original), PROGRAM_DATA (100+ entries), SCHOLARSHIPS |
-| `data-additions.js` | 90 additional Canadian universities (total: 150 across both files) — loaded after data.js |
-| `data-enrichment.js` | Enriches original 60 universities with new fields: acceptanceRate, founded, studentCount, campusLocations, intlDomesticRatio, maleSports, femaleSports, descLong, bullets, recommendedSubjects |
-| `explore.html` | Explore page: Quick Filter Tiles, Did You Know carousel, Compare Two Schools widget |
-| `CHANGELOG.md` | Data sources, corrections, Fit% formula documentation |
+| `data.js` | All shared data: MAJORS (370+ programs, Law + Trades added), UNIVERSITIES (60 schools), PROGRAM_DATA (100+ entries), SCHOLARSHIPS |
 | `auth.js` | Auth layer + ugLoad/ugSave helpers (localStorage + Firebase fallback) |
 | `style.css` | Global design system |
 
@@ -72,7 +68,7 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 
 ## data.js Key Sections
 - **MAJORS**: 17 categories including `"Law"` (30+ programs) and `"Trades & Applied Technology"` (33 programs); backward-compat `"Law & Legal Studies"` kept
-- **UNIVERSITIES**: 60 Canadian universities (original); expanded to 150 via `data-additions.js` + enriched via `data-enrichment.js`
+- **UNIVERSITIES**: 60 Canadian universities with fit scoring data
 - **PROGRAM_DATA**: 100+ entries keyed as `uniId__slug`; includes common variants: `uoft__mechanical-engineering`, `uoft__computer-science`, `uoft__life-sciences`, `mcmaster__health-sciences`, `mcmaster__engineering-i`, `queens__commerce`, `queens__engineering`, `western__ivey`, `mcgill__engineering`
 - **SCHOLARSHIPS**: 50-entry array (also used internally); scholarships.html has its own inline 100+ array with `link` field
 

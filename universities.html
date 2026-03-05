@@ -53,42 +53,6 @@
 
     .dist-pill { font-size:.70rem; font-weight:800; background:#e8edf5; color:var(--navy); padding:2px 8px; border-radius:50px; margin-left:6px; display:inline-block; }
 
-    /* T003 – acceptance rate pill */
-    .tag-grey { background:var(--light); color:var(--grey); font-size:.70rem; font-weight:700; padding:3px 10px; border-radius:50px; border:1px solid var(--border); white-space:nowrap; }
-
-    /* T004 – bullet list under description */
-    .uni-bullets { list-style:none; padding:0 0 0 10px; margin:0 0 12px 0; font-size:.82rem; line-height:1.55; border-left:3px solid var(--accent); color:var(--grey); }
-    .uni-bullets li { margin-bottom:3px; }
-
-    /* T005 – About accordion */
-    .about-accordion { margin-bottom:12px; }
-    .about-accordion summary { font-size:.78rem; font-weight:700; color:var(--navy); cursor:pointer; list-style:none; display:flex; align-items:center; gap:5px; }
-    .about-accordion summary::-webkit-details-marker { display:none; }
-    .about-accordion summary::before { content:'▸'; transition:transform .2s; display:inline-block; }
-    .about-accordion[open] summary::before { transform:rotate(90deg); }
-    .about-block { margin-top:8px; background:var(--light); border-radius:8px; padding:12px 14px; font-size:.79rem; }
-    .about-block dl { display:grid; grid-template-columns:auto 1fr; gap:4px 14px; margin:0; }
-    .about-block dt { font-weight:700; color:var(--navy); }
-    .about-block dd { color:var(--grey); margin:0; word-break:break-word; }
-
-    /* T010 – view-mode toggle */
-    .mode-toggle { display:flex; gap:0; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:16px; width:fit-content; }
-    .mode-toggle button { background:var(--white); border:none; padding:7px 18px; font-size:.82rem; font-weight:700; cursor:pointer; color:var(--grey); transition:background .15s, color .15s; }
-    .mode-toggle button.active { background:var(--navy); color:#fff; }
-
-    /* T010 – program-pick modal */
-    .prog-modal-overlay { display:none; position:fixed; inset:0; background:rgba(10,15,35,.5); z-index:3000; align-items:center; justify-content:center; }
-    .prog-modal-overlay.open { display:flex; }
-    .prog-modal { background:var(--white); border-radius:var(--radius); width:min(480px,94vw); max-height:80vh; display:flex; flex-direction:column; overflow:hidden; }
-    .prog-modal-head { padding:18px 20px 14px; border-bottom:1px solid var(--border); }
-    .prog-modal-head h3 { margin:0 0 4px; font-size:1rem; }
-    .prog-modal-head p  { margin:0; font-size:.78rem; color:var(--grey); }
-    .prog-modal-body { overflow-y:auto; padding:14px 20px; flex:1; }
-    .prog-modal-body label { display:flex; align-items:center; gap:10px; padding:8px 6px; border-radius:6px; cursor:pointer; font-size:.88rem; transition:background .1s; }
-    .prog-modal-body label:hover { background:var(--light); }
-    .prog-modal-body input[type=radio] { accent-color:var(--navy); flex-shrink:0; }
-    .prog-modal-foot { padding:12px 20px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
-
     /* Save toast */
     .save-toast {
       position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(60px);
@@ -104,7 +68,6 @@
 <nav class="nav">
   <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
   <div class="nav-links">
-    <a href="explore.html">Explore</a>
     <a href="selections.html">Selections</a>
     <a href="saved.html">My List</a>
     <a href="scholarships.html">Funding</a>
@@ -164,9 +127,9 @@
           <label>Competitiveness</label>
           <select id="fComp" onchange="filterUnis()">
             <option value="">Any</option>
-            <option value="very">Very Competitive (&lt;30% accepted)</option>
-            <option value="comp">Competitive (30–60% accepted)</option>
-            <option value="mod">Moderate (60%+ accepted)</option>
+            <option value="very">Very Competitive (90%+)</option>
+            <option value="comp">Competitive (80–90%)</option>
+            <option value="mod">Moderate (70–80%)</option>
           </select>
         </div>
         <div class="form-group" style="margin:0;">
@@ -213,31 +176,9 @@
     </div>
 
     <div class="results-count" id="resultsCount"></div>
-
-    <!-- T010: Selection mode toggle -->
-    <div class="mode-toggle" id="modeToggle">
-      <button id="btnBrowse" class="active" onclick="setMode('browse')">Browse All</button>
-      <button id="btnPick"              onclick="setMode('pick')">Pick University First</button>
-    </div>
-
     <div class="uni-grid" id="uniGrid"></div>
   </div>
 </section>
-
-<!-- T010: Program-pick modal -->
-<div class="prog-modal-overlay" id="progModalOverlay" onclick="if(event.target===this)closeProgModal()">
-  <div class="prog-modal">
-    <div class="prog-modal-head">
-      <h3 id="progModalTitle"></h3>
-      <p id="progModalSub"></p>
-    </div>
-    <div class="prog-modal-body" id="progModalBody"></div>
-    <div class="prog-modal-foot">
-      <button class="btn btn-outline btn-sm" onclick="closeProgModal()">Cancel</button>
-      <button class="btn btn-red btn-sm" onclick="saveFromModal()">Save This Program →</button>
-    </div>
-  </div>
-</div>
 
 <div class="save-toast" id="saveToast"></div>
 
@@ -246,8 +187,6 @@
 </footer>
 
 <script src="data.js"></script>
-<script src="data-additions.js"></script>
-<script src="data-enrichment.js"></script>
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
 <script>
@@ -262,72 +201,50 @@ function haversineKm(lat1, lon1, lat2, lon2) {
 
 // ─── Load profile (Fix #16 — distance from home) ─────────────
 let userLat = null, userLng = null, userCity = '';
-const FSA_COORDS = {
-  'M5S': [43.6629, -79.3957], 'V6T': [49.2606, -123.2460], 'H3A': [45.5017, -73.5673],
-  'T2P': [51.0447, -114.0719], 'K1A': [45.4215, -75.6972], 'R3C': [49.8951, -97.1384],
-  'S7K': [52.1332, -106.6700], 'B3J': [44.6488, -63.5752], 'E1C': [46.0878, -64.7782],
-  'A1C': [47.5615, -52.7126], 'C1A': [46.2382, -63.1311], 'G1R': [46.8139, -71.2080],
-  'L8P': [43.2557, -79.8711], 'N6A': [42.9849, -81.2453], 'K7L': [44.2312, -76.4860],
-  'N2L': [43.4668, -80.5164], 'N9A': [42.3149, -83.0364], 'L4M': [44.3894, -79.6903],
-  'P3E': [46.4917, -80.9930], 'P7B': [48.3809, -89.2477], 'V3R': [49.1044, -122.8011],
-  'V5H': [49.2488, -122.9805], 'V6Y': [49.1666, -123.1336], 'V8W': [48.4284, -123.3656],
-  'V1Y': [49.8879, -119.4960], 'T4N': [52.2681, -113.8112], 'T5J': [53.5444, -113.4909],
-  'M5V': [43.6447, -79.3933], 'M4Y': [43.6655, -79.3823], 'M5B': [43.6558, -79.3789]
-};
-
-function loadLocation() {
-  try {
-    const p = JSON.parse(localStorage.getItem('ugProfile') || '{}');
-    if (p.city) userCity = p.city;
-    
-    // Basic city → approximate coords
-    const CITY_COORDS = {
-      'toronto':     [43.6532, -79.3832],
-      'mississauga': [43.5890, -79.6441],
-      'brampton':    [43.6834, -79.7663],
-      'ottawa':      [45.4215, -75.6972],
-      'hamilton':    [43.2557, -79.8711],
-      'london':      [42.9849, -81.2453],
-      'kingston':    [44.2312, -76.4860],
-      'waterloo':    [43.4668, -80.5164],
-      'kitchener':   [43.4500, -80.4830],
-      'windsor':     [42.3149, -83.0364],
-      'barrie':      [44.3894, -79.6903],
-      'sudbury':     [46.4917, -80.9930],
-      'thunder bay': [48.3809, -89.2477],
-      'vancouver':   [49.2827, -123.1207],
-      'surrey':      [49.1044, -122.8011],
-      'burnaby':     [49.2488, -122.9805],
-      'richmond':    [49.1666, -123.1336],
-      'victoria':    [48.4284, -123.3656],
-      'kelowna':     [49.8879, -119.4960],
-      'calgary':     [51.0447, -114.0719],
-      'edmonton':    [53.5444, -113.4909],
-      'red deer':    [52.2681, -113.8112],
-      'montreal':    [45.5017, -73.5673],
-      'québec city': [46.8139, -71.2080],
-      'halifax':     [44.6488, -63.5752],
-      'moncton':     [46.0878, -64.7782],
-      'fredericton': [45.9636, -66.6431],
-      'winnipeg':    [49.8951, -97.1384],
-      'saskatoon':   [52.1332, -106.6700],
-      'regina':      [50.4452, -104.6189],
-      'st. john\'s':  [47.5615, -52.7126],
-      'charlottetown':[46.2382, -63.1311],
-    };
-
-    const cityKey = userCity.toLowerCase().trim();
-    if (CITY_COORDS[cityKey]) {
-      [userLat, userLng] = CITY_COORDS[cityKey];
-    } else if (p.postalCode) {
-      const fsa = p.postalCode.substring(0, 3).toUpperCase();
-      if (FSA_COORDS[fsa]) {
-        [userLat, userLng] = FSA_COORDS[fsa];
-      }
-    }
-  } catch(e){}
-}
-loadLocation();
+try {
+  const p = JSON.parse(localStorage.getItem('ugProfile') || '{}');
+  if (p.city) userCity = p.city;
+  // Basic city → approximate coords for common Ontario/BC/AB cities
+  const CITY_COORDS = {
+    'toronto':     [43.6532, -79.3832],
+    'mississauga': [43.5890, -79.6441],
+    'brampton':    [43.6834, -79.7663],
+    'ottawa':      [45.4215, -75.6972],
+    'hamilton':    [43.2557, -79.8711],
+    'london':      [42.9849, -81.2453],
+    'kingston':    [44.2312, -76.4860],
+    'waterloo':    [43.4668, -80.5164],
+    'kitchener':   [43.4500, -80.4830],
+    'windsor':     [42.3149, -83.0364],
+    'barrie':      [44.3894, -79.6903],
+    'sudbury':     [46.4917, -80.9930],
+    'thunder bay': [48.3809, -89.2477],
+    'vancouver':   [49.2827, -123.1207],
+    'surrey':      [49.1044, -122.8011],
+    'burnaby':     [49.2488, -122.9805],
+    'richmond':    [49.1666, -123.1336],
+    'victoria':    [48.4284, -123.3656],
+    'kelowna':     [49.8879, -119.4960],
+    'calgary':     [51.0447, -114.0719],
+    'edmonton':    [53.5444, -113.4909],
+    'red deer':    [52.2681, -113.8112],
+    'montreal':    [45.5017, -73.5673],
+    'montreal':    [45.5017, -73.5673],
+    'québec city': [46.8139, -71.2080],
+    'halifax':     [44.6488, -63.5752],
+    'moncton':     [46.0878, -64.7782],
+    'fredericton': [45.9636, -66.6431],
+    'winnipeg':    [49.8951, -97.1384],
+    'saskatoon':   [52.1332, -106.6700],
+    'regina':      [50.4452, -104.6189],
+    "st. john's":  [47.5615, -52.7126],
+    'charlottetown':[46.2382, -63.1311],
+  };
+  const cityKey = userCity.toLowerCase().trim();
+  if (CITY_COORDS[cityKey]) {
+    [userLat, userLng] = CITY_COORDS[cityKey];
+  }
+} catch(e){}
 
 function getDistLabel(u) {
   if (userLat === null || !u.lat) return null;
@@ -355,63 +272,33 @@ function getSelectedProgram(uniId) {
   return { programName, programSlug };
 }
 
-async function saveToList(uniId, uniName, programOverride) {
-  const sel = programOverride
-    ? { programName: programOverride, programSlug: programOverride.toLowerCase().replace(/\s+/g,'-') }
-    : getSelectedProgram(uniId);
-  const { programName, programSlug } = sel;
+async function saveToList(uniId, uniName) {
+  const { programName, programSlug } = getSelectedProgram(uniId);
   try {
-    let list = await ugLoad('savedPrograms', []);
-    const existingIndex = list.findIndex(p => p.uniId === uniId);
-    
-    if (existingIndex !== -1) {
-      const oldProg = list[existingIndex];
-      if (oldProg.programSlug === programSlug) {
-        showToast(`${programName} at ${uniName} is already saved! → <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`);
-        return;
-      }
-      // Replace existing
-      list[existingIndex] = {
-        ...oldProg,
-        id: 'prog-' + Date.now(), // update ID to mark it as most recent
-        programName,
-        programSlug
-      };
-      await ugSave('savedPrograms', list);
-      showToast(`Updated your ${uniName} selection to ${programName} → <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`);
-    } else {
+    const list = await ugLoad('savedPrograms', []);
+    const alreadySaved = list.some(p => p.uniId === uniId && p.programSlug === programSlug);
+    if (!alreadySaved) {
       list.push({
         id: 'prog-' + Date.now(),
         uniId, uniName, programName, programSlug,
         tag: 'target'
       });
       await ugSave('savedPrograms', list);
-      showToast(`✓ ${programName} at ${uniName} saved! → <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`);
     }
+    showToast(alreadySaved
+      ? `${programName} at ${uniName} is already saved! → <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`
+      : `✓ ${programName} at ${uniName} saved! → <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`
+    );
   } catch(e) { showToast('Saved!'); }
 }
 
 async function saveAndView(uniId, uniName) {
   const { programName, programSlug } = getSelectedProgram(uniId);
   try {
-    let list = await ugLoad('savedPrograms', []);
-    const existingIndex = list.findIndex(p => p.uniId === uniId);
-    let progId = 'prog-' + Date.now();
-
-    if (existingIndex !== -1) {
-      const oldProg = list[existingIndex];
-      progId = oldProg.id;
-      if (oldProg.programSlug !== programSlug) {
-        progId = 'prog-' + Date.now();
-        list[existingIndex] = {
-          ...oldProg,
-          id: progId,
-          programName,
-          programSlug
-        };
-        await ugSave('savedPrograms', list);
-      }
-    } else {
+    const list = await ugLoad('savedPrograms', []);
+    const existing = list.find(p => p.uniId === uniId && p.programSlug === programSlug);
+    const progId = existing ? existing.id : 'prog-' + Date.now();
+    if (!existing) {
       list.push({ id: progId, uniId, uniName, programName, programSlug, tag: 'target' });
       await ugSave('savedPrograms', list);
     }
@@ -457,10 +344,10 @@ function filterUnis() {
 
   if (userLat === null && dist > 0) {
     document.getElementById('distNote').textContent =
-      '⚠️ Distance filter requires your city or postal code in your profile — set it in My Major → Profile';
+      '⚠️ Distance filter requires your city in your profile — set it in My Major → Profile';
   } else {
     document.getElementById('distNote').textContent =
-      (userLat !== null) ? `📍 Distances calculated from ${userCity || 'your location'}` : '';
+      userCity ? `📍 Distances calculated from ${userCity}` : '';
   }
 
   renderUnis(filtered);
@@ -474,35 +361,6 @@ function resetFilters() {
   filterUnis();
 }
 
-/**
- * calcFitScore Formula Documentation:
- * 
- * Input Factors:
- * 1. Program Match (progPts):
- *    - Always 50 pts in this view since we assume the user is interested in the listed programs.
- * 2. Ranking (rankPts): Based on Canada Rank.
- *    - Rank 1-3: 20 pts
- *    - Rank 4-7: 15 pts
- *    - Rank 8-12: 10 pts
- *    - Rank 13+: 5 pts
- * 3. Co-op (coopPts): 
- *    - Available: 20 pts
- *    - Not Available: 0 pts
- * 
- * Calculation:
- * Total Score = Min(progPts + rankPts + coopPts, 100)
- */
-function calcFitScore(u) {
-  const progPts = 50; 
-  const rankPts = u.canadaRank <= 3 ? 20 : u.canadaRank <= 7 ? 15 : u.canadaRank <= 12 ? 10 : 5;
-  const coopPts = u.coop ? 20 : 0;
-  const total = Math.min(progPts + rankPts + coopPts, 100);
-  return {
-    total,
-    breakdown: { progPts, rankPts, coopPts }
-  };
-}
-
 function renderUnis(list) {
   const grid = document.getElementById('uniGrid');
   if (!list.length) {
@@ -513,57 +371,18 @@ function renderUnis(list) {
     const distKm = getDistLabel(u);
     const distStr = distKm !== null ? `<span class="dist-pill">~${distKm.toLocaleString()} km away</span>` : '';
 
-    // T003 – rank pills + acceptance rate pill
+    // Ranking pills (Fix #14)
     const rankPills = `
       <span class="rank-pill">#${u.canadaRank} Canada</span>
       ${u.worldRank ? `<span class="rank-pill world">#${u.worldRank} World</span>` : ''}
-      ${u.acceptanceRate ? `<span class="tag-grey">${u.acceptanceRate} accepted</span>` : ''}
     `;
 
+    const coopTag = u.coop ? '<span class="tag tag-green">Co-op ✓</span>' : '';
     const tuition = `$${u.tuition.domestic.toLocaleString()}/yr`;
     const avg     = `${u.avgRange.low}–${u.avgRange.high}%`;
 
-    const fit = calcFitScore(u);
-    const { progPts, rankPts, coopPts } = fit.breakdown;
-    const maxVal = Math.max(progPts, rankPts, coopPts);
-    const b = (val) => val === maxVal ? `<strong>${val} pts</strong>` : `${val} pts`;
-    const breakdownStr = `Program: ${b(progPts)} · Ranking: ${b(rankPts)} · Co-op: ${b(coopPts)}`;
-
-    // T004 – long description + bullets
-    const desc = u.descLong || u.vibe;
-    const bulletsHtml = (u.bullets && u.bullets.length)
-      ? `<ul class="uni-bullets">${u.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`
-      : '';
-
-    // T005 – About accordion
-    const sportsM = u.maleSports && u.maleSports.length ? `<dt>Men's Sports</dt><dd>${u.maleSports.join(', ')}</dd>` : '';
-    const sportsF = u.femaleSports && u.femaleSports.length ? `<dt>Women's Sports</dt><dd>${u.femaleSports.join(', ')}</dd>` : '';
-    const campuses = u.campusLocations ? u.campusLocations.join(' · ') : '—';
-    const aboutHtml = `
-      <details class="about-accordion">
-        <summary>ℹ About the Institution</summary>
-        <div class="about-block">
-          <dl>
-            <dt>Founded</dt><dd>${u.founded || '—'}</dd>
-            <dt>Students</dt><dd>${u.studentCount || '—'}</dd>
-            <dt>Campuses</dt><dd>${campuses}</dd>
-            <dt>Intl / Dom.</dt><dd>${u.intlDomesticRatio || '—'}</dd>
-            <dt>Co-op</dt><dd title="${(u.coopNote||'').replace(/"/g,'&quot;')}">${u.coopLabel}</dd>
-            ${sportsM}${sportsF}
-          </dl>
-        </div>
-      </details>`;
-
-    // T010 – card click behaviour differs by mode
-    const safeName = u.name.replace(/'/g,"\\'");
-    const pickAttr = `onclick="openProgModal('${u.id}','${safeName}')"`;
-    const cardCursor = currentMode === 'pick' ? `style="cursor:pointer;"` : '';
-    const cardPickOverlay = currentMode === 'pick'
-      ? `<div ${pickAttr} style="position:absolute;inset:0;z-index:1;border-radius:var(--radius);"></div>` : '';
-
     return `
-      <div class="uni-card" style="position:relative;" ${cardCursor}>
-        ${cardPickOverlay}
+      <div class="uni-card">
         <div class="uni-card-top">
           <div>
             <div class="uni-card-name">${u.name}</div>
@@ -572,85 +391,33 @@ function renderUnis(list) {
           <span class="uni-card-badge ${badgeClass(u.comp)}">${u.compLabel}</span>
         </div>
 
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
-          <span class="fit-score-pill" style="font-size:0.7rem; font-weight:900; background:#dcfce7; color:#166534; padding:3px 10px; border-radius:50px; border:1px solid #86efac;">🎯 ${fit.total}% fit</span>
-          <div class="uni-ranks" style="margin:0;">${rankPills}</div>
-        </div>
-        <div style="font-size:0.68rem; color:var(--grey); margin-bottom:12px; margin-top:-4px;">${breakdownStr}</div>
+        <div class="uni-ranks">${rankPills}${coopTag}</div>
 
         <div class="uni-meta">
           <div class="uni-meta-item"><label>Target Avg</label><span>${avg}</span></div>
           <div class="uni-meta-item"><label>Tuition/yr</label><span>${tuition}</span></div>
-          <div class="uni-meta-item"><label title="${(u.coopNote||'').replace(/"/g,'&quot;')}">Co-op ℹ</label><span>${u.coopLabel}</span></div>
+          <div class="uni-meta-item"><label>Co-op</label><span>${u.coopLabel}</span></div>
           <div class="uni-meta-item"><label>Residence</label><span>~$${u.residence ? u.residence.avg.toLocaleString() : 'varies'}/yr</span></div>
         </div>
 
-        <div class="uni-desc">${desc}</div>
-        ${bulletsHtml}
-        ${aboutHtml}
-
-        ${currentMode === 'pick' ? `
-        <div class="uni-card-btns" style="position:relative;z-index:2;">
-          <button class="btn btn-red btn-sm" ${pickAttr}>Select Program →</button>
-          <a href="${u.websiteURL}" target="_blank" rel="noopener" class="btn btn-outline btn-sm" onclick="event.stopPropagation()">Visit Website</a>
-        </div>` : `
+        <div class="uni-desc">${u.vibe}</div>
         <div style="font-size:.78rem;color:var(--grey);margin-bottom:10px;"><strong>Programs offered:</strong></div>
         <select id="prog-${u.id}" style="width:100%;margin-bottom:12px;font-size:.84rem;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--navy);cursor:pointer;">
           ${u.programs.map(p => `<option value="${p}">${p}</option>`).join('')}
         </select>
+
         <div class="uni-card-btns">
-          <button class="btn btn-red btn-sm" onclick="saveAndView('${u.id}','${safeName}')">
+          <button class="btn btn-red btn-sm" onclick="saveAndView('${u.id}','${u.name.replace(/'/g,"\\'")}')">
             Save &amp; View Program →
           </button>
-          <button class="btn btn-outline btn-sm" onclick="saveToList('${u.id}','${safeName}')">
+          <button class="btn btn-outline btn-sm" onclick="saveToList('${u.id}','${u.name.replace(/'/g,"\\'")}')">
             + Save to My List
           </button>
           <a href="${u.websiteURL}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Visit Website</a>
-        </div>`}
+        </div>
       </div>
     `;
   }).join('');
-}
-
-// ─── T010: Selection mode ─────────────────────────────────────
-let currentMode = 'browse';
-let modalUniId  = null;
-
-function setMode(mode) {
-  currentMode = mode;
-  document.getElementById('btnBrowse').classList.toggle('active', mode === 'browse');
-  document.getElementById('btnPick').classList.toggle('active',   mode === 'pick');
-  filterUnis();
-}
-
-function openProgModal(uniId, uniName) {
-  const u = UNIVERSITIES.find(x => x.id === uniId);
-  if (!u) return;
-  modalUniId = uniId;
-  document.getElementById('progModalTitle').textContent = uniName;
-  document.getElementById('progModalSub').textContent =
-    `${u.acceptanceRate ? u.acceptanceRate + ' accepted · ' : ''}${u.loc}`;
-  const body = document.getElementById('progModalBody');
-  body.innerHTML = u.programs.map((p, i) => `
-    <label>
-      <input type="radio" name="modalProg" value="${p.replace(/"/g,'&quot;')}" ${i===0?'checked':''}>
-      ${p}
-    </label>`).join('');
-  document.getElementById('progModalOverlay').classList.add('open');
-}
-
-function closeProgModal() {
-  document.getElementById('progModalOverlay').classList.remove('open');
-  modalUniId = null;
-}
-
-function saveFromModal() {
-  if (!modalUniId) return;
-  const u = UNIVERSITIES.find(x => x.id === modalUniId);
-  const picked = document.querySelector('input[name="modalProg"]:checked');
-  if (!u || !picked) return;
-  saveToList(u.id, u.name, picked.value);
-  closeProgModal();
 }
 
 // ─── Init ─────────────────────────────────────────────────────
