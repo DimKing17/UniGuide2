@@ -1,0 +1,87 @@
+Implement the following product and data requirements exactly as written — keep all other UI/UX and features the same unless I say otherwise. 
+Selection behavior
+
+
+Allow only one major per university to be selected in the universities view and in “My List.” (Users may save multiple different universities, each with one major.)
+
+
+Add an alternate workflow: a university-first selection mode where the user picks a university first, then chooses one major from that school.
+
+
+Inventory & accuracy
+
+
+Expand the database to 150+ real universities (Canadian institutions). Verify each school’s offered majors — do not add majors a school does not offer.
+
+
+For every university record, verify and store sources (official admissions/program pages). Produce a short data changelog listing the source URLs used for each university you add or modify.
+
+
+Data fields & display
+
+
+Show acceptance rate immediately to the right of world ranking in both the “Universities” tab and the “My List” tab.
+
+
+Expand university descriptions (longer summary paragraph + 3 bullets: campus size/no. of students, co-op availability, signature programs).
+
+
+Add an “About the Institution” page for each school with: founding year, student count, campus locations, official co-op details, and official international/domestic breakdown if available.
+
+
+Include male sports and female sports fields (show top sports teams on the institution page).
+
+
+Ensure the “6 dropdowns” UI remains but add the above sports and “about the institution” info as additional dropdown options.
+
+
+Add ANY valuable information about the university.
+
+
+Admissions details & recommendations
+
+
+For programs that have no specific hard requirements, display a separate“Recommended subjects” section (clearly visually distinct from “Required subjects”). Example copy style: “Recommended: AP Psychology, Biology, English, Statistics (not required).” 
+
+
+Make ‘Competitiveness’ in the universities list be ranked by acceptance rate (lower acceptance rate = more competitive). Do not use grade averages to rank competitiveness.
+
+
+Fixes and deduplication
+
+
+Eliminate duplicate co-op indicators (only one clear co-op field per university with a tooltip/link to details). Example: the University of Toronto should not show “Co-op ✓” and “co-op available” separately.
+
+
+Fix the distance filter behavior:
+
+
+Remove “distance preference” from the quiz (users should not answer it in the quiz).
+
+
+Keep Distance from home as a universities filter.
+
+
+Ensure the filter syncs correctly with the user’s profile city/postal code/address and computes distance reliably — remove the erroneous warning “⚠️ Distance filter requires your city in your profile” when a city/postal code is present. Use the profile postal code as the authoritative location for distance calculations.
+
+
+Fit% and UX integrity
+
+
+Ensure fit% calculations are accurate and transparent: document the formula in a dev-accessible changelog (inputs used: prerequisites met, program match to quiz answers, historical acceptance rate, and optional extracurricular match). Show which factors contributed most to the fit% on the program card.
+
+
+Keep everything else the same (layout, other filters, the 6 dropdowns behavior that already exists) unless specified above.
+
+
+Quality control & examples
+
+
+Verify co-op and other facts against official school sources. For accuracy, cross-check known examples such as McGill University and University of Toronto — if your database previously marked them incorrectly (e.g., missing co-op), correct the entries and list the evidence URLs in the changelog.
+
+
+Take inspiration from the UX and information density of myBlueprint but do not copy content — adapt the clarity and layout. (Myblueprint is a competitor)
+
+
+
+Add an “explore” section
