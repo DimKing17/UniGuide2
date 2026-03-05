@@ -161,6 +161,14 @@
     .gs-opt:hover { background:var(--light); }
     .gs-opt .co-cat { font-size:.70rem; color:var(--grey); float:right; }
     .gs-max-note { font-size:.80rem; color:var(--grey); font-style:italic; margin-top:6px; }
+    .gs-recommended { margin-top:10px; padding:10px 12px; background:#f8f7fd; border:1px dashed #c0b4e0; border-radius:7px; font-size:.79rem; color:var(--grey); }
+    .gs-recommended strong { color:var(--navy); }
+    .gs-prereq-err {
+      grid-column:1/-1; font-size:.79rem; font-weight:700; color:var(--red);
+      background:#fde8ec; border:1px solid #f7aab8; border-radius:7px;
+      padding:6px 12px; margin-top:2px; margin-bottom:4px;
+    }
+    .gs-required-row { border-color:#88d5b5; background:#edfbf5; }
     .gs-req-hint {
       font-size:.78rem; color:#b06000; background:#fffbe6;
       border:1px solid #f0c040; border-radius:8px; padding:7px 12px; margin-bottom:10px;
@@ -422,6 +430,7 @@
 <nav class="nav">
   <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
   <div class="nav-links">
+    <a href="explore.html">Explore</a>
     <a href="selections.html">Selections</a>
     <a href="saved.html" class="active">My List</a>
     <a href="scholarships.html">Funding</a>
@@ -504,6 +513,8 @@
 
 <!-- ═══ DATA + SHARED ═══ -->
 <script src="data.js"></script>
+<script src="data-additions.js"></script>
+<script src="data-enrichment.js"></script>
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
 
@@ -516,7 +527,20 @@ function getSavedPrograms() {
     const raw = localStorage.getItem('savedPrograms');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // T009: Enforce one program per university (keep most recent)
+        const uniMap = new Map();
+        // Sort by id timestamp (format: prog-123456789)
+        parsed.sort((a, b) => {
+          const tsA = parseInt(a.id.split('-')[1]) || 0;
+          const tsB = parseInt(b.id.split('-')[1]) || 0;
+          return tsA - tsB;
+        });
+        parsed.forEach(p => {
+          uniMap.set(p.uniId, p);
+        });
+        return Array.from(uniMap.values());
+      }
     }
   } catch(e){}
   // No demo fallback — show empty state so users browse and save their own programs
@@ -633,15 +657,33 @@ function closeSnap(id) {
 
 // Full Ontario course list available for grade selection
 // Combines GRADE12_COURSES (4U/4M) + a parallel Gr11 list
-const GR11_SUBJECTS = [
-  'Advanced Functions (Gr 11)','Functions (Gr 11)','Physics (Gr 11)',
-  'Chemistry (Gr 11)','Biology (Gr 11)','English (Gr 11)',
-  'Computer Science (Gr 11)','French (Gr 11)','History (Gr 11)',
-  'Mathematics of Data Management (Gr 11)','Art (Gr 11)','Music (Gr 11)',
-  'Philosophy (Gr 11)','Economics (Gr 11)','Law (Gr 11)',
-  'Exercise Science (Gr 11)','Environmental Science (Gr 11)',
-  'Accounting (Gr 11)','Drama (Gr 11)','Geography (Gr 11)',
-  'World Issues (Gr 11)','Politics (Gr 11)',
+const GR11_COURSES = [
+  { code:'MCR3U', name:'Functions' },
+  { code:'MCF3M', name:'Functions and Applications' },
+  { code:'MBF3C', name:'Foundations for College Mathematics' },
+  { code:'SCH3U', name:'Chemistry' },
+  { code:'SPH3U', name:'Physics' },
+  { code:'SBI3U', name:'Biology' },
+  { code:'SES3U', name:'Earth and Space Science' },
+  { code:'ENG3U', name:'English' },
+  { code:'ENG3C', name:'English (College)' },
+  { code:'ICS3U', name:'Computer Science' },
+  { code:'FSF3U', name:'Core French' },
+  { code:'FEF3O', name:'Français (Immersion)' },
+  { code:'CHC2D', name:'Canadian History Since WWI' },
+  { code:'CIA3U', name:'Economics' },
+  { code:'HZT3M', name:'Philosophy' },
+  { code:'CLU3M', name:'Law' },
+  { code:'CGF3M', name:'World Geography' },
+  { code:'SNC3M', name:'Science (Mixed)' },
+  { code:'PPL3O', name:'Exercise Science' },
+  { code:'AVI3M', name:'Visual Arts' },
+  { code:'AMU3M', name:'Music' },
+  { code:'AFI3M', name:'Drama' },
+  { code:'BAF3M', name:'Accounting' },
+  { code:'SVN3M', name:'Environmental Science' },
+  { code:'GLS3O', name:'World Issues' },
+  { code:'CPC3O', name:'Politics' },
 ];
 
 function getAllGr12Courses() {
@@ -650,38 +692,80 @@ function getAllGr12Courses() {
 
 // Returns all course codes currently selected in BOTH sections (to prevent duplicates)
 function getSelectedCodes(progId) {
+  const state    = getCLState(progId);
+  const gr11     = JSON.parse(state['gr11_selected'] || '[]');
+  const gr12     = JSON.parse(state['gr12_selected'] || '[]');
+  const prog     = savedPrograms.find(p => p.id === progId);
+  const pd       = prog ? getProgramData(prog.uniId, prog.programSlug) : null;
+  const reqCodes = pd ? (pd.requiredCourses || []) : [];
+  return new Set([...gr11.map(c=>c.code), ...gr12.map(c=>c.code), ...reqCodes]);
+}
+
+// Gr11 → Gr12 prerequisite map (Ontario curriculum)
+// gr11Code matches GR11_COURSES[].code; also accepts old saved name strings for backward compat
+const GR11_GR12_PREREQ_MAP = {
+  'MHF4U': { gr11Code:'MCR3U', gr11Legacy:'Functions (Gr 11)',        errCode:'ERR-PREREQ-01', errMsg:'Grade 11 Functions (MCR3U) is required before Grade 12 Advanced Functions — add it in Grade 11 subjects above.' },
+  'MCV4U': { gr11Code:'MCR3U', gr11Legacy:'Functions (Gr 11)',        errCode:'ERR-PREREQ-02', errMsg:'Grade 11 Functions (MCR3U) is required before Grade 12 Calculus & Vectors — add it in Grade 11 subjects above.' },
+  'MDM4U': { gr11Code:'MCR3U', gr11Legacy:'Functions (Gr 11)',        errCode:'ERR-PREREQ-03', errMsg:'Grade 11 Functions (MCR3U) is required before Grade 12 Data Management — add it in Grade 11 subjects above.' },
+  'SPH4U': { gr11Code:'SPH3U', gr11Legacy:'Physics (Gr 11)',          errCode:'ERR-PREREQ-04', errMsg:'Grade 11 Physics (SPH3U) is required before Grade 12 Physics — add it in Grade 11 subjects above.' },
+  'SCH4U': { gr11Code:'SCH3U', gr11Legacy:'Chemistry (Gr 11)',        errCode:'ERR-PREREQ-05', errMsg:'Grade 11 Chemistry (SCH3U) is required before Grade 12 Chemistry — add it in Grade 11 subjects above.' },
+  'SBI4U': { gr11Code:'SBI3U', gr11Legacy:'Biology (Gr 11)',          errCode:'ERR-PREREQ-06', errMsg:'Grade 11 Biology (SBI3U) is required before Grade 12 Biology — add it in Grade 11 subjects above.' },
+  'ENG4U': { gr11Code:'ENG3U', gr11Legacy:'English (Gr 11)',          errCode:'ERR-PREREQ-07', errMsg:'Grade 11 English (ENG3U) is required before Grade 12 English — add it in Grade 11 subjects above.' },
+  'ICS4U': { gr11Code:'ICS3U', gr11Legacy:'Computer Science (Gr 11)', errCode:'ERR-PREREQ-08', errMsg:'Grade 11 Computer Science (ICS3U) is required before Grade 12 Computer Science — add it in Grade 11 subjects above.' },
+};
+
+// Helper: check whether a Gr11 course code (or legacy name) is present in selected Gr11 subjects
+function gr11HasPrereq(gr11Set, gr11Code, gr11Legacy) {
+  // gr11Set contains the .code values of selected Gr11 subjects
+  return gr11Set.has(gr11Code) || gr11Set.has(gr11Legacy);
+}
+
+// Required-course mark helpers (stored separately from optional picks)
+function getReqMarks(progId) {
   const state = getCLState(progId);
-  const gr11 = JSON.parse(state['gr11_selected'] || '[]');
-  const gr12 = JSON.parse(state['gr12_selected'] || '[]');
-  return new Set([...gr11.map(c=>c.code), ...gr12.map(c=>c.code)]);
+  try { return JSON.parse(state['gr12_req_marks'] || '{}'); } catch(e){ return {}; }
+}
+function saveReqMark(progId, code, val) {
+  let v = parseFloat(val);
+  if (isNaN(v)) v = '';
+  else v = Math.min(100, Math.max(0, Math.round(v)));
+  const state = getCLState(progId);
+  const marks = getReqMarks(progId);
+  marks[code] = v === '' ? '' : String(v);
+  state['gr12_req_marks'] = JSON.stringify(marks);
+  saveCLState(progId, state);
+  recalcAvg(progId);
+}
+
+function saveSelfScore(type, progId, val) {
+  const state = getCLState(progId);
+  state[type === 'ec' ? 'ecScore' : 'essayScore'] = String(Math.round(Number(val)));
+  saveCLState(progId, state);
+  saveAcademicsPct(progId);
 }
 
 // ── Build the Grade 11 subject picker section ──────────────────
 function buildGrade11Section(progId, pd) {
   const state  = getCLState(progId);
-  const picked = JSON.parse(state['gr11_selected'] || '[]'); // [{code,name,mark}]
+  const picked = JSON.parse(state['gr11_selected'] || '[]');
   const max    = 8;
   const canAdd = picked.length < max;
 
-  const rows = picked.map((c, i) => {
-    const markVal = c.mark || '';
-    return `
-      <div class="gs-row" id="gs11-row-${i}">
-        <span class="gs-name">${c.name}</span>
-        <input class="gs-input" type="number" min="0" max="100" value="${markVal}" placeholder="—"
-          title="Grade 11 mark for ${c.name}"
-          onchange="saveGsGrade('gr11','${progId}',${i},this.value)"/>
-        <button class="gs-remove" onclick="removeGsCourse('gr11','${progId}',${i})" title="Remove">✕</button>
-      </div>`;
-  }).join('');
+  const rows = picked.map((c, i) => `
+    <div class="gs-row" id="gs11-row-${i}">
+      <span class="gs-name"><strong>${c.code}</strong> — ${c.name}</span>
+      <input class="gs-input" type="number" min="0" max="100" value="${c.mark||''}" placeholder="—"
+        title="Grade 11 mark for ${c.name}"
+        onchange="saveGsGrade('gr11','${progId}',${i},this.value)"/>
+      <button class="gs-remove" onclick="removeGsCourse('gr11','${progId}',${i})" title="Remove">✕</button>
+    </div>`).join('');
 
   return `
     <div class="grade-section" id="gs11-section">
       <div class="gs-header">
-        <h4>📘 Grade 11 Subjects <span class="gs-count">${picked.length}/${max}</span></h4>
-        <p>Select up to ${max} Grade 11 subjects and enter your actual or projected mark for each.</p>
+        <h4>Grade 11 Subjects <span class="gs-count">${picked.length}/${max}</span></h4>
       </div>
-      ${picked.length ? `<div class="gs-rows" id="gs11-rows">${rows}</div>` : ''}
+      ${rows ? `<div class="gs-rows">${rows}</div>` : ''}
       ${canAdd ? `
         <div class="gs-search-wrap">
           <input type="text" class="gs-search" id="gs11-search" placeholder="Search Grade 11 subjects…"
@@ -694,76 +778,72 @@ function buildGrade11Section(progId, pd) {
 // ── Build the Grade 12 subject picker section ──────────────────
 function buildGrade12Section(progId, pd) {
   const state    = getCLState(progId);
-  const picked   = JSON.parse(state['gr12_selected'] || '[]');
-  const gr11picked = JSON.parse(state['gr11_selected'] || '[]');
-  const max      = 6;
-  const canAdd   = picked.length < max;
-  const required = pd ? (pd.requiredCourses || []) : [];
+  const gr11Set  = new Set(JSON.parse(state['gr11_selected'] || '[]').map(c => c.name));
+  const optional = JSON.parse(state['gr12_selected'] || '[]');
+  const reqCodes = pd ? (pd.requiredCourses || []) : [];
+  const reqMarks = getReqMarks(progId);
   const courseMap = {};
   getAllGr12Courses().forEach(c => { courseMap[c.code] = c.name; });
 
-  // Build set of Gr11 subject names already picked
-  const gr11Names = new Set(gr11picked.map(c => c.name));
+  const maxOptional = reqCodes.length ? Math.max(0, 8 - reqCodes.length) : 8;
+  const canAdd      = optional.length < maxOptional;
 
-  // Per-row ERR codes
-  const prereqMap = (typeof GR11_GR12_PREREQ_MAP !== 'undefined') ? GR11_GR12_PREREQ_MAP : {};
+  // Required course rows — fixed, non-removable, with inline prereq errors
+  let reqHtml = '';
+  if (reqCodes.length) {
+    const reqRows = reqCodes.map(code => {
+      const name    = courseMap[code] || code;
+      const mark    = reqMarks[code] || '';
+      const prereq  = GR11_GR12_PREREQ_MAP[code];
+      const errHtml = (prereq && !gr11HasPrereq(gr11Set, prereq.gr11Code, prereq.gr11Legacy))
+        ? `<div class="gs-prereq-err" style="grid-column:1/-1"><strong>${prereq.errCode}</strong>: ${prereq.errMsg}</div>`
+        : '';
+      return `
+        <div class="gs-row gs-required-row" id="gs12-req-${code}">
+          <span class="gs-name"><span class="gs-req-badge">Required</span> ${code} — ${name}</span>
+          <input class="gs-input" type="number" min="0" max="100" value="${mark}" placeholder="—"
+            title="Grade 12 mark for ${name}"
+            onchange="saveReqMark('${progId}','${code}',this.value)"/>
+        </div>
+        ${errHtml}`;
+    }).join('');
+    reqHtml = `<div class="gs-rows">${reqRows}</div>`;
+  }
 
-  const rows = picked.map((c, i) => {
-    const markVal  = c.mark || '';
-    const isReq    = required.includes(c.code);
-    const prereq   = prereqMap[c.code];
-    const missingGr11 = prereq && !gr11Names.has(prereq.gr11);
-    const errHtml  = missingGr11 ? `
-      <div style="grid-column:1/-1;font-size:.76rem;color:var(--red);background:#fde8ec;border:1px solid #f7aab8;border-radius:6px;padding:5px 10px;margin-top:2px;">
-        <strong>${prereq.errCode}</strong>: Missing <em>${prereq.gr11}</em> — required for ${c.name}.
-        <span style="color:#7a5200;">Add it in Grade 11 Subjects above ↑</span>
-      </div>` : '';
-    return `
-      <div class="gs-row${isReq ? ' gs-required' : ''}${missingGr11 ? '' : ''}" id="gs12-row-${i}" style="flex-wrap:wrap;">
-        <span class="gs-name">${c.name}${isReq ? ' <span class="gs-req-badge">Required</span>' : ''}</span>
-        <input class="gs-input" type="number" min="0" max="100" value="${markVal}" placeholder="—"
-          title="Grade 12 mark for ${c.name}"
-          onchange="saveGsGrade('gr12','${progId}',${i},this.value)"/>
-        <button class="gs-remove" onclick="removeGsCourse('gr12','${progId}',${i})" title="Remove">✕</button>
-        ${errHtml}
-      </div>`;
-  }).join('');
+  // Optional course rows
+  const optRows = optional.map((c, i) => `
+    <div class="gs-row" id="gs12-opt-row-${i}">
+      <span class="gs-name">${c.code} — ${c.name}</span>
+      <input class="gs-input" type="number" min="0" max="100" value="${c.mark||''}" placeholder="—"
+        title="Grade 12 mark for ${c.name}"
+        onchange="saveGsGrade('gr12','${progId}',${i},this.value)"/>
+      <button class="gs-remove" onclick="removeGsCourse('gr12','${progId}',${i})" title="Remove">✕</button>
+    </div>`).join('');
 
-  // Hint about required program courses missing
-  const missingReq = required.filter(code => !picked.some(c => c.code === code));
-  const reqHint = missingReq.length
-    ? `<div class="gs-req-hint">⚠ Required for this program: ${missingReq.map(c => `<strong>${c}</strong>`).join(', ')} — add them above.</div>`
-    : (required.length ? `<div class="gs-req-hint gs-req-ok">✓ All required courses added.</div>` : '');
-
-  // Global prereq errors summary (courses that have missing Gr11 prereqs)
-  const prereqErrors = picked
-    .map(c => ({ c, prereq: prereqMap[c.code] }))
-    .filter(({ prereq }) => prereq && !gr11Names.has(prereq.gr11));
-  const prereqSummary = prereqErrors.length ? `
-    <div style="background:#fff8f8;border:1.5px solid #f7aab8;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:.82rem;">
-      <div style="font-weight:800;color:var(--red);margin-bottom:6px;">⛔ Prerequisite Errors — resolve before finalizing</div>
-      ${prereqErrors.map(({ c, prereq }) =>
-        `<div style="margin-bottom:4px;"><code style="font-size:.77rem;font-weight:800;">${prereq.errCode}</code>
-         Missing <strong>${prereq.gr11}</strong> — needed for <strong>${c.name}</strong>.
-         <span style="color:#555;">Add it in Grade 11 Subjects above.</span></div>`
-      ).join('')}
-    </div>` : '';
+  const headLabel = reqCodes.length
+    ? `Grade 12 Subjects — Required (${reqCodes.length}) + Optional (${optional.length}/${maxOptional})`
+    : `Grade 12 Subjects <span class="gs-count">${optional.length}/${maxOptional}</span>`;
 
   return `
     <div class="grade-section" id="gs12-section">
       <div class="gs-header">
-        <h4>📗 Grade 12 Subjects <span class="gs-count">${picked.length}/${max}</span></h4>
-        <p>Select up to ${max} Grade 12 subjects. Your top 6 marks form your admission average.</p>
+        <h4>${headLabel}</h4>
+        ${reqCodes.length && maxOptional > 0 ? `<p style="font-size:.80rem;color:var(--grey);margin-bottom:8px;">Required courses are fixed — enter your grade. Add up to ${maxOptional} more optional courses below.</p>` : ''}
       </div>
-      ${prereqSummary}
-      ${picked.length ? `<div class="gs-rows" id="gs12-rows">${rows}</div>` : ''}
-      ${reqHint}
+      ${reqHtml}
+      ${optRows ? `<div class="gs-rows" style="margin-top:${reqHtml?'8px':'0'}">${optRows}</div>` : ''}
       ${canAdd ? `
-        <div class="gs-search-wrap">
+        <div class="gs-search-wrap" style="margin-top:8px;">
           <input type="text" class="gs-search" id="gs12-search" placeholder="Search Grade 12 courses (e.g. MHF4U, Biology…)"
             oninput="searchGsCourses('gr12','${progId}',this.value)" autocomplete="off"/>
           <div class="gs-dropdown" id="gs12-drop" style="display:none;"></div>
-        </div>` : `<p class="gs-max-note">Maximum ${max} subjects reached.</p>`}
+        </div>` : `<p class="gs-max-note">Maximum subjects reached.</p>`}
+      ${(pd && pd.recommendedSubjects && pd.recommendedSubjects.length) ? `
+        <div class="gs-recommended">
+          <strong>Recommended (not required):</strong>
+          <em>${pd.recommendedSubjects.join(' · ')}</em>
+          <span style="font-size:.72rem;margin-left:4px;color:var(--grey);">(strengthens your application)</span>
+        </div>` : ''}
     </div>`;
 }
 
@@ -780,10 +860,10 @@ function searchGsCourses(level, progId, val) {
 
   let hits = [];
   if (level === 'gr11') {
-    hits = GR11_SUBJECTS
-      .filter(s => s.toLowerCase().includes(lv) && !usedCodes.has(s))
+    hits = GR11_COURSES
+      .filter(c => (c.code.toLowerCase().includes(lv) || c.name.toLowerCase().includes(lv)) && !usedCodes.has(c.code))
       .slice(0, 20)
-      .map(s => ({ code: s, name: s }));
+      .map(c => ({ code: c.code, name: c.name, rawName: c.name }));
   } else {
     hits = getAllGr12Courses()
       .filter(c => (c.code.toLowerCase().includes(lv) || c.name.toLowerCase().includes(lv)) && !usedCodes.has(c.code))
@@ -794,7 +874,7 @@ function searchGsCourses(level, progId, val) {
   if (!hits.length) { drop.style.display='none'; return; }
   drop.innerHTML = hits.map(c =>
     `<div class="gs-opt" onclick="pickGsCourse('${level}','${progId}','${c.code.replace(/'/g,"\\'")}','${(c.rawName||c.name).replace(/'/g,"\\'")}')">
-      ${level==='gr12' ? `<strong>${c.code}</strong> — ${c.rawName}` : c.name}
+      <strong>${c.code}</strong> — ${c.rawName || c.name}
       ${c.cat ? `<span class="co-cat">${c.cat}</span>` : ''}
     </div>`
   ).join('');
@@ -848,67 +928,6 @@ function saveGsGrade(level, progId, idx, val) {
   recalcAvg(progId);
 }
 
-// Re-render only the grade sections (without full detail re-render)
-function reRenderGradeSections(progId) {
-  const prog = savedPrograms.find(p => p.id === progId);
-  if (!prog) return;
-  const pd   = getProgramData(prog.uniId, prog.programSlug);
-  const s11  = document.getElementById('gs11-section');
-  const s12  = document.getElementById('gs12-section');
-  if (s11) s11.outerHTML = buildGrade11Section(progId, pd);
-  if (s12) s12.outerHTML = buildGrade12Section(progId, pd);
-  // Re-validate Gr12 prereqs whenever Gr11 changes
-  recalcAcademicsScore(progId);
-}
-
-// ── Projected average inputs (single numeric fields) ──────────
-function buildProjectedAvgInputs(progId) {
-  const state  = getCLState(progId);
-  const gr11v  = state['gr11Avg'] || '';
-  const gr12v  = state['gr12Avg'] || '';
-  return `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
-      <div>
-        <label style="font-size:.76rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;">
-          Grade 11 Average (projected) <span style="font-weight:400;color:#aaa;">optional</span>
-        </label>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <input type="number" min="0" max="100" value="${gr11v}" placeholder="e.g. 87"
-            id="gr11AvgInput"
-            style="width:90px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-weight:800;text-align:center;"
-            oninput="saveGrAvg('gr11','${progId}',this.value)"
-            title="Your overall Grade 11 projected average"/>
-          <span style="font-size:.85rem;color:var(--grey);">%</span>
-        </div>
-        <p style="font-size:.73rem;color:var(--grey);margin-top:4px;">Used for early-admission projections.</p>
-      </div>
-      <div>
-        <label style="font-size:.76rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;">
-          Grade 12 Average (projected) <span style="font-weight:400;color:#aaa;">optional</span>
-        </label>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <input type="number" min="0" max="100" value="${gr12v}" placeholder="e.g. 92"
-            id="gr12AvgInput"
-            style="width:90px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.92rem;font-weight:800;text-align:center;"
-            oninput="saveGrAvg('gr12','${progId}',this.value)"
-            title="Your overall Grade 12 projected average"/>
-          <span style="font-size:.85rem;color:var(--grey);">%</span>
-        </div>
-        <p style="font-size:.73rem;color:var(--grey);margin-top:4px;">Used when per-course marks are not yet entered.</p>
-      </div>
-    </div>`;
-}
-
-function saveGrAvg(level, progId, val) {
-  let v = parseFloat(val);
-  if (isNaN(v)) v = '';
-  else v = Math.min(100, Math.max(0, Math.round(v)));
-  const state = getCLState(progId);
-  state[level === 'gr11' ? 'gr11Avg' : 'gr12Avg'] = v === '' ? '' : String(v);
-  saveCLState(progId, state);
-  recalcAvg(progId);
-}
-
 // Close grade dropdowns on outside click
 document.addEventListener('click', e => {
   ['gs11-drop','gs12-drop'].forEach(id => {
@@ -919,9 +938,180 @@ document.addEventListener('click', e => {
 });
 
 // ─────────────────────────────────────────────────────────────
-//  MANDATORY COURSES SECTION (3-state checkbox + remediation)
+//  ACADEMICS PERCENTAGE CALCULATOR
 // ─────────────────────────────────────────────────────────────
-// States: 'have' | 'will' | 'need' | '' (unset)
+function buildAcadSummaryInner(r) {
+  const pctColor = r.pct >= 80 ? '#1a7a52' : r.pct >= 55 ? '#b07000' : '#c0392b';
+  const avgTxt   = r.avg !== null ? `${r.avg}% avg` : 'No avg yet';
+  const prereqTxt = r.prereqTotal > 1 ? `Prereqs ${r.prereqDone}/${r.prereqTotal}` : 'No fixed prereqs';
+  return `
+    <span style="font-size:.78rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;">Academics</span>
+    <span style="font-size:1.25rem;font-weight:900;color:${pctColor};margin:0 8px;">${r.pct}%</span>
+    <span style="font-size:.78rem;color:var(--grey);">${avgTxt} · ${prereqTxt}</span>
+    <div style="flex:1;min-width:80px;max-width:160px;background:var(--border);border-radius:50px;height:7px;margin-left:10px;">
+      <div style="width:${r.pct}%;background:${pctColor};border-radius:50px;height:7px;transition:width .4s;"></div>
+    </div>`;
+}
+
+function computeAcademicsPct(progId) {
+  const prog = savedPrograms.find(p => p.id === progId);
+  if (!prog) return { pct: 0, avgPart: 0, prereqPart: 0, prereqDone: 0, prereqTotal: 0, avg: null };
+  const pd    = getProgramData(prog.uniId, prog.programSlug);
+  const state = getCLState(progId);
+
+  // ── Grade average component (60 pts) ──────────────────────
+  const reqCodes = pd ? (pd.requiredCourses || []) : [];
+  const reqMarks = getReqMarks(progId);
+  const optional = JSON.parse(state['gr12_selected'] || '[]');
+  const reqVals  = reqCodes.map(c => parseFloat(reqMarks[c])).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  const optVals  = optional.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  const allVals  = [...reqVals, ...optVals];
+  let avg = allVals.length ? Math.round(allVals.reduce((a,b)=>a+b,0)/allVals.length) : null;
+  if (avg === null && state['gr12Avg']) avg = parseFloat(state['gr12Avg']) || null;
+
+  const targetLow  = pd ? (pd.targetAvg.low  || 80) : 80;
+  const targetHigh = pd ? (pd.targetAvg.high || 90) : 90;
+  const targetMid  = (targetLow + targetHigh) / 2;
+
+  let avgPart = 0;
+  if (avg !== null) {
+    avgPart = Math.min(avg / targetMid, 1.05) * 60;
+    avgPart = Math.round(Math.min(avgPart, 60));
+  }
+
+  // ── Prerequisite component (40 pts) ───────────────────────
+  const gr11selected = JSON.parse(state['gr11_selected'] || '[]').map(c => c.code);
+  let prereqDone = 0, prereqTotal = 0;
+  if (reqCodes.length > 0) {
+    prereqTotal = reqCodes.length;
+    prereqDone  = reqCodes.filter(code => {
+      const prereq = GR11_GR12_PREREQ_MAP[code];
+      return !prereq || gr11selected.includes(prereq.gr11Code);
+    }).length;
+  } else {
+    prereqDone  = 1;
+    prereqTotal = 1;
+  }
+  const prereqPart = prereqTotal > 0 ? Math.round((prereqDone / prereqTotal) * 40) : 40;
+  const pct = avgPart + prereqPart;
+
+  return { pct, avgPart, prereqPart, prereqDone, prereqTotal, avg, targetLow, targetHigh };
+}
+
+// Persist academics % so tracker.html can read it
+function saveAcademicsPct(progId) {
+  const r = computeAcademicsPct(progId);
+  const state = getCLState(progId);
+  state['academicsPct']      = String(r.pct);
+  state['academicsPctBreak'] = JSON.stringify(r);
+  saveCLState(progId, state);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  GRADE AVERAGE CALCULATOR
+// ─────────────────────────────────────────────────────────────
+function recalcAvg(progId) {
+  const prog = savedPrograms.find(p => p.id === progId);
+  if (!prog) return;
+  const pd    = getProgramData(prog.uniId, prog.programSlug);
+  const state = getCLState(progId);
+
+  // ── Collect Gr12 marks — top 6 rule ─────────────────────
+  const reqCodes = pd ? (pd.requiredCourses || []) : [];
+  const reqMarks = getReqMarks(progId);
+  const optional = JSON.parse(state['gr12_selected'] || '[]');
+  const reqVals  = reqCodes.map(c => parseFloat(reqMarks[c])).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  const optVals  = optional.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  const allGr12  = [...reqVals, ...optVals];
+
+  // Top-6 rule: sort descending, take up to 6 best marks
+  const top6 = allGr12.slice().sort((a, b) => b - a).slice(0, 6);
+  const computedGr12 = top6.length ? Math.round(top6.reduce((a, b) => a + b, 0) / top6.length) : null;
+  let avg = computedGr12;
+
+  // Update read-only Gr12 display
+  const disp12 = document.getElementById('gr12AvgDisplay');
+  if (disp12) {
+    if (computedGr12 !== null) {
+      disp12.textContent = computedGr12;
+      disp12.style.color = 'var(--navy)';
+      const pct12 = disp12.nextElementSibling;
+      if (pct12) pct12.textContent = '%';
+      state['gr12Avg'] = String(computedGr12);
+    } else {
+      disp12.textContent = '—';
+      disp12.style.color = 'var(--grey)';
+      const pct12 = disp12.nextElementSibling;
+      if (pct12) pct12.textContent = '';
+    }
+  }
+
+  // ── Collect Gr11 marks — all subjects ───────────────────
+  const gr11list = JSON.parse(state['gr11_selected'] || '[]');
+  const gr11Vals = gr11list.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
+  const disp11   = document.getElementById('gr11AvgDisplay');
+  if (gr11Vals.length) {
+    const computedGr11 = Math.round(gr11Vals.reduce((a, b) => a + b, 0) / gr11Vals.length);
+    if (disp11) {
+      disp11.textContent = computedGr11;
+      disp11.style.color = 'var(--navy)';
+      const pct11 = disp11.nextElementSibling;
+      if (pct11) pct11.textContent = '%';
+    }
+    state['gr11Avg'] = String(computedGr11);
+  } else if (disp11) {
+    disp11.textContent = '—';
+    disp11.style.color = 'var(--grey)';
+    const pct11 = disp11.nextElementSibling;
+    if (pct11) pct11.textContent = '';
+  }
+
+  // ── Status line below the avg inputs ────────────────────
+  const el = document.getElementById('avgStatusLine');
+  const targetLow  = pd ? pd.targetAvg.low  : 80;
+  const targetHigh = pd ? pd.targetAvg.high : 90;
+
+  if (el) {
+    if (avg !== null) {
+      let status = '', color = '';
+      if (avg >= targetHigh)      { status = 'On track ✓';                  color = '#1a7a52'; }
+      else if (avg >= targetLow)  { status = 'Within range ✓';              color = '#b07000'; }
+      else                        { status = `${targetLow - avg}% gap to close`; color = 'var(--red)'; }
+      el.innerHTML = `<strong>${avg}%</strong> vs target <strong>${targetLow}–${targetHigh}%</strong> <span style="color:${color};font-weight:700;margin-left:8px;">${status}</span>`;
+      el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  // Persist state (gr11Avg/gr12Avg may have been auto-filled)
+  saveCLState(progId, state);
+
+  // Refresh Gr12 section to update prereq errors when Gr11 selection changes
+  const s12 = document.getElementById('gs12-section');
+  if (s12) s12.outerHTML = buildGrade12Section(progId, pd);
+
+  // Persist + update compact summary bar
+  saveAcademicsPct(progId);
+  const r = computeAcademicsPct(progId);
+  const sumEl = document.getElementById('prog-acad-summary');
+  if (sumEl) {
+    const clr = r.pct >= 80 ? '#1a7a52' : r.pct >= 55 ? '#7a5200' : 'var(--red)';
+    sumEl.innerHTML = buildAcadSummaryInner(r);
+  }
+}
+
+// Re-render grade sections; Gr12 also refreshed inside recalcAvg
+function reRenderGradeSections(progId) {
+  const prog = savedPrograms.find(p => p.id === progId);
+  if (!prog) return;
+  const pd  = getProgramData(prog.uniId, prog.programSlug);
+  const s11 = document.getElementById('gs11-section');
+  if (s11) s11.outerHTML = buildGrade11Section(progId, pd);
+  recalcAvg(progId);
+}
+
+// ─── placeholder kept so nothing else breaks ──────────────────
 const COURSE_STATES = [
   { val:'have',  label:'I have',        color:'#1a7a52', bg:'#e6f7f0', border:'#88d5b5' },
   { val:'will',  label:'I will take',   color:'#7a5200', bg:'#fff4e0', border:'#f7c948' },
@@ -947,7 +1137,6 @@ function setMcCourseStatus(progId, code, val) {
   const sec = document.getElementById('mandatory-courses-section');
   if (sec) sec.outerHTML = buildMandatoryCourses(progId, pd);
   recalcAvg(progId);
-  recalcAcademicsScore(progId);
 }
 
 const REMEDIATION_OPTIONS = [
@@ -1027,130 +1216,38 @@ function buildMandatoryCourses(progId, pd) {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  GRADE AVERAGE CALCULATOR + ACADEMICS SCORE
-// ─────────────────────────────────────────────────────────────
-function computeAcademicsScore(progId) {
-  const prog = savedPrograms.find(p => p.id === progId);
-  if (!prog) return { score: 0, avg: null, haveCount: 0, totalRequired: 0, breakdown: '' };
-  const pd      = getProgramData(prog.uniId, prog.programSlug);
-  const state   = getCLState(progId);
-  const mcState = getMcState(progId);
-
-  // Effective Grade 12 average: computed from per-course marks, or fallback to saved gr12Avg
-  const gr12picked = JSON.parse(state['gr12_selected'] || '[]');
-  const vals = gr12picked.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
-  let avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
-  if (avg === null && state['gr12Avg']) avg = parseFloat(state['gr12Avg']) || null;
-
-  // Target midpoint
-  const targetLow  = pd ? pd.targetAvg.low  : 80;
-  const targetHigh = pd ? pd.targetAvg.high : 90;
-  const targetMid  = (targetLow + targetHigh) / 2;
-
-  // Required courses completion (for prereqPart)
-  const required     = pd ? (pd.requiredCourses || []) : [];
-  const totalRequired = required.length;
-  const haveCount    = required.filter(c => mcState[c] === 'have').length;
-  const willCount    = required.filter(c => mcState[c] === 'will').length;
-
-  // Gr11→Gr12 prereq errors (reduces score)
-  const gr11picked = JSON.parse(state['gr11_selected'] || '[]');
-  const gr11Names  = new Set(gr11picked.map(c => c.name));
-  const prereqMap  = (typeof GR11_GR12_PREREQ_MAP !== 'undefined') ? GR11_GR12_PREREQ_MAP : {};
-  const prereqErrCount = gr12picked.filter(c => {
-    const p = prereqMap[c.code];
-    return p && !gr11Names.has(p.gr11);
-  }).length;
-
-  // Score components (60% average, 40% prereqs)
-  let avgPart    = 0;
-  let prereqPart = 0;
-
-  if (avg !== null) {
-    avgPart = Math.min(avg / targetMid, 1.05) * 60; // slight bonus for over-target
-    avgPart = Math.min(avgPart, 60);
-  }
-
-  if (totalRequired > 0) {
-    // 'have' = full credit, 'will' = half credit
-    const effectiveDone = haveCount + willCount * 0.5;
-    prereqPart = (effectiveDone / totalRequired) * 40;
-  } else if (avg !== null) {
-    // No required courses: prereq section defaults to 40% based on avg alone
-    prereqPart = Math.min(avg / targetMid, 1) * 40;
-    prereqPart = Math.min(prereqPart, 40);
-  }
-
-  // Penalty for Gr11→Gr12 prereq errors (-5 each, max -20)
-  const penalty = Math.min(prereqErrCount * 5, 20);
-  let score = Math.round(avgPart + prereqPart - penalty);
-  score = Math.max(0, Math.min(100, score));
-
-  // Breakdown text
-  const avgStr  = avg !== null ? `Average: ${avg}%` : 'Average: not entered';
-  const reqStr  = totalRequired > 0 ? `Prereqs: ${haveCount}/${totalRequired} have, ${willCount} will take` : 'No required courses';
-  const errStr  = prereqErrCount > 0 ? ` · ⛔ ${prereqErrCount} Gr11 prereq error(s) (−${Math.min(prereqErrCount*5,20)}pts)` : '';
-  const breakdown = `${avgStr} / ${reqStr}${errStr} → Academics: ${score}%`;
-
-  return { score, avg, haveCount, totalRequired, willCount, prereqErrCount, breakdown };
-}
-
-function recalcAcademicsScore(progId) {
-  const { score, breakdown } = computeAcademicsScore(progId);
-  const scoreEl = document.getElementById('acadScoreDisplay');
-  const breakEl = document.getElementById('acadScoreBreakdown');
-  const barEl   = document.getElementById('acadScoreBar');
-  if (scoreEl) scoreEl.textContent = score + '%';
-  if (breakEl) breakEl.textContent = breakdown;
-  if (barEl)   {
-    barEl.style.width = score + '%';
-    barEl.style.background = score >= 75 ? 'var(--success)' : score >= 50 ? 'var(--warn)' : 'var(--red)';
-  }
-}
-
-function recalcAvg(progId) {
-  const prog = savedPrograms.find(p => p.id === progId);
-  if (!prog) return;
-  const pd    = getProgramData(prog.uniId, prog.programSlug);
-  const state = getCLState(progId);
-
-  // Collect Grade 12 marks entered
-  const gr12picked = JSON.parse(state['gr12_selected'] || '[]');
-  const vals = gr12picked.map(c => parseFloat(c.mark)).filter(v => !isNaN(v) && v >= 0 && v <= 100);
-  let avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : null;
-  // Fallback to saved projected avg
-  if (avg === null && state['gr12Avg']) avg = parseFloat(state['gr12Avg']) || null;
-
-  const el = document.getElementById('calcAvgDisplay');
-  if (!el) return;
-
-  if (avg !== null) {
-    el.textContent = avg + '%';
-    const targetLow  = pd ? pd.targetAvg.low  : 80;
-    const targetHigh = pd ? pd.targetAvg.high : 90;
-    const target     = Math.round((targetLow + targetHigh) / 2);
-    const statusEl   = document.getElementById('calcAvgStatus');
-    if (statusEl) {
-      if      (avg >= targetHigh)   { statusEl.textContent='On track ✓';           statusEl.className='avg-status on-track'; }
-      else if (avg >= targetLow)    { statusEl.textContent='Within range ✓';       statusEl.className='avg-status on-track'; }
-      else if (avg >= targetLow-4)  { statusEl.textContent='Close — push harder';  statusEl.className='avg-status close'; }
-      else                          { statusEl.textContent=`${targetLow-avg}% gap to close`; statusEl.className='avg-status gap'; }
-    }
-  } else {
-    el.textContent = '—';
-    const statusEl = document.getElementById('calcAvgStatus');
-    if (statusEl) { statusEl.textContent='Enter Grade 12 marks or projected avg ↓'; statusEl.className='avg-status close'; }
-  }
-  recalcAcademicsScore(progId);
-}
-
-// ─────────────────────────────────────────────────────────────
 //  PROGRAM DATA LOOKUP  (Fix #2 — unique per program)
 // ─────────────────────────────────────────────────────────────
 function getProgramData(uniId, programSlug) {
   if (typeof PROGRAM_DATA === 'undefined') return null;
-  const key = uniId + '__' + programSlug;
-  return PROGRAM_DATA[key] || null;
+  const direct = PROGRAM_DATA[uniId + '__' + programSlug];
+  if (direct) return direct;
+
+  // Slug-normalization fallback: map program variants to nearest PROGRAM_DATA key
+  const s = programSlug.toLowerCase();
+  const fallbackSlug =
+    (s.includes('mechanical') || s.includes('mech') || s.includes('civil') ||
+     s.includes('electrical') || s.includes('chemical') || s.includes('aerospace') ||
+     s.includes('engineer')) ? 'engineering' :
+    (s.includes('computer-science') || s.includes('software') || s.includes('computing'))
+      ? 'computer-science' :
+    (s.includes('life-sci') || s.includes('bio') || s.includes('human-biology') ||
+     s.includes('neurosci') || s.includes('biochem')) ? 'science' :
+    (s.includes('commerce') || s.includes('business') || s.includes('accounting') ||
+     s.includes('finance') || s.includes('economics')) ? 'commerce' :
+    null;
+
+  if (fallbackSlug) {
+    const fallback = PROGRAM_DATA[uniId + '__' + fallbackSlug];
+    if (fallback) return fallback;
+    // Cross-university last resort for very common slugs
+    const peers = ['waterloo','uoft','mcmaster','queens','western','ubc','mcgill'];
+    for (const peer of peers) {
+      const pd = PROGRAM_DATA[peer + '__' + fallbackSlug];
+      if (pd) return pd;
+    }
+  }
+  return null;
 }
 function getUniData(uniId) {
   if (typeof UNIVERSITIES === 'undefined') return null;
@@ -2751,8 +2848,10 @@ ${(()=>{
   // Build EC Guide
   const ecGuideHtml = buildECGuide(prog, pd);
 
-  // Build mandatory courses section + grade input sections
-  const mandatoryCoursesHtml = buildMandatoryCourses(prog.id, pd);
+  // Grade sections + projected avg values
+  const clSt           = getCLState(prog.id);
+  const gr11Avg        = clSt['gr11Avg'] || '';
+  const gr12Avg        = clSt['gr12Avg'] || '';
   const gr11SectionHtml = buildGrade11Section(prog.id, pd);
   const gr12SectionHtml = buildGrade12Section(prog.id, pd);
 
@@ -2779,26 +2878,7 @@ ${(()=>{
       </div>
     </div>
 
-    <!-- Compact summary bar -->
-    ${(()=>{
-      const { score, avg, haveCount, totalRequired } = computeAcademicsScore(prog.id);
-      const clSt = getCLState(prog.id);
-      const gr11a = clSt['gr11Avg'] ? clSt['gr11Avg'] + '%' : '—';
-      const gr12a = avg !== null ? avg + '%' : '—';
-      const acColor = score >= 75 ? '#1a7a52' : score >= 50 ? '#c46000' : 'var(--red)';
-      const acBg    = score >= 75 ? '#e6f7f0' : score >= 50 ? '#fff4e0' : '#fde8ec';
-      return `
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;padding:10px 14px;background:var(--light);border:1px solid var(--border);border-radius:10px;font-size:.79rem;align-items:center;">
-          <span style="font-weight:800;color:var(--navy);margin-right:4px;">Quick View:</span>
-          <span style="background:#fff;border:1px solid var(--border);border-radius:50px;padding:2px 10px;font-weight:700;">📚 ${prog.programName.split('—').pop().trim()}</span>
-          ${prog.uniName ? `<span style="background:#fff;border:1px solid var(--border);border-radius:50px;padding:2px 10px;font-weight:700;">🏛 ${prog.uniName}</span>` : ''}
-          <span style="background:#f0f4ff;border:1px solid #c5d3f0;border-radius:50px;padding:2px 10px;font-weight:700;color:#2a4090;">Gr11 avg: ${gr11a}</span>
-          <span style="background:#f0fff6;border:1px solid #88d5b5;border-radius:50px;padding:2px 10px;font-weight:700;color:#1a5c38;">Gr12 avg: ${gr12a}</span>
-          ${score > 0 ? `<span style="background:${acBg};border:1px solid;border-color:${acColor}33;border-radius:50px;padding:2px 10px;font-weight:800;color:${acColor};">Academics: ${score}%</span>` : ''}
-        </div>`;
-    })()}
-
-    <!-- Snapshot Grid (Fix #3) -->
+    <!-- Snapshot Grid -->
     <div class="snapshot-grid">
       ${makeSnap('Degree', degreeType.split('—')[0].trim(), degreeDetail)}
       ${makeSnap('Co-op', coopVal, coopDetail)}
@@ -2820,64 +2900,40 @@ ${(()=>{
     <!-- ── ACADEMICS TAB ── -->
     <div class="tab-panel active" id="tab-academics">
 
-      <!-- Academics score card -->
+      <!-- Grade averages (read-only — computed from subjects entered below) -->
       <div class="card-flat" style="margin-bottom:16px;">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
-          <div>
-            <h3 style="margin-bottom:2px;">Academics Score</h3>
-            <p style="font-size:.82rem;color:var(--grey);">Computed from your Grade 12 average (60%) + required course completion (40%). Decreases for missing Gr11 prerequisites.</p>
+        <h3 style="margin-bottom:16px;">Grade Averages</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:12px;">
+          <div style="background:var(--light);border-radius:12px;padding:16px 18px;border:1.5px solid var(--border);">
+            <label style="font-size:.72rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:10px;">Grade 11 Average</label>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div id="gr11AvgDisplay" style="min-width:80px;padding:10px 12px;border:2px solid var(--border);border-radius:10px;font-size:1.5rem;font-weight:900;text-align:center;color:${gr11Avg ? 'var(--navy)' : 'var(--grey)'};background:#fff;">
+                ${gr11Avg ? gr11Avg : '—'}
+              </div>
+              <span style="font-size:1.3rem;font-weight:800;color:var(--grey);">${gr11Avg ? '%' : ''}</span>
+            </div>
+            <div style="font-size:.74rem;color:var(--grey);margin-top:8px;">All Gr 11 subjects · enter marks below</div>
           </div>
-          <div style="font-size:2rem;font-weight:900;color:var(--navy)" id="acadScoreDisplay">—%</div>
-        </div>
-        <div style="background:var(--border);border-radius:50px;height:12px;overflow:hidden;margin-bottom:8px;">
-          <div id="acadScoreBar" style="height:100%;width:0%;background:var(--red);border-radius:50px;transition:width .5s,background .3s;"></div>
-        </div>
-        <p style="font-size:.79rem;color:var(--grey);font-style:italic;" id="acadScoreBreakdown">Enter marks and mark required courses below to see your score.</p>
-      </div>
-
-      <!-- Projected average tracker -->
-      <div class="card-flat" style="margin-bottom:16px;">
-        <h3 style="margin-bottom:4px;">Projected Grade Average</h3>
-        <p style="font-size:.82rem;color:var(--grey);margin-bottom:14px;">Your top 6 Grade 12 marks determine your admission average. Enter projected averages or add individual course marks below.</p>
-
-        <!-- Projected avg inputs -->
-        ${buildProjectedAvgInputs(prog.id)}
-
-        <div class="avg-bar-row">
-          <div style="text-align:center;">
-            <div class="avg-num" id="calcAvgDisplay">—</div>
-            <div class="avg-lbl">Your Gr 12 Avg</div>
+          <div style="background:var(--light);border-radius:12px;padding:16px 18px;border:1.5px solid var(--border);">
+            <label style="font-size:.72rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:10px;">Grade 12 Average</label>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div id="gr12AvgDisplay" style="min-width:80px;padding:10px 12px;border:2px solid var(--border);border-radius:10px;font-size:1.5rem;font-weight:900;text-align:center;color:${gr12Avg ? 'var(--navy)' : 'var(--grey)'};background:#fff;">
+                ${gr12Avg ? gr12Avg : '—'}
+              </div>
+              <span style="font-size:1.3rem;font-weight:800;color:var(--grey);">${gr12Avg ? '%' : ''}</span>
+            </div>
+            <div style="font-size:.74rem;color:var(--grey);margin-top:8px;">Top 6 Gr 12 marks · target <strong>${pd ? pd.targetAvg.low + '–' + pd.targetAvg.high : '??'}%</strong></div>
+            <div id="avgStatusLine" style="font-size:.80rem;margin-top:6px;font-weight:600;${gr12Avg ? '' : 'display:none;'}"></div>
           </div>
-          <div class="avg-arrow">→</div>
-          <div style="text-align:center;">
-            <div class="avg-target">${pd ? pd.targetAvg.low + '–' + pd.targetAvg.high : (uni ? uni.avgRange.low + '–' + uni.avgRange.high : '??')}%</div>
-            <div class="avg-lbl">Target Avg</div>
-          </div>
-          <span class="avg-status close" id="calcAvgStatus">Enter Grade 12 marks or projected avg ↓</span>
         </div>
-        <p class="projection-note">📌 This is a projection — official averages may vary.</p>
       </div>
 
-      <!-- Mandatory courses -->
-      ${mandatoryCoursesHtml}
+      <!-- Grade 11 subjects -->
+      ${gr11SectionHtml}
 
-      <!-- Grade entry sections -->
-      <div class="card-flat" style="margin-bottom:16px;">
-        <h3 style="margin-bottom:4px;">Course Grades</h3>
-        <p style="font-size:.82rem;color:var(--grey);margin-bottom:16px;">Add your Grade 11 subjects (up to 8) and Grade 12 subjects (up to 6). Enter actual or projected marks — blanks are allowed for courses you haven't taken yet.</p>
-        ${gr11SectionHtml}
-        ${gr12SectionHtml}
-      </div>
+      <!-- Grade 12 subjects -->
+      ${gr12SectionHtml}
 
-      <div class="card-flat" style="margin-bottom:16px;">
-        <div style="font-weight:800;font-size:.88rem;margin-bottom:8px;">📈 Improvement Tips for ${prog.programName}</div>
-        <ul style="padding-left:18px;font-size:.85rem;color:var(--navy);line-height:1.7;">
-          ${pd && pd.requiredCourses ? `<li>The required courses (${pd.requiredCourses.join(', ')}) count toward your admission average — add these to your Grade 12 section and keep them strong.</li>` : '<li>Focus on the specific courses required by this program.</li>'}
-          <li>A 1–2% improvement in your weakest Grade 12 subject can raise your overall average significantly.</li>
-          <li>Seek tutoring or office hours early — don't wait until exams.</li>
-          ${pd && pd.aifRequired ? `<li>${prog.uniName} heavily weighs the supplementary form — plan ahead for it regardless of your grades.</li>` : ''}
-        </ul>
-      </div>
     </div>
 
     <!-- ── EC TAB ── -->
@@ -2885,12 +2941,36 @@ ${(()=>{
       <div class="card-flat" style="margin-bottom:16px;">
         ${ecGuideHtml}
       </div>
+      <div class="card-flat" style="margin-bottom:16px;">
+        <h4 style="margin-bottom:6px;">⚽ Extracurriculars Strength</h4>
+        <p style="font-size:.82rem;color:var(--grey);margin-bottom:12px;">Rate your overall extracurricular quality. This feeds your score in the Application Tracker.</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="range" min="0" max="100" step="5" value="${clSt['ecScore'] || 0}"
+            id="ecScoreSlider"
+            oninput="document.getElementById('ecScoreVal').textContent=this.value+'%';saveSelfScore('ec','${prog.id}',this.value)"
+            style="flex:1;accent-color:var(--accent);"/>
+          <span id="ecScoreVal" style="font-weight:800;font-size:1rem;min-width:42px;color:var(--navy);">${clSt['ecScore'] ? clSt['ecScore']+'%' : '0%'}</span>
+        </div>
+        <div style="font-size:.73rem;color:var(--grey);margin-top:6px;">0 = no ECs &nbsp;·&nbsp; 50 = solid involvement &nbsp;·&nbsp; 100 = exceptional leadership</div>
+      </div>
     </div>
 
     <!-- ── APPLICATION TAB ── -->
     <div class="tab-panel" id="tab-application">
       <div class="card-flat" style="margin-bottom:16px;">
         ${appHtml}
+      </div>
+      <div class="card-flat" style="margin-bottom:16px;">
+        <h4 style="margin-bottom:6px;">✍️ Essays &amp; Interview Readiness</h4>
+        <p style="font-size:.82rem;color:var(--grey);margin-bottom:12px;">Rate your essay and interview preparation. This feeds your score in the Application Tracker.</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="range" min="0" max="100" step="5" value="${clSt['essayScore'] || 0}"
+            id="essayScoreSlider"
+            oninput="document.getElementById('essayScoreVal').textContent=this.value+'%';saveSelfScore('essay','${prog.id}',this.value)"
+            style="flex:1;accent-color:var(--accent);"/>
+          <span id="essayScoreVal" style="font-weight:800;font-size:1rem;min-width:42px;color:var(--navy);">${clSt['essayScore'] ? clSt['essayScore']+'%' : '0%'}</span>
+        </div>
+        <div style="font-size:.73rem;color:var(--grey);margin-top:6px;">0 = not started &nbsp;·&nbsp; 50 = drafted &nbsp;·&nbsp; 100 = polished &amp; ready</div>
       </div>
       <div style="background:var(--navy);border-radius:12px;padding:14px 18px;display:flex;gap:14px;align-items:center;cursor:pointer;" onclick="openChat('app')">
         <span style="font-size:1.4rem;">🤖</span>
@@ -2914,9 +2994,8 @@ ${(()=>{
     </div>
   `;
 
-  // Recalc projected avg and academics score on render
+  // Recalc projected avg on render
   recalcAvg(prog.id);
-  recalcAcademicsScore(prog.id);
   setChatContext(prog, pd);
 }
 

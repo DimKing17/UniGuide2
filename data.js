@@ -90,9 +90,35 @@ const MAJORS = {
     "French Immersion Education","Bilingual Education","Mathematics Education",
     "Science Education","Social Studies Education"
   ],
+  "Law": [
+    "Law","Pre-Law","Legal Studies","Criminal Law","Business Law",
+    "International Law","Environmental Law","Human Rights Law","Indigenous Law",
+    "Law and Society","Law and Technology","Law and Economics","Corporate Law",
+    "Family Law","Immigration Law","Tax Law","Constitutional Law",
+    "Criminology","Justice Studies","Paralegal Studies","Public Policy and Law",
+    "Dispute Resolution","Forensic Science","Cyber Law","Health Law",
+    "Administrative Law","Elder Law","Labour Law","Sports Law",
+    "Law and Governance","Legal Research"
+  ],
   "Law & Legal Studies": [
-    "Law","Law and Society","International Law","Pre-Law","Legal Studies",
-    "Law and Business","Law and Technology","Indigenous Law","Environmental Law"
+    "Law","Pre-Law","Legal Studies","Criminal Law","Business Law",
+    "International Law","Environmental Law","Human Rights Law","Indigenous Law",
+    "Law and Society","Law and Technology","Corporate Law","Family Law",
+    "Criminology","Justice Studies","Paralegal Studies","Public Policy and Law"
+  ],
+  "Trades & Applied Technology": [
+    "Electrician Technology","Plumbing Technology","Carpentry and Joinery",
+    "Welding Technology","Automotive Service Technology","HVAC Technology",
+    "Construction Techniques","Industrial Mechanic Technology","Tool and Die Making",
+    "Heavy Equipment Operation","Aircraft Maintenance Technology","Marine Engineering Technology",
+    "Instrumentation and Control Technology","Millwright Technology","Sheet Metal Worker Technology",
+    "Refrigeration and Air Conditioning Technology","Ironworking","Masonry",
+    "Painting and Decorating","Boilermaker Technology","Pipefitting Technology",
+    "Gas Fitting","Industrial Electrician","Power Engineering Technology",
+    "Architectural Technician","Civil Engineering Technology",
+    "Mechanical Engineering Technology","Electronics Engineering Technology",
+    "Computer Systems Technician","Telecommunications Technician",
+    "Apprenticeship Studies","Technologist — Instrumentation","Trades Management"
   ],
   "Agriculture & Environment": [
     "Agriculture","Agricultural Science","Agribusiness","Agronomy","Animal Science",
@@ -3033,6 +3059,117 @@ const PROGRAM_DATA = {
     ecHighlights: ["Science fairs","Research internships (NSERC USRA)","Biology/Chemistry clubs","Environmental volunteering","Science competitions","Lab volunteer work"],
     scholarships: ["Trek Excellence Scholarship ($4,000)","President's Entrance Scholarship","Science Faculty Awards"],
     notes: "UBC Science has one of Canada's strongest co-op programs with placements at top research institutes and biotech companies."
+  },
+
+  // ── Additional common program entries (slug variants) ─────────────────────
+  "uoft__mechanical-engineering": {
+    degreeType: "BASc — Bachelor of Applied Science",
+    length: "4 years", coopTerms: 0,
+    targetAvg: { low: 93, high: 97 }, deadline: "Feb 1", tuition: 14834,
+    competitiveness: "very",
+    requiredCourses: ["MHF4U","MCV4U","SPH4U","SCH4U","ENG4U"],
+    optionalCourse: true, aifRequired: false,
+    applyURL: "https://www.ouac.on.ca",
+    ecHighlights: ["Engineering competitions (CanSat, SAE)","FIRST Robotics","Hackathons","Physics Olympiad","Design projects","Machine shop experience"],
+    scholarships: ["U of T Excellence Award ($5,000–$7,500)","PEY Co-op placement","Engineering Faculty Awards"],
+    notes: "Mechanical Engineering at U of T is part of the Faculty of Applied Science & Engineering. PEY co-op (16-month) available in Year 3."
+  },
+  "uoft__computer-science": {
+    degreeType: "HBSc — Honours Bachelor of Science",
+    length: "4 years", coopTerms: 4,
+    targetAvg: { low: 93, high: 97 }, deadline: "Feb 1", tuition: 57020,
+    competitiveness: "very",
+    requiredCourses: ["MHF4U","ICS4U","ENG4U"],
+    optionalCourse: true, aifRequired: false,
+    applyURL: "https://www.ouac.on.ca",
+    ecHighlights: ["Competitive programming (USACO, Codeforces)","UofTHacks hackathon","Open-source projects","AI/ML research","GitHub portfolio","Math competitions"],
+    scholarships: ["U of T Excellence Award ($5,000+)","CS Faculty Merit Awards","NSERC USRA Research Award"],
+    notes: "U of T CS is consistently ranked top 3 in Canada. PEY co-op available. Machine learning and AI specializations are world-class."
+  },
+  "uoft__life-sciences": {
+    degreeType: "HBSc — Honours Bachelor of Science",
+    length: "4 years", coopTerms: 0,
+    targetAvg: { low: 90, high: 97 }, deadline: "Feb 1", tuition: 14834,
+    competitiveness: "very",
+    requiredCourses: ["SBI4U","SCH4U","ENG4U","MHF4U"],
+    optionalCourse: true, aifRequired: false,
+    applyURL: "https://www.ouac.on.ca",
+    ecHighlights: ["Hospital volunteering","Lab research (NSERC)","Biology Olympiad","Science fairs","Pre-med clubs","Medical shadowing"],
+    scholarships: ["U of T Excellence Award ($5,000+)","Life Sciences Merit Award","NSERC USRA"],
+    notes: "Life Sciences is the gateway to Medicine, Dentistry, and graduate research at U of T. Highly competitive for med school applicants."
+  },
+  "mcmaster__health-sciences": {
+    degreeType: "BHSc — Bachelor of Health Sciences",
+    length: "4 years", coopTerms: 0,
+    targetAvg: { low: 92, high: 97 }, deadline: "Feb 1", tuition: 10588,
+    competitiveness: "very",
+    requiredCourses: ["SBI4U","SCH4U","ENG4U","MHF4U"],
+    optionalCourse: true, aifRequired: true,
+    applyURL: "https://www.ouac.on.ca",
+    ecHighlights: ["Hospital volunteering","Health research","Community health initiatives","Pre-med clubs","McMaster Medical Robotics","Science olympiads"],
+    scholarships: ["McMaster Award of Excellence ($3,000–$5,000)","Health Sciences Faculty Award","Entrance Scholarships"],
+    notes: "McMaster BHSc is one of Canada's most selective programs and a premier stepping stone to McMaster's MD program via the McMaster route."
+  },
+  "mcmaster__engineering-i": {
+    degreeType: "BEng — Bachelor of Engineering",
+    length: "4 years", coopTerms: 0,
+    targetAvg: { low: 88, high: 95 }, deadline: "Feb 1", tuition: 11088,
+    competitiveness: "comp",
+    requiredCourses: ["MHF4U","MCV4U","SPH4U","SCH4U","ENG4U"],
+    optionalCourse: true, aifRequired: false,
+    applyURL: "https://www.ouac.on.ca",
+    ecHighlights: ["FIRST Robotics","Engineering design teams","Math competitions","Physics labs","Coding projects","CAD/SolidWorks experience"],
+    scholarships: ["McMaster Award of Excellence ($3,000–$5,000)","Engineering Faculty Awards","Entrance Merit Scholarships"],
+    notes: "McMaster Engineering I is a common first year — students choose specialization in Year 2. Co-op available in most programs."
+  },
+  "queens__commerce": {
+    degreeType: "BCom — Bachelor of Commerce",
+    length: "4 years", coopTerms: 0,
+    targetAvg: { low: 87, high: 94 }, deadline: "Feb 1", tuition: 12600,
+    competitiveness: "comp",
+    requiredCourses: ["ENG4U","MHF4U"],
+    optionalCourse: true, aifRequired: true,
+    applyURL: "https://www.ouac.on.ca",
+    ecHighlights: ["Business case competitions","Smith School of Business clubs","Investment clubs","Community leadership","International experience","Entrepreneurship"],
+    scholarships: ["Queen's Excellence Scholarship ($4,000)","Smith Commerce Awards","Principal's Scholarship"],
+    notes: "Smith School of Business at Queen's is ranked #1 for undergraduate business in Canada. AIF (video + short answers) is mandatory."
+  },
+  "queens__engineering": {
+    degreeType: "BScE — Bachelor of Science in Engineering",
+    length: "4 years", coopTerms: 0,
+    targetAvg: { low: 87, high: 95 }, deadline: "Feb 1", tuition: 12150,
+    competitiveness: "comp",
+    requiredCourses: ["MHF4U","MCV4U","SPH4U","SCH4U","ENG4U"],
+    optionalCourse: true, aifRequired: false,
+    applyURL: "https://www.ouac.on.ca",
+    ecHighlights: ["Engineering design teams (Formula SAE, Concrete Canoe)","Physics/Math Olympiads","Robotics","Internship experience","Coding projects"],
+    scholarships: ["Queen's Excellence Scholarship ($4,000)","Engineering Merit Awards","Dean's Scholarship"],
+    notes: "Queen's Engineering is well-regarded, with strong alumni networks and multiple specializations in 2nd year. Great campus community."
+  },
+  "western__ivey": {
+    degreeType: "HBA — Honour Business Administration",
+    length: "2 years (Years 3–4, following 2 years of any degree)",
+    coopTerms: 0,
+    targetAvg: { low: 85, high: 95 }, deadline: "Feb 1", tuition: 12200,
+    competitiveness: "very",
+    requiredCourses: ["ENG4U","MHF4U"],
+    optionalCourse: true, aifRequired: true,
+    applyURL: "https://www.ouac.on.ca",
+    ecHighlights: ["Business case competitions (Ivey Case Competition)","Networking events","Finance clubs","Entrepreneurship","Leadership roles","International exchange"],
+    scholarships: ["Western Scholarship of Excellence ($1,000–$4,000)","Ivey Business School Awards","National Scholarship Program"],
+    notes: "Ivey HBA is ranked #1 for MBA in Canada. Students apply after Year 2 of Western (from any program). Extremely strong alumni network and recruiting."
+  },
+  "mcgill__engineering": {
+    degreeType: "BEng — Bachelor of Engineering",
+    length: "4 years", coopTerms: 0,
+    targetAvg: { low: 90, high: 97 }, deadline: "Jan 15", tuition: 9000,
+    competitiveness: "very",
+    requiredCourses: ["MHF4U","MCV4U","SPH4U","SCH4U","ENG4U"],
+    optionalCourse: true, aifRequired: false,
+    applyURL: "https://www.mcgill.ca/applying/",
+    ecHighlights: ["McGill Engineering Competitions","FSAE McGill Racing","Robotics clubs","Hackathons","Research with professors"],
+    scholarships: ["McGill Entrance Scholarship ($3,000)","Engineering Faculty Awards","Quebec Bursary Programs"],
+    notes: "McGill Engineering is globally ranked. Montreal is an incredible city and tuition is among the lowest for a top-5 Canadian university."
   }
 };
 
@@ -3096,21 +3233,3 @@ const SCHOLARSHIPS = [
   { name:"Rotary Foundation Scholarships", amount:"Varies (often full programs)", type:"merit", area:"any", prov:"National", desc:"Various Rotary-sponsored scholarships for community leaders. Apply through your local Rotary Club.", deadline:"Varies by chapter", link:"https://www.rotary.org/en/our-programs/scholarships", tags:["Community","Leadership","Merit","National","International"] },
   { name:"Mining Industry Human Resources Council Award", amount:"$2,500–$5,000", type:"merit", area:"eng", prov:"National", desc:"For students entering Mining Engineering, Geological Engineering, or related resource industry programs.", deadline:"April", link:"https://mihr.ca/", tags:["Mining","Engineering","STEM","Merit","National"] }
 ];
-
-// ───────────────────────────────────────────────────────────
-//  GRADE 11 → GRADE 12 PREREQUISITE CHAIN
-//  Maps each Gr12 course code to the Gr11 subject that must
-//  be present first (Ontario curriculum).
-// ───────────────────────────────────────────────────────────
-const GR11_GR12_PREREQ_MAP = {
-  'MHF4U': { gr11: 'Functions (Gr 11)',         errCode: 'ERR-PREREQ-01', desc: 'MCR3U (Grade 11 Functions) is required before MHF4U Advanced Functions.' },
-  'MCV4U': { gr11: 'Functions (Gr 11)',         errCode: 'ERR-PREREQ-02', desc: 'Grade 11 Functions is the foundational prerequisite for MCV4U Calculus & Vectors.' },
-  'SPH4U': { gr11: 'Physics (Gr 11)',           errCode: 'ERR-PREREQ-03', desc: 'SPH3U (Grade 11 Physics) is required before SPH4U Grade 12 Physics.' },
-  'SCH4U': { gr11: 'Chemistry (Gr 11)',         errCode: 'ERR-PREREQ-04', desc: 'SCH3U (Grade 11 Chemistry) is required before SCH4U Grade 12 Chemistry.' },
-  'SBI4U': { gr11: 'Biology (Gr 11)',           errCode: 'ERR-PREREQ-05', desc: 'SBI3U (Grade 11 Biology) is required before SBI4U Grade 12 Biology.' },
-  'ICS4U': { gr11: 'Computer Science (Gr 11)', errCode: 'ERR-PREREQ-06', desc: 'ICS3U/ICS3C (Grade 11 Computer Science) is recommended before ICS4U.' },
-  'ENG4U': { gr11: 'English (Gr 11)',           errCode: 'ERR-PREREQ-07', desc: 'ENG3U (Grade 11 English) is required before ENG4U Grade 12 English.' },
-  'MDM4U': { gr11: 'Mathematics of Data Management (Gr 11)', errCode: 'ERR-PREREQ-08', desc: 'A Grade 11 Math course is required before MDM4U Data Management.' },
-  'SES4U': { gr11: 'Physics (Gr 11)',           errCode: 'ERR-PREREQ-09', desc: 'Grade 11 Physics or Science is recommended before SES4U Earth & Space Science.' },
-  'PSK4U': { gr11: 'Exercise Science (Gr 11)', errCode: 'ERR-PREREQ-10', desc: 'Grade 11 Health & Physical Education or Exercise Science is recommended before PSK4U Kinesiology.' },
-};

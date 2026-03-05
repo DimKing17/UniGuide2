@@ -321,6 +321,7 @@
 <nav class="nav">
   <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
   <div class="nav-links">
+    <a href="explore.html">Explore</a>
     <a href="selections.html" class="active">Selections</a>
     <a href="saved.html">My List</a>
     <a href="scholarships.html">Funding</a>
@@ -718,16 +719,6 @@
         <input type="text" id="pPostal" placeholder="e.g. M5V 3A8" maxlength="7" style="text-transform:uppercase;"/>
       </div>
     </div>
-    <div class="form-group">
-      <label>Distance preference</label>
-      <select id="pDistance">
-        <option value="">No preference</option>
-        <option value="close">Close to home (&lt;2 hrs)</option>
-        <option value="moderate">Moderate (2–5 hrs)</option>
-        <option value="far">Far (5+ hrs, any province)</option>
-        <option value="anywhere">Anywhere in Canada</option>
-      </select>
-    </div>
     <button class="btn btn-red" style="width:100%;margin-top:10px;" onclick="saveProfile()">Save My Profile →</button>
     <p style="font-size:.75rem;color:var(--grey);text-align:center;margin:8px 0 0;">Saved only in this browser. <a href="#" onclick="clearProfile(event)" style="color:var(--red);">Clear my data</a></p>
   </div>
@@ -738,6 +729,8 @@
 </footer>
 
 <script src="data.js"></script>
+<script src="data-additions.js"></script>
+<script src="data-enrichment.js"></script>
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
 <script>
@@ -786,7 +779,20 @@ function haversineKm(lat1,lon1,lat2,lon2){
 }
 
 let userLat=null, userLng=null, userCity='';
-(function loadLocation(){
+const FSA_COORDS = {
+  'M5S': [43.6629, -79.3957], 'V6T': [49.2606, -123.2460], 'H3A': [45.5017, -73.5673],
+  'T2P': [51.0447, -114.0719], 'K1A': [45.4215, -75.6972], 'R3C': [49.8951, -97.1384],
+  'S7K': [52.1332, -106.6700], 'B3J': [44.6488, -63.5752], 'E1C': [46.0878, -64.7782],
+  'A1C': [47.5615, -52.7126], 'C1A': [46.2382, -63.1311], 'G1R': [46.8139, -71.2080],
+  'L8P': [43.2557, -79.8711], 'N6A': [42.9849, -81.2453], 'K7L': [44.2312, -76.4860],
+  'N2L': [43.4668, -80.5164], 'N9A': [42.3149, -83.0364], 'L4M': [44.3894, -79.6903],
+  'P3E': [46.4917, -80.9930], 'P7B': [48.3809, -89.2477], 'V3R': [49.1044, -122.8011],
+  'V5H': [49.2488, -122.9805], 'V6Y': [49.1666, -123.1336], 'V8W': [48.4284, -123.3656],
+  'V1Y': [49.8879, -119.4960], 'T4N': [52.2681, -113.8112], 'T5J': [53.5444, -113.4909],
+  'M5V': [43.6447, -79.3933], 'M4Y': [43.6655, -79.3823], 'M5B': [43.6558, -79.3789]
+};
+
+function loadLocation(){
   try {
     const p=JSON.parse(localStorage.getItem('ugProfile')||'{}');
     if(p.city) userCity=p.city;
@@ -805,8 +811,13 @@ let userLat=null, userLng=null, userCity='';
     };
     const k=userCity.toLowerCase().trim();
     if(CC[k]) [userLat,userLng]=CC[k];
+    else if(p.postalCode){
+      const fsa=p.postalCode.substring(0,3).toUpperCase();
+      if(FSA_COORDS[fsa]) [userLat,userLng]=FSA_COORDS[fsa];
+    }
   } catch(e){}
-})();
+}
+loadLocation();
 
 // ════════════════════════════════════════════════════════
 //  MAJORS PANEL
@@ -1183,6 +1194,27 @@ function _matchMajorToUni(major, uni){
   return {level:0, pts:0, matchedProg:null};
 }
 
+/**
+ * calcFitScore Formula Documentation:
+ * 
+ * Input Factors:
+ * 1. Program Match (avgProgPts): Average score across all selected majors. 
+ *    Each major is matched against university programs using keyword overlap.
+ *    - Level 1 Match (Direct): 60 pts
+ *    - Level 2 Match (Keyword): 40 pts
+ *    - No Match: 0 pts
+ * 2. Ranking (rankPts): Based on Canada Rank.
+ *    - Rank 1-3: 20 pts
+ *    - Rank 4-7: 15 pts
+ *    - Rank 8-12: 10 pts
+ *    - Rank 13+: 5 pts
+ * 3. Co-op (coopPts): 
+ *    - Available: 20 pts
+ *    - Not Available: 0 pts
+ * 
+ * Calculation:
+ * Total Score = Min(avgProgPts + rankPts + coopPts, 100)
+ */
 function calcFitScore(uni){
   if(!selectedMajors.length) return null;
 
@@ -1228,14 +1260,30 @@ function calcFitScore(uni){
   // Best matched program (prefer Level 1 > Level 2 > null)
   const best = results.find(r=>r.level===1) || results.find(r=>r.level===2) || null;
 
-  return {score:total, badges:badges.slice(0,2), matchedProg:best?best.matchedProg:null, results};
+  return {
+    score: total, 
+    badges: badges.slice(0, 2), 
+    matchedProg: best ? best.matchedProg : null, 
+    results,
+    breakdown: { programPts: avgProgPts, rankPts, coopPts }
+  };
 }
 
 function fitScoreHtml(fit){
   if(!fit) return '';
   const cls=fit.score>=70?'fit-score-green':fit.score>=45?'fit-score-yellow':'fit-score-grey';
   const badgesHtml=fit.badges.map(b=>`<span class="fit-badge ${b.cls}">${b.text}</span>`).join('');
-  return `<div class="fit-row"><span class="fit-score-pill ${cls}">🎯 ${fit.score}% fit</span>${badgesHtml}</div>`;
+  
+  const { programPts, rankPts, coopPts } = fit.breakdown;
+  const maxVal = Math.max(programPts, rankPts, coopPts);
+  
+  const b = (val) => val === maxVal ? `<strong>${val} pts</strong>` : `${val} pts`;
+  const breakdownStr = `Program: ${b(programPts)} · Ranking: ${b(rankPts)} · Co-op: ${b(coopPts)}`;
+  
+  return `
+    <div class="fit-row"><span class="fit-score-pill ${cls}">🎯 ${fit.score}% fit</span>${badgesHtml}</div>
+    <div style="font-size:0.68rem; color:var(--grey); margin-bottom:10px; margin-top:-4px;">${breakdownStr}</div>
+  `;
 }
 
 // ── Save to My List ──────────────────────────────────────
@@ -1365,9 +1413,9 @@ function filterUnis(){
     `Showing ${filtered.length} of ${UNIVERSITIES.length} universities${sortNote}`;
 
   if(userLat===null&&dist>0){
-    document.getElementById('distNote').textContent='⚠️ Distance filter requires your city in your profile.';
+    document.getElementById('distNote').textContent='⚠️ Distance filter requires your city or postal code in your profile.';
   } else {
-    document.getElementById('distNote').textContent=userCity?`📍 Distances from ${userCity}`:'';
+    document.getElementById('distNote').textContent=userCity?`📍 Distances from ${userCity}`: (userLat !== null ? '📍 Distances from your postal code' : '');
   }
   renderUnis(filtered);
 }
@@ -1449,9 +1497,7 @@ function openProfileModal(){
     document.getElementById('pGrade').value=p.grade||'';
     document.getElementById('pProvince').value=p.province||'';
     document.getElementById('pCity').value=p.city||'';
-    document.getElementById('pStreet').value=p.street||'';
-    document.getElementById('pPostal').value=p.postalCode||'';
-    document.getElementById('pDistance').value=p.distance||'';
+    // pDistance removed
   } catch(e){}
 }
 function closeProfileModal(){ document.getElementById('profileModal').classList.remove('open'); document.body.style.overflow=''; }
@@ -1470,7 +1516,6 @@ function saveProfile(){
     city:document.getElementById('pCity').value.trim(),
     street:document.getElementById('pStreet').value.trim(),
     postalCode:rawPostal,
-    distance:document.getElementById('pDistance').value,
   };
   if(!profile.name||!profile.grade||!profile.province){ alert('Please fill in at least your name, grade, and province.'); return; }
   localStorage.setItem('ugProfile',JSON.stringify(profile));
