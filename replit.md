@@ -29,9 +29,11 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 
 ## Key Features (selections.html)
 - **Split workspace**: Majors picker (left) + Universities picker (right)
-- **Majors panel**: Search 800+ programs, browse 17 categories (incl. "Law" and "Trades & Applied Technology"), discovery quiz, multi-select up to 5
+- **Majors panel**: Search 800+ programs, browse 17 categories (incl. "Law" and "Trades & Applied Technology"), discovery quiz, **single major selection** (auto-replaces if one already chosen)
 - **Universities panel**: Search + 6 filters, university cards with:
-  - Fit score (0–100%) derived from program match, co-op, ranking
+  - **University Fit Quiz** (15 questions): co-op priority, campus environment, prestige, city size, French/Quebec openness, budget, class size, research, sports, social life, industry connections, exchange programs, residence, alumni network, campus size. Stored in `uqAnswers` (localStorage `uqAnswers`). Adds up to 30 bonus pts to Fit%.
+  - **"— I'll choose my program later —"** as first option in every program dropdown; shows amber hint note if saved without a program choice
+  - Fit score (0–100%) derived from program match + ranking + co-op + university quiz bonus. Shows quiz-only score (without major) when quiz taken.
   - Up to 2 reason badges (e.g. "offers Mech Eng", "co-op available", "requires Calculus")
   - Expandable program details dropdown: Degree type, Co-op, Target Avg, Deadline, Tuition, Competitiveness, Required HS Courses
   - Save to My List with format "University Name — Major"

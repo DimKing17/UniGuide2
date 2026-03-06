@@ -201,48 +201,60 @@ function haversineKm(lat1, lon1, lat2, lon2) {
 
 // ─── Load profile (Fix #16 — distance from home) ─────────────
 let userLat = null, userLng = null, userCity = '';
+const CITY_COORDS_U = {
+  'toronto':[43.6532,-79.3832],'mississauga':[43.5890,-79.6441],'brampton':[43.6834,-79.7663],
+  'ottawa':[45.4215,-75.6972],'hamilton':[43.2557,-79.8711],'london':[42.9849,-81.2453],
+  'kingston':[44.2312,-76.4860],'waterloo':[43.4668,-80.5164],'kitchener':[43.4500,-80.4830],
+  'windsor':[42.3149,-83.0364],'barrie':[44.3894,-79.6903],'sudbury':[46.4917,-80.9930],
+  'thunder bay':[48.3809,-89.2477],'guelph':[43.5448,-80.2482],'oakville':[43.4675,-79.6877],
+  'burlington':[43.3255,-79.7990],'st. catharines':[43.1594,-79.2469],'st catharines':[43.1594,-79.2469],
+  'oshawa':[43.8971,-78.8658],'ajax':[43.8509,-79.0204],'pickering':[43.8384,-79.0868],
+  'markham':[43.8561,-79.3370],'vaughan':[43.8563,-79.5085],'richmond hill':[43.8828,-79.4403],
+  'newmarket':[44.0592,-79.4613],'belleville':[44.1628,-77.3832],'peterborough':[44.3091,-78.3197],
+  'sault ste. marie':[46.5219,-84.3461],'sault ste marie':[46.5219,-84.3461],
+  'north bay':[46.3091,-79.4608],'brantford':[43.1394,-80.2644],'cambridge':[43.3616,-80.3144],
+  'st. thomas':[42.7749,-81.1879],'stratford':[43.3700,-80.9822],'sarnia':[42.9745,-82.4054],
+  'whitby':[43.8975,-78.9429],'niagara falls':[43.0896,-79.0849],'welland':[42.9922,-79.2483],
+  'cornwall':[45.0183,-74.7294],'timmins':[48.4758,-81.3305],
+  'vancouver':[49.2827,-123.1207],'surrey':[49.1044,-122.8011],'burnaby':[49.2488,-122.9805],
+  'richmond':[49.1666,-123.1336],'victoria':[48.4284,-123.3656],'kelowna':[49.8879,-119.4960],
+  'abbotsford':[49.0504,-122.3045],'nanaimo':[49.1659,-123.9401],'prince george':[53.9171,-122.7497],
+  'kamloops':[50.6745,-120.3273],'langley':[49.1044,-122.6604],'chilliwack':[49.1579,-121.9514],
+  'coquitlam':[49.2838,-122.7932],'maple ridge':[49.2193,-122.5984],'delta':[49.0847,-123.0587],
+  'north vancouver':[49.3198,-123.0726],'west vancouver':[49.3587,-123.1680],
+  'calgary':[51.0447,-114.0719],'edmonton':[53.5444,-113.4909],'red deer':[52.2681,-113.8112],
+  'lethbridge':[49.6956,-112.8451],'medicine hat':[50.0405,-110.6764],
+  'grande prairie':[55.1707,-118.7884],'fort mcmurray':[56.7265,-111.3790],
+  'airdrie':[51.2917,-114.0144],'st. albert':[53.6309,-113.6261],
+  'montreal':[45.5017,-73.5673],'québec city':[46.8139,-71.2080],'quebec city':[46.8139,-71.2080],
+  'laval':[45.5668,-73.7073],'longueuil':[45.5315,-73.5184],'sherbrooke':[45.4042,-71.8929],
+  'trois-rivières':[46.3432,-72.5432],'trois-rivieres':[46.3432,-72.5432],
+  'saguenay':[48.4279,-71.0545],'gatineau':[45.4765,-75.7013],
+  'halifax':[44.6488,-63.5752],'dartmouth':[44.6717,-63.5788],'sydney':[46.1351,-60.1831],
+  'moncton':[46.0878,-64.7782],'fredericton':[45.9636,-66.6431],'saint john':[45.2733,-66.0633],
+  'winnipeg':[49.8951,-97.1384],'brandon':[49.8485,-99.9501],
+  'saskatoon':[52.1332,-106.6700],'regina':[50.4452,-104.6189],
+  "st. john's":[47.5615,-52.7126],"st. johns":[47.5615,-52.7126],
+  'charlottetown':[46.2382,-63.1311],
+  'whitehorse':[60.7212,-135.0568],'yellowknife':[62.4540,-114.3718],
+};
+function resolveCity_u(city){
+  if(!city) return null;
+  let k=city.toLowerCase().trim()
+    .replace(/,.*$/,'')
+    .replace(/\s+(on|bc|ab|qc|ns|nb|mb|sk|nl|pe|nt|yt|nu)$/i,'')
+    .replace(/\b(ontario|british columbia|alberta|qu[eé]bec|nova scotia|new brunswick|manitoba|saskatchewan|newfoundland.*|prince edward island|northwest territories|yukon|nunavut)\b/gi,'')
+    .trim();
+  if(CITY_COORDS_U[k]) return CITY_COORDS_U[k];
+  const found=Object.keys(CITY_COORDS_U).find(key=>k.startsWith(key)||key.startsWith(k));
+  return found?CITY_COORDS_U[found]:null;
+}
 try {
   const p = JSON.parse(localStorage.getItem('ugProfile') || '{}');
-  if (p.city) userCity = p.city;
-  // Basic city → approximate coords for common Ontario/BC/AB cities
-  const CITY_COORDS = {
-    'toronto':     [43.6532, -79.3832],
-    'mississauga': [43.5890, -79.6441],
-    'brampton':    [43.6834, -79.7663],
-    'ottawa':      [45.4215, -75.6972],
-    'hamilton':    [43.2557, -79.8711],
-    'london':      [42.9849, -81.2453],
-    'kingston':    [44.2312, -76.4860],
-    'waterloo':    [43.4668, -80.5164],
-    'kitchener':   [43.4500, -80.4830],
-    'windsor':     [42.3149, -83.0364],
-    'barrie':      [44.3894, -79.6903],
-    'sudbury':     [46.4917, -80.9930],
-    'thunder bay': [48.3809, -89.2477],
-    'vancouver':   [49.2827, -123.1207],
-    'surrey':      [49.1044, -122.8011],
-    'burnaby':     [49.2488, -122.9805],
-    'richmond':    [49.1666, -123.1336],
-    'victoria':    [48.4284, -123.3656],
-    'kelowna':     [49.8879, -119.4960],
-    'calgary':     [51.0447, -114.0719],
-    'edmonton':    [53.5444, -113.4909],
-    'red deer':    [52.2681, -113.8112],
-    'montreal':    [45.5017, -73.5673],
-    'montreal':    [45.5017, -73.5673],
-    'québec city': [46.8139, -71.2080],
-    'halifax':     [44.6488, -63.5752],
-    'moncton':     [46.0878, -64.7782],
-    'fredericton': [45.9636, -66.6431],
-    'winnipeg':    [49.8951, -97.1384],
-    'saskatoon':   [52.1332, -106.6700],
-    'regina':      [50.4452, -104.6189],
-    "st. john's":  [47.5615, -52.7126],
-    'charlottetown':[46.2382, -63.1311],
-  };
-  const cityKey = userCity.toLowerCase().trim();
-  if (CITY_COORDS[cityKey]) {
-    [userLat, userLng] = CITY_COORDS[cityKey];
+  if (p.city) {
+    userCity = p.city;
+    const coords = resolveCity_u(p.city);
+    if (coords) [userLat, userLng] = coords;
   }
 } catch(e){}
 

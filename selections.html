@@ -665,6 +665,123 @@
         </div>
       </div>
 
+      <!-- University Fit Quiz -->
+      <div style="margin:4px 0 8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" id="uniQuizToggleBtn" onclick="startUniQuiz()" style="font-size:.82rem;">🎯 Take University Fit Quiz — improve your % fit scores</button>
+        <span id="uniQuizDoneNote" style="display:none;font-size:.8rem;color:#166534;font-weight:600;">✓ Quiz applied — fit scores updated!</span>
+      </div>
+      <div class="quiz-section" id="uniQuizSection" style="display:none;margin-bottom:22px;">
+        <div style="background:var(--navy);border-radius:var(--radius);padding:14px 20px;margin-bottom:18px;display:flex;align-items:center;gap:12px;">
+          <span style="font-size:1.4rem;">🏛️</span>
+          <div>
+            <div style="font-weight:800;font-size:.95rem;color:#fff;">University Fit Quiz</div>
+            <div style="font-size:.83rem;color:rgba(255,255,255,.7);">About 3 minutes — helps us score how well each university matches your priorities.</div>
+          </div>
+        </div>
+        <div class="quiz-card">
+          <div class="quiz-section-title">Section 1 — Career &amp; Academics</div>
+          <div class="quiz-q">1. How much do you prioritize having co-op / paid work terms in your program?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqCoop','high')">Very important — I want real work experience built in</div>
+            <div class="quiz-opt" onclick="uq('uqCoop','medium')">Somewhat — nice to have but not essential</div>
+            <div class="quiz-opt" onclick="uq('uqCoop','low')">Not a priority for me</div>
+          </div>
+          <div class="quiz-q mt-24">2. How important is the university's research reputation and output?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqResearch','very')">Very important — I want access to cutting-edge research</div>
+            <div class="quiz-opt" onclick="uq('uqResearch','somewhat')">Somewhat — good to have</div>
+            <div class="quiz-opt" onclick="uq('uqResearch','low')">Not a priority</div>
+          </div>
+          <div class="quiz-q mt-24">3. How important are strong industry connections and career placement services?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqIndustry','very')">Critical — I want a direct pipeline to employers</div>
+            <div class="quiz-opt" onclick="uq('uqIndustry','somewhat')">Helpful but not a dealbreaker</div>
+            <div class="quiz-opt" onclick="uq('uqIndustry','low')">Not a major factor</div>
+          </div>
+          <div class="quiz-q mt-24">4. Do you prefer small class sizes, or are large lecture halls OK?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqClassSize','small')">Small classes — I want to know my professors personally</div>
+            <div class="quiz-opt" onclick="uq('uqClassSize','medium')">A mix is fine</div>
+            <div class="quiz-opt" onclick="uq('uqClassSize','large')">Large lectures are fine — more students = more networking</div>
+          </div>
+          <div class="quiz-q mt-24">5. Are you interested in international exchange or study-abroad programs?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqExchange','yes')">Yes — definitely want that option</div>
+            <div class="quiz-opt" onclick="uq('uqExchange','maybe')">Maybe, if it works out</div>
+            <div class="quiz-opt" onclick="uq('uqExchange','no')">Not really interested</div>
+          </div>
+        </div>
+        <div class="quiz-card">
+          <div class="quiz-section-title">Section 2 — Campus &amp; Social Life</div>
+          <div class="quiz-q">6. What kind of campus environment do you prefer?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqEnv','urban')">Urban — right in the heart of a city</div>
+            <div class="quiz-opt" onclick="uq('uqEnv','nature')">Nature / suburban — trees, green space, a classic campus feel</div>
+            <div class="quiz-opt" onclick="uq('uqEnv','either')">No strong preference</div>
+          </div>
+          <div class="quiz-q mt-24">7. What city size fits your lifestyle?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqCitySize','big')">Big city (500k+ people) — lots to do, transit, opportunities</div>
+            <div class="quiz-opt" onclick="uq('uqCitySize','mid')">Mid-size city — manageable, still has good amenities</div>
+            <div class="quiz-opt" onclick="uq('uqCitySize','small')">Small town — tight-knit, quieter, lower cost of living</div>
+          </div>
+          <div class="quiz-q mt-24">8. How important is a vibrant social scene, clubs, and campus activities?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqSocial','very')">Very important — it's a huge part of the experience</div>
+            <div class="quiz-opt" onclick="uq('uqSocial','somewhat')">Nice, but not top priority</div>
+            <div class="quiz-opt" onclick="uq('uqSocial','low')">Not a major factor for me</div>
+          </div>
+          <div class="quiz-q mt-24">9. How important is a strong varsity sports and athletics culture?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqSports','very')">Very — I love sports culture or want to compete</div>
+            <div class="quiz-opt" onclick="uq('uqSports','somewhat')">Nice to have</div>
+            <div class="quiz-opt" onclick="uq('uqSports','low')">Not important to me</div>
+          </div>
+          <div class="quiz-q mt-24">10. Do you plan to live in residence on campus (at least first year)?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqResidence','yes')">Yes — I want the on-campus living experience</div>
+            <div class="quiz-opt" onclick="uq('uqResidence','maybe')">Maybe — I'll see what's available</div>
+            <div class="quiz-opt" onclick="uq('uqResidence','no')">No — I plan to commute or live off-campus</div>
+          </div>
+        </div>
+        <div class="quiz-card">
+          <div class="quiz-section-title">Section 3 — Priorities &amp; Logistics</div>
+          <div class="quiz-q">11. How important is the university's overall prestige and national ranking?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqPrestige','very')">Very important — I want a top-tier institution</div>
+            <div class="quiz-opt" onclick="uq('uqPrestige','somewhat')">Somewhat — I'd prefer a well-regarded school</div>
+            <div class="quiz-opt" onclick="uq('uqPrestige','low')">Not a major factor — fit and program matter more</div>
+          </div>
+          <div class="quiz-q mt-24">12. How much does tuition cost / affordability affect your choice?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqBudget','critical')">Critical — I need the most affordable option</div>
+            <div class="quiz-opt" onclick="uq('uqBudget','somewhat')">Important — I'd prefer lower cost but have some flexibility</div>
+            <div class="quiz-opt" onclick="uq('uqBudget','low')">Not a major factor — quality comes first</div>
+          </div>
+          <div class="quiz-q mt-24">13. Are you open to studying in Quebec (potentially French-language environment)?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqFrench','yes')">Yes — I'm interested in Quebec universities</div>
+            <div class="quiz-opt" onclick="uq('uqFrench','either')">Open to it — doesn't strongly affect my choice</div>
+            <div class="quiz-opt" onclick="uq('uqFrench','no')">I'd prefer to study outside Quebec</div>
+          </div>
+          <div class="quiz-q mt-24">14. How important is a large and active alumni network to you?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqAlumni','very')">Very — I want a powerful alumni network for career connections</div>
+            <div class="quiz-opt" onclick="uq('uqAlumni','somewhat')">Somewhat helpful</div>
+            <div class="quiz-opt" onclick="uq('uqAlumni','low')">Not a priority</div>
+          </div>
+          <div class="quiz-q mt-24">15. Do you prefer a larger university with more programs and clubs, or a smaller, more intimate campus?</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="uq('uqCampusSize','large')">Larger — more variety, bigger community, more resources</div>
+            <div class="quiz-opt" onclick="uq('uqCampusSize','medium')">In between — balanced</div>
+            <div class="quiz-opt" onclick="uq('uqCampusSize','small')">Smaller — more personal, easier to stand out</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:8px;">
+          <button class="btn btn-red btn-lg" onclick="applyUniQuiz()">Apply Answers &amp; Update Fit Scores →</button>
+        </div>
+      </div>
+
       <div class="results-count" id="resultsCount"></div>
       <div class="uni-grid" id="uniGrid"></div>
 
@@ -776,27 +893,62 @@ function haversineKm(lat1,lon1,lat2,lon2){
 }
 
 let userLat=null, userLng=null, userCity='';
+const CITY_COORDS={
+  'toronto':[43.6532,-79.3832],'mississauga':[43.5890,-79.6441],'brampton':[43.6834,-79.7663],
+  'ottawa':[45.4215,-75.6972],'hamilton':[43.2557,-79.8711],'london':[42.9849,-81.2453],
+  'kingston':[44.2312,-76.4860],'waterloo':[43.4668,-80.5164],'kitchener':[43.4500,-80.4830],
+  'windsor':[42.3149,-83.0364],'barrie':[44.3894,-79.6903],'sudbury':[46.4917,-80.9930],
+  'thunder bay':[48.3809,-89.2477],'guelph':[43.5448,-80.2482],'oakville':[43.4675,-79.6877],
+  'burlington':[43.3255,-79.7990],'st. catharines':[43.1594,-79.2469],'st catharines':[43.1594,-79.2469],
+  'oshawa':[43.8971,-78.8658],'ajax':[43.8509,-79.0204],'pickering':[43.8384,-79.0868],
+  'markham':[43.8561,-79.3370],'vaughan':[43.8563,-79.5085],'richmond hill':[43.8828,-79.4403],
+  'newmarket':[44.0592,-79.4613],'belleville':[44.1628,-77.3832],'peterborough':[44.3091,-78.3197],
+  'sault ste. marie':[46.5219,-84.3461],'sault ste marie':[46.5219,-84.3461],
+  'north bay':[46.3091,-79.4608],'brantford':[43.1394,-80.2644],'cambridge':[43.3616,-80.3144],
+  'st. thomas':[42.7749,-81.1879],'stratford':[43.3700,-80.9822],'sarnia':[42.9745,-82.4054],
+  'whitby':[43.8975,-78.9429],'clarington':[43.9353,-78.6083],'niagara falls':[43.0896,-79.0849],
+  'welland':[42.9922,-79.2483],'cornwall':[45.0183,-74.7294],'timmins':[48.4758,-81.3305],
+  'vancouver':[49.2827,-123.1207],'surrey':[49.1044,-122.8011],'burnaby':[49.2488,-122.9805],
+  'richmond':[49.1666,-123.1336],'victoria':[48.4284,-123.3656],'kelowna':[49.8879,-119.4960],
+  'abbotsford':[49.0504,-122.3045],'nanaimo':[49.1659,-123.9401],'prince george':[53.9171,-122.7497],
+  'kamloops':[50.6745,-120.3273],'langley':[49.1044,-122.6604],'chilliwack':[49.1579,-121.9514],
+  'coquitlam':[49.2838,-122.7932],'maple ridge':[49.2193,-122.5984],'delta':[49.0847,-123.0587],
+  'north vancouver':[49.3198,-123.0726],'west vancouver':[49.3587,-123.1680],
+  'calgary':[51.0447,-114.0719],'edmonton':[53.5444,-113.4909],'red deer':[52.2681,-113.8112],
+  'lethbridge':[49.6956,-112.8451],'medicine hat':[50.0405,-110.6764],
+  'grande prairie':[55.1707,-118.7884],'fort mcmurray':[56.7265,-111.3790],
+  'airdrie':[51.2917,-114.0144],'st. albert':[53.6309,-113.6261],'spruce grove':[53.5454,-113.9007],
+  'montreal':[45.5017,-73.5673],'québec city':[46.8139,-71.2080],'quebec city':[46.8139,-71.2080],
+  'laval':[45.5668,-73.7073],'longueuil':[45.5315,-73.5184],'sherbrooke':[45.4042,-71.8929],
+  'trois-rivières':[46.3432,-72.5432],'trois-rivieres':[46.3432,-72.5432],
+  'saguenay':[48.4279,-71.0545],'gatineau':[45.4765,-75.7013],'terrebonne':[45.7048,-73.6444],
+  'saint-jean-sur-richelieu':[45.3167,-73.2667],'brossard':[45.4500,-73.4667],
+  'halifax':[44.6488,-63.5752],'dartmouth':[44.6717,-63.5788],'sydney':[46.1351,-60.1831],
+  'moncton':[46.0878,-64.7782],'fredericton':[45.9636,-66.6431],'saint john':[45.2733,-66.0633],
+  'winnipeg':[49.8951,-97.1384],'brandon':[49.8485,-99.9501],
+  'saskatoon':[52.1332,-106.6700],'regina':[50.4452,-104.6189],'prince albert':[53.2033,-105.7531],
+  "st. john's":[47.5615,-52.7126],"st. johns":[47.5615,-52.7126],'corner brook':[48.9500,-57.9500],
+  'charlottetown':[46.2382,-63.1311],
+  'whitehorse':[60.7212,-135.0568],'yellowknife':[62.4540,-114.3718],
+};
+function resolveCity(city){
+  if(!city) return null;
+  let k=city.toLowerCase().trim()
+    .replace(/,.*$/,'')
+    .replace(/\s+(on|bc|ab|qc|ns|nb|mb|sk|nl|pe|nt|yt|nu)$/i,'')
+    .replace(/\b(ontario|british columbia|alberta|qu[eé]bec|nova scotia|new brunswick|manitoba|saskatchewan|newfoundland.*|prince edward island|northwest territories|yukon|nunavut)\b/gi,'')
+    .trim();
+  if(CITY_COORDS[k]) return CITY_COORDS[k];
+  const found=Object.keys(CITY_COORDS).find(key=>k.startsWith(key)||key.startsWith(k));
+  return found?CITY_COORDS[found]:null;
+}
 (function loadLocation(){
   try {
     const p=JSON.parse(localStorage.getItem('ugProfile')||'{}');
-    if(p.city) userCity=p.city;
-    const CC={
-      'toronto':[43.6532,-79.3832],'mississauga':[43.5890,-79.6441],'brampton':[43.6834,-79.7663],
-      'ottawa':[45.4215,-75.6972],'hamilton':[43.2557,-79.8711],'london':[42.9849,-81.2453],
-      'kingston':[44.2312,-76.4860],'waterloo':[43.4668,-80.5164],'kitchener':[43.4500,-80.4830],
-      'windsor':[42.3149,-83.0364],'barrie':[44.3894,-79.6903],'sudbury':[46.4917,-80.9930],
-      'thunder bay':[48.3809,-89.2477],'vancouver':[49.2827,-123.1207],'surrey':[49.1044,-122.8011],
-      'burnaby':[49.2488,-122.9805],'richmond':[49.1666,-123.1336],'victoria':[48.4284,-123.3656],
-      'kelowna':[49.8879,-119.4960],'calgary':[51.0447,-114.0719],'edmonton':[53.5444,-113.4909],
-      'red deer':[52.2681,-113.8112],'montreal':[45.5017,-73.5673],'québec city':[46.8139,-71.2080],
-      'halifax':[44.6488,-63.5752],'moncton':[46.0878,-64.7782],'fredericton':[45.9636,-66.6431],
-      'winnipeg':[49.8951,-97.1384],'saskatoon':[52.1332,-106.6700],'regina':[50.4452,-104.6189],
-      "st. john's":[47.5615,-52.7126],'charlottetown':[46.2382,-63.1311],
-    };
-    const k=userCity.toLowerCase().trim();
-    if(CC[k]) [userLat,userLng]=CC[k];
+    if(p.city){ userCity=p.city; const coords=resolveCity(p.city); if(coords)[userLat,userLng]=coords; }
   } catch(e){}
 })();
+let uqAnswers={};
 
 // ════════════════════════════════════════════════════════
 //  MAJORS PANEL
@@ -848,8 +1000,7 @@ function toggleMajor(el, major){
     el.classList.remove('selected');
     el.querySelector('.major-item-tag').textContent='';
   } else {
-    if(selectedMajors.length>=5){ alert('You can select up to 5 majors. Remove one first.'); return; }
-    selectedMajors.push(major);
+    selectedMajors=[major];
     el.classList.add('selected');
     el.querySelector('.major-item-tag').textContent='✓';
   }
@@ -938,8 +1089,7 @@ function selectFromSearch(major,cat){
   document.getElementById('searchDropdown').style.display='none';
   document.getElementById('majorSearch').value='';
   if(!selectedMajors.includes(major)){
-    if(selectedMajors.length>=5){ alert('Max 5 majors. Remove one first.'); return; }
-    selectedMajors.push(major);
+    selectedMajors=[major];
     syncMajors();
   }
   showMajorList(cat);
@@ -1035,9 +1185,43 @@ function showResults(){
   document.getElementById('resultSection').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function addResultMajor(major){
-  if(!selectedMajors.includes(major)&&selectedMajors.length<5){
-    selectedMajors.push(major); syncMajors();
+  if(!selectedMajors.includes(major)){
+    selectedMajors=[major]; syncMajors();
   }
+}
+
+// ════════════════════════════════════════════════════════
+//  UNIVERSITY FIT QUIZ
+// ════════════════════════════════════════════════════════
+function uq(key,val){
+  uqAnswers[key]=val;
+  event.currentTarget.closest('.quiz-options').querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+}
+function startUniQuiz(){
+  document.getElementById('uniQuizSection').style.display='block';
+  document.getElementById('uniQuizToggleBtn').style.display='none';
+  document.getElementById('uniQuizSection').scrollIntoView({behavior:'smooth',block:'start'});
+  const saved=localStorage.getItem('uqAnswers');
+  if(saved){
+    try {
+      const prev=JSON.parse(saved);
+      Object.keys(prev).forEach(key=>{
+        const val=prev[key];
+        const opts=document.querySelectorAll(`#uniQuizSection .quiz-opt[onclick="uq('${key}','${val}')"]`);
+        opts.forEach(o=>o.classList.add('selected'));
+      });
+    } catch(e){}
+  }
+}
+function applyUniQuiz(){
+  localStorage.setItem('uqAnswers',JSON.stringify(uqAnswers));
+  document.getElementById('uniQuizSection').style.display='none';
+  document.getElementById('uniQuizDoneNote').style.display='';
+  const btn=document.getElementById('uniQuizToggleBtn');
+  btn.style.display='';
+  btn.textContent='🎯 Retake University Fit Quiz';
+  filterUnis();
 }
 
 // ════════════════════════════════════════════════════════
@@ -1173,8 +1357,85 @@ function _matchMajorToUni(major, uni){
   return {level:0, pts:0, matchedProg:null};
 }
 
+function calcUniQuizBonus(uni){
+  const answers=uqAnswers;
+  if(!Object.keys(answers).length) return 0;
+  let pts=0;
+  const vibe=((uni.campusSize||'')+(uni.vibe||'')).toLowerCase();
+  const rank=uni.canadaRank;
+  const tuition=uni.tuition.domestic;
+  const isQuebec=uni.province==='Quebec';
+  const bigCity=vibe.match(/downtown|urban|metro|big city|major city/);
+  const midCity=vibe.match(/mid-size|suburban|mid size/);
+  const smallTown=vibe.match(/small town|small city|rural/);
+  const isNaturey=vibe.match(/forest|park|lake|river|mountain|coastal|nature|scenic|trail|wilderness/);
+
+  if(answers.uqCoop==='high') pts+=uni.coop?3:0;
+  else if(answers.uqCoop==='medium') pts+=uni.coop?2:1;
+  else if(answers.uqCoop==='low') pts+=uni.coop?0:3;
+
+  if(answers.uqEnv==='urban') pts+=bigCity?2:midCity?1:0;
+  else if(answers.uqEnv==='nature') pts+=(isNaturey&&!bigCity)?2:midCity?1:0;
+  else if(answers.uqEnv==='either') pts+=1;
+
+  if(answers.uqPrestige==='very') pts+=rank<=3?4:rank<=7?3:rank<=15?1:0;
+  else if(answers.uqPrestige==='somewhat') pts+=rank<=7?3:rank<=20?2:1;
+  else if(answers.uqPrestige==='low') pts+=2;
+
+  if(answers.uqCitySize==='big') pts+=bigCity?3:midCity?1:0;
+  else if(answers.uqCitySize==='mid') pts+=midCity?3:1;
+  else if(answers.uqCitySize==='small') pts+=smallTown?3:midCity?1:0;
+  else pts+=1;
+
+  if(answers.uqFrench==='yes') pts+=isQuebec?1:0;
+  else if(answers.uqFrench==='no') pts+=!isQuebec?1:0;
+  else pts+=1;
+
+  if(answers.uqBudget==='critical') pts+=tuition<6000?4:tuition<8000?2:0;
+  else if(answers.uqBudget==='somewhat') pts+=tuition<8000?3:tuition<11000?2:1;
+  else if(answers.uqBudget==='low') pts+=2;
+
+  const bigUni=rank<=10;
+  const smallUni=rank>30;
+  if(answers.uqClassSize==='small') pts+=smallUni?2:!bigUni?1:0;
+  else if(answers.uqClassSize==='large') pts+=bigUni?2:!smallUni?1:0;
+  else pts+=1;
+
+  if(answers.uqResearch==='very') pts+=rank<=5?3:rank<=10?2:rank<=20?1:0;
+  else if(answers.uqResearch==='somewhat') pts+=rank<=15?2:1;
+  else if(answers.uqResearch==='low') pts+=1;
+
+  if(answers.uqSports==='very') pts+=vibe.match(/sport|athletic|varsity/)?1:0;
+
+  if(answers.uqSocial==='very') pts+=vibe.match(/social|vibrant|scene|active|community/)?1:0;
+
+  if(answers.uqIndustry==='very') pts+=uni.coop?2:rank<=10?1:0;
+  else if(answers.uqIndustry==='somewhat') pts+=uni.coop?1:0;
+
+  if(answers.uqExchange==='yes') pts+=!!uni.worldRank&&rank<=15?1:0;
+
+  if(answers.uqResidence==='yes') pts+=uni.residence?1:0;
+
+  if(answers.uqAlumni==='very') pts+=rank<=15?1:0;
+
+  if(answers.uqCampusSize==='large') pts+=bigUni?1:0;
+  else if(answers.uqCampusSize==='small') pts+=smallUni?1:0;
+
+  return Math.min(pts, 30);
+}
+
 function calcFitScore(uni){
-  if(!selectedMajors.length) return null;
+  const quizBonus=calcUniQuizBonus(uni);
+
+  if(!selectedMajors.length){
+    if(!quizBonus) return null;
+    const rnk=uni.canadaRank;
+    const rankPts=rnk<=3?10:rnk<=7?8:rnk<=12?7:rnk<=20?5:rnk<=35?4:rnk<=55?3:2;
+    const score=Math.min(quizBonus+rankPts,100);
+    const badges=[];
+    if(uni.coop) badges.push({text:'co-op available',cls:'coop'});
+    return {score, badges, matchedProg:null, results:[]};
+  }
 
   // Score every selected major independently
   const results = selectedMajors.map(m=>({major:m, ..._matchMajorToUni(m,uni)}));
@@ -1186,13 +1447,12 @@ function calcFitScore(uni){
   const rnk = uni.canadaRank;
   const rankPts = rnk<=3?20 : rnk<=7?17 : rnk<=12?14 : rnk<=20?11 : rnk<=35?8 : rnk<=55?6 : 4;
 
-  // Co-op pts — only if at least one selected major typically benefits from co-op
-  // (STEM, Business, Computing, Engineering majors). If no majors selected, give partial credit.
+  // Co-op pts — context-sensitive based on major type
   const coopKeywords = ['engineer','comput','software','business','commerce','accounting','science','technology','data','finance','health'];
   const majorWantsCoop = selectedMajors.some(m => coopKeywords.some(kw => m.toLowerCase().includes(kw)));
   const coopPts = uni.coop ? (majorWantsCoop ? 20 : 8) : 0;
 
-  const total = Math.min(avgProgPts + rankPts + coopPts, 100);
+  const total = Math.min(avgProgPts + rankPts + coopPts + quizBonus, 100);
 
   // Build up to 2 badges from Level-1 and Level-2 matches (one per major)
   const badges=[];
@@ -1236,8 +1496,10 @@ function fitScoreHtml(fit){
 async function saveToList(uniId, uniName){
   const sel=document.getElementById('prog-'+uniId);
   const programName=sel?sel.value:'';
-  let labelMajor=programName;
-  if(selectedMajors.length>0){
+  const noteEl=document.getElementById('noprog-note-'+uniId);
+  if(noteEl) noteEl.style.display=programName?'none':'block';
+  let labelMajor=programName||'Program TBD';
+  if(programName&&selectedMajors.length>0){
     const uni=UNIVERSITIES.find(u=>u.id===uniId);
     const fit=uni?calcFitScore(uni):null;
     if(fit&&fit.matchedProg) labelMajor=fit.matchedProg;
@@ -1347,14 +1609,14 @@ function filterUnis(){
     return true;
   });
 
-  if(selectedMajors.length>0){
+  if(selectedMajors.length>0||Object.keys(uqAnswers).length>0){
     filtered.sort((a,b)=>{
       const fa=calcFitScore(a), fb=calcFitScore(b);
       return (fb?fb.score:0)-(fa?fa.score:0);
     });
   }
 
-  const sortNote=selectedMajors.length?' · sorted by fit':'';
+  const sortNote=(selectedMajors.length||Object.keys(uqAnswers).length)?' · sorted by fit':'';
   document.getElementById('resultsCount').textContent=
     `Showing ${filtered.length} of ${UNIVERSITIES.length} universities${sortNote}`;
 
@@ -1411,8 +1673,12 @@ function renderUnis(list){
         <div style="font-size:.74rem;color:var(--grey);margin-bottom:5px;"><strong>Select program:</strong></div>
         <select id="prog-${u.id}" style="width:100%;margin-bottom:0;font-size:.82rem;padding:6px 9px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--navy);"
           onchange="refreshDetails('${u.id}')">
+          <option value="">— I'll choose my program later —</option>
           ${u.programs.map(p=>`<option value="${p}"${fit&&fit.matchedProg===p?' selected':''}>${p}</option>`).join('')}
         </select>
+        <div id="noprog-note-${u.id}" style="display:none;font-size:.78rem;color:#92400e;background:#fef3c7;border-radius:6px;padding:6px 10px;margin-top:5px;">
+          No program selected — <a href="#" onclick="switchView('viewMajors');return false;" style="color:#92400e;font-weight:600;text-decoration:underline;">pick a major first</a> or save as-is and choose later.
+        </div>
 
         <div class="prog-details-toggle" id="dtoggle-${u.id}" onclick="toggleDetails('${u.id}')">
           <span>📋 Program Details</span>
@@ -1472,7 +1738,12 @@ function saveProfile(){
   document.getElementById('profileBannerSub').textContent=`Grade ${profile.grade} · ${profile.city?profile.city+', ':''}${profile.province}${profile.postalCode?' · '+profile.postalCode:''}`;
   document.getElementById('profileBannerBtn').textContent='Edit Profile';
   document.getElementById('profileBanner').style.background='linear-gradient(135deg,#e6f7f0,#b8edd8)';
-  if(profile.city){ userCity=profile.city; }
+  if(profile.city){
+    userCity=profile.city;
+    const coords=resolveCity(profile.city);
+    if(coords){ [userLat,userLng]=coords; }
+    else { userLat=null; userLng=null; }
+  }
 }
 function clearProfile(e){
   e.preventDefault();
@@ -1491,7 +1762,15 @@ function clearProfile(e){
 // ════════════════════════════════════════════════════════
 window.addEventListener('load',()=>{
   try { selectedMajors=JSON.parse(localStorage.getItem('selectedMajors')||'[]'); } catch(e){}
-  if(selectedMajors.length>5) selectedMajors=selectedMajors.slice(0,5);
+  if(selectedMajors.length>1) selectedMajors=selectedMajors.slice(0,1);
+  try {
+    const saved=localStorage.getItem('uqAnswers');
+    if(saved){
+      uqAnswers=JSON.parse(saved);
+      document.getElementById('uniQuizDoneNote').style.display='';
+      document.getElementById('uniQuizToggleBtn').textContent='🎯 Retake University Fit Quiz';
+    }
+  } catch(e){}
   renderSelectedTray();
   renderSidebarMajors();
   updateMicroflow();
