@@ -652,8 +652,12 @@
             <label>Distance from Home</label>
             <select id="fDist" onchange="filterUnis()">
               <option value="">Any distance</option>
+              <option value="10">Within 10 km</option>
+              <option value="20">Within 20 km</option>
+              <option value="30">Within 30 km</option>
+              <option value="50">Within 50 km</option>
               <option value="100">Within 100 km</option>
-              <option value="250">Within 250 km</option>
+              <option value="300">Within 300 km</option>
               <option value="500">Within 500 km</option>
               <option value="1000">Within 1,000 km</option>
             </select>
@@ -1199,17 +1203,25 @@ function uq(key,val){
   event.currentTarget.classList.add('selected');
 }
 function startUniQuiz(){
-  document.getElementById('uniQuizSection').style.display='block';
-  document.getElementById('uniQuizToggleBtn').style.display='none';
-  document.getElementById('uniQuizSection').scrollIntoView({behavior:'smooth',block:'start'});
+  const section=document.getElementById('uniQuizSection');
+  const btn=document.getElementById('uniQuizToggleBtn');
+  const isOpen=section.style.display==='block';
+  if(isOpen){
+    section.style.display='none';
+    btn.textContent=Object.keys(uqAnswers).length?'🎯 Retake University Fit Quiz':'🎯 Take University Fit Quiz — improve your % fit scores';
+    return;
+  }
+  section.style.display='block';
+  btn.textContent='✕ Close Quiz';
+  section.scrollIntoView({behavior:'smooth',block:'start'});
   const saved=localStorage.getItem('uqAnswers');
   if(saved){
     try {
       const prev=JSON.parse(saved);
       Object.keys(prev).forEach(key=>{
         const val=prev[key];
-        const opts=document.querySelectorAll(`#uniQuizSection .quiz-opt[onclick="uq('${key}','${val}')"]`);
-        opts.forEach(o=>o.classList.add('selected'));
+        document.querySelectorAll(`#uniQuizSection .quiz-opt[onclick="uq('${key}','${val}')"]`)
+          .forEach(o=>o.classList.add('selected'));
       });
     } catch(e){}
   }
@@ -1218,9 +1230,7 @@ function applyUniQuiz(){
   localStorage.setItem('uqAnswers',JSON.stringify(uqAnswers));
   document.getElementById('uniQuizSection').style.display='none';
   document.getElementById('uniQuizDoneNote').style.display='';
-  const btn=document.getElementById('uniQuizToggleBtn');
-  btn.style.display='';
-  btn.textContent='🎯 Retake University Fit Quiz';
+  document.getElementById('uniQuizToggleBtn').textContent='🎯 Retake University Fit Quiz';
   filterUnis();
 }
 
