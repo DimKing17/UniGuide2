@@ -127,9 +127,9 @@
           <label>Competitiveness</label>
           <select id="fComp" onchange="filterUnis()">
             <option value="">Any</option>
-            <option value="very">Very Competitive (90%+)</option>
-            <option value="comp">Competitive (80–90%)</option>
-            <option value="mod">Moderate (70–80%)</option>
+            <option value="very">Very Competitive (&lt;50% acceptance)</option>
+            <option value="comp">Competitive (50–75% acceptance)</option>
+            <option value="mod">Moderate (75%+ acceptance)</option>
           </select>
         </div>
         <div class="form-group" style="margin:0;">
@@ -371,13 +371,12 @@ function renderUnis(list) {
     const distKm = getDistLabel(u);
     const distStr = distKm !== null ? `<span class="dist-pill">~${distKm.toLocaleString()} km away</span>` : '';
 
-    // Ranking pills (Fix #14)
     const rankPills = `
       <span class="rank-pill">#${u.canadaRank} Canada</span>
       ${u.worldRank ? `<span class="rank-pill world">#${u.worldRank} World</span>` : ''}
+      ${u.acceptanceRate ? `<span class="rank-pill" style="background:#f0fdf4;color:#166534;">${u.acceptanceRate} accepted</span>` : ''}
     `;
 
-    const coopTag = u.coop ? '<span class="tag tag-green">Co-op ✓</span>' : '';
     const tuition = `$${u.tuition.domestic.toLocaleString()}/yr`;
     const avg     = `${u.avgRange.low}–${u.avgRange.high}%`;
 
@@ -391,7 +390,7 @@ function renderUnis(list) {
           <span class="uni-card-badge ${badgeClass(u.comp)}">${u.compLabel}</span>
         </div>
 
-        <div class="uni-ranks">${rankPills}${coopTag}</div>
+        <div class="uni-ranks">${rankPills}</div>
 
         <div class="uni-meta">
           <div class="uni-meta-item"><label>Target Avg</label><span>${avg}</span></div>

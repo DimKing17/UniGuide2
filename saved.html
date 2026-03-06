@@ -187,6 +187,7 @@
     .mc-section { background:var(--white); border:1.5px solid var(--border); border-radius:12px; padding:16px 18px; margin-bottom:16px; }
     .mc-header { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px; margin-bottom:6px; }
     .mc-label { font-weight:800; font-size:.95rem; color:var(--navy); }
+    .mc-recommended-block { margin-top:12px; padding:11px 14px; background:#f9fafb; border:1.5px dashed #d1d5db; border-radius:10px; }
     .mc-summary { display:flex; gap:6px; flex-wrap:wrap; }
     .mc-sum-pill { font-size:.69rem; font-weight:800; border-radius:50px; padding:2px 10px; }
     .mc-sum-pill.have { background:#e6f7f0; color:#1a7a52; border:1px solid #88d5b5; }
@@ -1129,9 +1130,13 @@ function buildMandatoryCourses(progId, pd) {
   const mcState = getMcState(progId);
 
   if (!pd || !pd.requiredCourses || !pd.requiredCourses.length) {
+    const recBlock = pd && pd.recommendedSubjects && pd.recommendedSubjects.length
+      ? `<div class="mc-recommended-block"><div style="font-size:.72rem;font-weight:800;color:#6b7280;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Recommended (not required)</div><p style="font-size:.79rem;color:#374151;margin-bottom:0;"><em>${pd.recommendedSubjects.join(' · ')}</em></p><p style="font-size:.73rem;color:#9ca3af;margin-top:4px;margin-bottom:0;">These subjects aren't mandatory for admission but will give you a stronger background in this program.</p></div>`
+      : '';
     return `<div id="mandatory-courses-section" class="mc-section">
       <div class="mc-header"><span class="mc-label">📋 Mandatory courses for this major</span></div>
       <p style="font-size:.82rem;color:var(--grey);">No required course data available yet — check the university's admissions page.</p>
+      ${recBlock}
     </div>`;
   }
 
@@ -1188,7 +1193,13 @@ function buildMandatoryCourses(progId, pd) {
       </div>
       <p style="font-size:.79rem;color:var(--grey);margin-bottom:10px;">Mark each required course with your current status. Missing courses show ways to complete them.</p>
       <div class="mc-rows">${rows}</div>
-    </div>`;
+    </div>
+    ${pd.recommendedSubjects && pd.recommendedSubjects.length ? `
+    <div class="mc-recommended-block">
+      <div style="font-size:.72rem;font-weight:800;color:#6b7280;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Recommended (not required)</div>
+      <p style="font-size:.79rem;color:#374151;margin-bottom:0;"><em>${pd.recommendedSubjects.join(' · ')}</em></p>
+      <p style="font-size:.73rem;color:#9ca3af;margin-top:4px;margin-bottom:0;">These subjects aren't mandatory for admission but will give you a stronger background in this program.</p>
+    </div>` : ''}`;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -2844,7 +2855,7 @@ ${(()=>{
         <div style="font-size:.75rem;font-weight:800;color:${tagColors[tagClass]};letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">${tagLabel}</div>
         <!-- Institution name: primary / large -->
         <h2 style="font-size:clamp(1.35rem,3vw,1.85rem);font-weight:900;color:var(--navy);margin-bottom:4px;line-height:1.2;">${prog.uniName}</h2>
-        ${uni ? `<div style="font-size:.78rem;color:var(--grey);margin-bottom:8px;">${uni.loc}${pd && pd.coopTerms > 0 ? ' · Co-op Program' : ''} · Canada Rank #${uni.canadaRank}${uni.worldRank ? ' · World #' + uni.worldRank : ''}</div>` : ''}
+        ${uni ? `<div style="font-size:.78rem;color:var(--grey);margin-bottom:8px;">${uni.loc}${pd && pd.coopTerms > 0 ? ' · Co-op Program' : ''} · Canada Rank #${uni.canadaRank}${uni.worldRank ? ' · World #' + uni.worldRank : ''}${uni.acceptanceRate ? ' · ' + uni.acceptanceRate + ' acceptance rate' : ''}</div>` : ''}
         <!-- Program name: secondary / smaller -->
         <div style="font-size:clamp(.95rem,2vw,1.15rem);font-weight:700;color:var(--navy);opacity:.80;">${prog.programName}</div>
       </div>

@@ -617,9 +617,9 @@
             <label>Competitiveness</label>
             <select id="fComp" onchange="filterUnis()">
               <option value="">Any</option>
-              <option value="very">Very Competitive (90%+)</option>
-              <option value="comp">Competitive (80–90%)</option>
-              <option value="mod">Moderate (70–80%)</option>
+              <option value="very">Very Competitive (&lt;50% acceptance)</option>
+              <option value="comp">Competitive (50–75% acceptance)</option>
+              <option value="mod">Moderate (75%+ acceptance)</option>
             </select>
           </div>
           <div class="form-group" style="margin:0;">
@@ -717,16 +717,6 @@
         <label>Postal Code <span style="font-size:.75rem;font-weight:400;color:var(--grey);">(optional)</span></label>
         <input type="text" id="pPostal" placeholder="e.g. M5V 3A8" maxlength="7" style="text-transform:uppercase;"/>
       </div>
-    </div>
-    <div class="form-group">
-      <label>Distance preference</label>
-      <select id="pDistance">
-        <option value="">No preference</option>
-        <option value="close">Close to home (&lt;2 hrs)</option>
-        <option value="moderate">Moderate (2–5 hrs)</option>
-        <option value="far">Far (5+ hrs, any province)</option>
-        <option value="anywhere">Anywhere in Canada</option>
-      </select>
     </div>
     <button class="btn btn-red" style="width:100%;margin-top:10px;" onclick="saveProfile()">Save My Profile →</button>
     <p style="font-size:.75rem;color:var(--grey);text-align:center;margin:8px 0 0;">Saved only in this browser. <a href="#" onclick="clearProfile(event)" style="color:var(--red);">Clear my data</a></p>
@@ -1192,11 +1182,15 @@ function calcFitScore(uni){
   // Program pts = average across all majors (rewards schools that offer more of them)
   const avgProgPts = Math.round(results.reduce((s,r)=>s+r.pts,0) / results.length);
 
-  // Ranking pts (once)
-  const rankPts = uni.canadaRank<=3?20 : uni.canadaRank<=7?15 : uni.canadaRank<=12?10 : 5;
+  // Ranking pts — more granular scale (max 20)
+  const rnk = uni.canadaRank;
+  const rankPts = rnk<=3?20 : rnk<=7?17 : rnk<=12?14 : rnk<=20?11 : rnk<=35?8 : rnk<=55?6 : 4;
 
-  // Co-op pts (once)
-  const coopPts = uni.coop?20:0;
+  // Co-op pts — only if at least one selected major typically benefits from co-op
+  // (STEM, Business, Computing, Engineering majors). If no majors selected, give partial credit.
+  const coopKeywords = ['engineer','comput','software','business','commerce','accounting','science','technology','data','finance','health'];
+  const majorWantsCoop = selectedMajors.some(m => coopKeywords.some(kw => m.toLowerCase().includes(kw)));
+  const coopPts = uni.coop ? (majorWantsCoop ? 20 : 8) : 0;
 
   const total = Math.min(avgProgPts + rankPts + coopPts, 100);
 
@@ -1387,8 +1381,9 @@ function renderUnis(list){
   grid.innerHTML=list.map(u=>{
     const distKm=(userLat!==null&&u.lat)?haversineKm(userLat,userLng,u.lat,u.lng):null;
     const distStr=distKm!==null?`<span class="dist-pill">~${distKm.toLocaleString()} km</span>`:'';
-    const rankPills=`<span class="rank-pill">#${u.canadaRank} Canada</span>${u.worldRank?`<span class="rank-pill world">#${u.worldRank} World</span>`:''}`;
-    const coopTag=u.coop?'<span class="tag tag-green">Co-op ✓</span>':'';
+    const rankPills=`<span class="rank-pill">#${u.canadaRank} Canada</span>${u.worldRank?`<span class="rank-pill world">#${u.worldRank} World</span>`:''
+}${u.acceptanceRate?`<span class="rank-pill" style="background:#f0fdf4;color:#166534;">${u.acceptanceRate} accepted</span>`:''}`;
+
     const fit=calcFitScore(u);
     return `
       <div class="uni-card">
@@ -1402,7 +1397,7 @@ function renderUnis(list){
 
         ${fitScoreHtml(fit)}
 
-        <div class="uni-ranks">${rankPills}${coopTag}</div>
+        <div class="uni-ranks">${rankPills}</div>
 
         <div class="uni-meta">
           <div class="uni-meta-item"><label>Target Avg</label><span>${u.avgRange.low}–${u.avgRange.high}%</span></div>
@@ -1449,7 +1444,6 @@ function openProfileModal(){
     document.getElementById('pGrade').value=p.grade||'';
     document.getElementById('pProvince').value=p.province||'';
     document.getElementById('pCity').value=p.city||'';
-    document.getElementById('pDistance').value=p.distance||'';
     updateConsentBlock();
   } catch(e){}
 }
@@ -1469,7 +1463,6 @@ function saveProfile(){
     city:document.getElementById('pCity').value.trim(),
     street:document.getElementById('pStreet').value.trim(),
     postalCode:rawPostal,
-    distance:document.getElementById('pDistance').value,
   };
   if(!profile.name||!profile.grade||!profile.province){ alert('Please fill in at least your name, grade, and province.'); return; }
   localStorage.setItem('ugProfile',JSON.stringify(profile));

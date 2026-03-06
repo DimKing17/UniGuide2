@@ -174,6 +174,7 @@ const UNIVERSITIES = [
     avgRange: { low: 90, high: 97 },
     tuition: { domestic: 14834, intl: 58680 },
     coop: true, coopLabel: "Yes (PEY co-op, varies by program)",
+    acceptanceRate: "43%",
     campusSize: "Large (Urban)",
     vibe: "Academically intense, extremely diverse, urban campus. One of the world's top research universities. Best for students who thrive in large, competitive environments.",
     programs: [
@@ -219,11 +220,12 @@ const UNIVERSITIES = [
     citySize: "big",
     lat: 49.2606, lng: -123.2460,
     canadaRank: 2, worldRank: 34,
-    comp: "very",
-    compLabel: "Very Competitive",
+    comp: "comp",
+    compLabel: "Competitive",
     avgRange: { low: 87, high: 95 },
     tuition: { domestic: 5899, intl: 42603 },
     coop: true, coopLabel: "Yes (strong co-op across many faculties)",
+    acceptanceRate: "52%",
     campusSize: "Large (Point Grey campus, 400 ha)",
     vibe: "World-class campus surrounded by nature. Progressive, internationally diverse. Strong in research, sustainability, and arts. Beloved by students for campus life and Vancouver lifestyle.",
     programs: [
@@ -276,7 +278,8 @@ const UNIVERSITIES = [
     compLabel: "Very Competitive",
     avgRange: { low: 87, high: 95 },
     tuition: { domestic: 2869, intl: 22185 },
-    coop: false, coopLabel: "Limited (select programs)",
+    coop: true, coopLabel: "Yes (Engineering, Desautels, select Science)",
+    acceptanceRate: "46%",
     campusSize: "Mid-size (urban, downtown Montréal)",
     vibe: "Historic (founded 1821), bilingual city, amazing social scene. Affordable tuition. Extremely strong in Medicine, Law, and Sciences. Known as the 'Harvard of Canada'.",
     programs: [
@@ -326,6 +329,7 @@ const UNIVERSITIES = [
     avgRange: { low: 80, high: 90 },
     tuition: { domestic: 6571, intl: 28000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "59%",
     campusSize: "Large",
     vibe: "Major research university in Canada's energy capital. Tight community. Strong in Engineering, Law, and Sciences. More affordable than Ontario schools with comparable quality.",
     programs: [
@@ -378,6 +382,7 @@ const UNIVERSITIES = [
     avgRange: { low: 83, high: 93 },
     tuition: { domestic: 9660, intl: 35000 },
     coop: true, coopLabel: "Yes (Engineering, Business, Science)",
+    acceptanceRate: "58%",
     campusSize: "Mid-size (suburban Hamilton)",
     vibe: "Collaborative, inquiry-based learning. World-famous problem-based Health Sciences program. Warm community feel. Beautiful campus. Close to Toronto (~45 min) without Toronto's cost.",
     programs: [
@@ -420,11 +425,12 @@ const UNIVERSITIES = [
     citySize: "mid",
     lat: 44.2253, lng: -76.4951,
     canadaRank: 6, worldRank: 209,
-    comp: "comp",
-    compLabel: "Competitive",
+    comp: "very",
+    compLabel: "Very Competitive",
     avgRange: { low: 85, high: 93 },
     tuition: { domestic: 16046, intl: 51000 },
     coop: true, coopLabel: "Yes (Engineering, Science)",
+    acceptanceRate: "42%",
     campusSize: "Mid-size (classic campus, Kingston)",
     vibe: "Legendary school spirit (Gaels!). Tight-knit community. Exceptional alumni network. Known for Smith Commerce, Engineering, and Law. Strong Greek life and clubs.",
     programs: [
@@ -466,8 +472,8 @@ const UNIVERSITIES = [
     citySize: "mid",
     lat: 43.4723, lng: -80.5449,
     canadaRank: 7, worldRank: 154,
-    comp: "very",
-    compLabel: "Very Competitive",
+    comp: "comp",
+    compLabel: "Competitive",
     avgRange: { low: 90, high: 97 },
     tuition: { domestic: 14100, intl: 55000 },
     coop: true, coopLabel: "World's largest co-op program",
@@ -522,6 +528,7 @@ const UNIVERSITIES = [
     avgRange: { low: 83, high: 92 },
     tuition: { domestic: 10617, intl: 33000 },
     coop: true, coopLabel: "Yes (Engineering, Science, some Arts)",
+    acceptanceRate: "53%",
     campusSize: "Large (beautiful riverside campus)",
     vibe: "Beautiful campus, vibrant social life, strong athletics. Known for Ivey Business School (apply in 2nd year), great campus experience, and strong alumni network.",
     programs: [
@@ -566,11 +573,12 @@ const UNIVERSITIES = [
     citySize: "big",
     lat: 51.0768, lng: -114.1320,
     canadaRank: 9, worldRank: 182,
-    comp: "comp",
-    compLabel: "Competitive",
+    comp: "mod",
+    compLabel: "Moderate",
     avgRange: { low: 75, high: 87 },
     tuition: { domestic: 7050, intl: 25000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "78%",
     campusSize: "Large",
     vibe: "Innovative and entrepreneurial. Canada's 'startup university'. Energy industry hub. Strong professional programs. Proximity to the Rockies is a bonus.",
     programs: [
@@ -670,6 +678,7 @@ const UNIVERSITIES = [
     avgRange: { low: 78, high: 88 },
     tuition: { domestic: 7354, intl: 26000 },
     coop: true, coopLabel: "Excellent co-op program",
+    acceptanceRate: "79%",
     campusSize: "Mid-size (hilltop Burnaby + downtown Vancouver campus)",
     vibe: "Second largest in BC. Excellent co-op. Strong in CS, Business, and Communication. Mountainside campus with stunning views. Downtown Vancouver campus as well.",
     programs: [
@@ -716,6 +725,7 @@ const UNIVERSITIES = [
     avgRange: { low: 78, high: 90 },
     tuition: { domestic: 2850, intl: 20000 },
     coop: true, coopLabel: "Yes (select programs)",
+    acceptanceRate: "67%",
     campusSize: "Large",
     vibe: "Francophone research powerhouse. Second-largest university in Canada. Excellent in AI, Medicine, Law, and Architecture. Vibrant Montréal lifestyle at Quebec tuition rates.",
     programs: [
@@ -759,11 +769,12 @@ const UNIVERSITIES = [
     citySize: "mid",
     lat: 44.6369, lng: -63.5917,
     canadaRank: 13, worldRank: 298,
-    comp: "mod",
-    compLabel: "Moderate",
+    comp: "comp",
+    compLabel: "Competitive",
     avgRange: { low: 74, high: 85 },
     tuition: { domestic: 10262, intl: 23000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "72%",
     campusSize: "Mid-size (Halifax, NS)",
     vibe: "Best East Coast university experience. Halifax is vibrant and affordable. Known for Law, Medicine, Marine Biology, and Ocean Sciences. Welcoming, outdoorsy community.",
     programs: [
@@ -812,6 +823,7 @@ const UNIVERSITIES = [
     avgRange: { low: 73, high: 84 },
     tuition: { domestic: 8400, intl: 30000 },
     coop: true, coopLabel: "Yes (Schulich, Lassonde)",
+    acceptanceRate: "76%",
     campusSize: "Large (Keele campus + Glendon bilingual campus)",
     vibe: "Diverse and large. Known for Schulich Business (top MBA in Canada), Osgoode Law (top 3 in Canada), and Lassonde Engineering. Glendon campus is fully bilingual.",
     programs: [
@@ -862,6 +874,7 @@ const UNIVERSITIES = [
     avgRange: { low: 70, high: 82 },
     tuition: { domestic: 5200, intl: 18000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "82%",
     campusSize: "Large",
     vibe: "Affordable, strong research tradition. Best in Manitoba for Medicine, Engineering, and Agriculture. Safe, community-oriented campus. Friendly city.",
     programs: [
@@ -912,6 +925,7 @@ const UNIVERSITIES = [
     avgRange: { low: 72, high: 85 },
     tuition: { domestic: 2850, intl: 17000 },
     coop: true, coopLabel: "Yes (cooperative education)",
+    acceptanceRate: "77%",
     campusSize: "Large (self-contained campus in Québec City)",
     vibe: "Francophone university in historic Québec City. Complete campus-town feel. Strong in Forestry, Agriculture, Architecture, and Sciences. Safe, beautiful, affordable.",
     programs: [
@@ -960,6 +974,7 @@ const UNIVERSITIES = [
     avgRange: { low: 70, high: 82 },
     tuition: { domestic: 5400, intl: 20000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "80%",
     campusSize: "Large",
     vibe: "Canada's best for Veterinary Medicine and Agriculture. Tight-knit, safe community. Strong Indigenous research. Beautiful riverside campus.",
     programs: [
@@ -1010,6 +1025,7 @@ const UNIVERSITIES = [
     avgRange: { low: 70, high: 82 },
     tuition: { domestic: 3700, intl: 18000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "75%",
     campusSize: "Urban (two Montréal campuses)",
     vibe: "Creative, urban, and diverse. Known for Fine Arts (one of North America's best), John Molson Business School, and Film and Communication. Very affordable in Montréal.",
     programs: [
@@ -1061,6 +1077,7 @@ const UNIVERSITIES = [
     avgRange: { low: 68, high: 80 },
     tuition: { domestic: 9100, intl: 19000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "77%",
     campusSize: "Mid-size",
     vibe: "Canada's oldest English-language university (1785). Strong Engineering and Forestry. Small city feel, close community. Good for students wanting a quieter, focused university experience.",
     programs: [
@@ -1108,6 +1125,7 @@ const UNIVERSITIES = [
     avgRange: { low: 67, high: 78 },
     tuition: { domestic: 2950, intl: 11460 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "80%",
     campusSize: "Mid-size",
     vibe: "Most affordable university in Canada. Welcoming, maritime culture. World-class Ocean Sciences and Marine Engineering. Great for students wanting low debt and a warm community.",
     programs: [
@@ -1148,11 +1166,12 @@ const UNIVERSITIES = [
     citySize: "mid",
     lat: 43.5327, lng: -80.2271,
     canadaRank: 21, worldRank: 601,
-    comp: "mod",
-    compLabel: "Moderate",
+    comp: "comp",
+    compLabel: "Competitive",
     avgRange: { low: 78, high: 88 },
     tuition: { domestic: 10350, intl: 32000 },
     coop: true, coopLabel: "Yes (strong co-op across programs)",
+    acceptanceRate: "73%",
     campusSize: "Mid-size (residential campus, city of Guelph)",
     vibe: "Canada's top agriculture and food science university. Close-knit community, beautiful campus. Known for Veterinary Medicine, Biosciences, and Environmental Sciences. Friendly, outdoorsy culture.",
     programs: [
@@ -1196,11 +1215,12 @@ const UNIVERSITIES = [
     citySize: "big",
     lat: 45.3875, lng: -75.6960,
     canadaRank: 22, worldRank: 801,
-    comp: "mod",
-    compLabel: "Moderate",
+    comp: "comp",
+    compLabel: "Competitive",
     avgRange: { low: 72, high: 85 },
     tuition: { domestic: 9600, intl: 28000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "72%",
     campusSize: "Mid-size (Rideau River campus, Ottawa)",
     vibe: "Career-focused in the nation's capital. Outstanding in Journalism, Architecture, and Public Affairs. Government co-op placements are unmatched. Compact, walkable campus.",
     programs: [
@@ -1244,8 +1264,8 @@ const UNIVERSITIES = [
     citySize: "mid",
     lat: 48.4634, lng: -123.3117,
     canadaRank: 23, worldRank: 601,
-    comp: "mod",
-    compLabel: "Moderate",
+    comp: "comp",
+    compLabel: "Competitive",
     avgRange: { low: 78, high: 88 },
     tuition: { domestic: 6300, intl: 23000 },
     coop: true, coopLabel: "Yes (one of BC's strongest co-op programs)",
@@ -1297,6 +1317,7 @@ const UNIVERSITIES = [
     avgRange: { low: 70, high: 83 },
     tuition: { domestic: 2850, intl: 16000 },
     coop: true, coopLabel: "Yes (pioneered co-op in Quebec)",
+    acceptanceRate: "74%",
     campusSize: "Mid-size",
     vibe: "Quebec's co-op university. Pioneered cooperative education in the province. Strong in Engineering, Medicine (problem-based), and Business. Friendly, mid-sized city.",
     programs: [
@@ -1334,11 +1355,12 @@ const UNIVERSITIES = [
     citySize: "mid",
     lat: 43.4738, lng: -80.5300,
     canadaRank: 25, worldRank: null,
-    comp: "mod",
-    compLabel: "Moderate",
+    comp: "comp",
+    compLabel: "Competitive",
     avgRange: { low: 78, high: 88 },
     tuition: { domestic: 9600, intl: 26000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "74%",
     campusSize: "Small-Mid (Waterloo + Brantford campus)",
     vibe: "Close-knit campus with a big school feel. Famous for Lazaridis School of Business. Strong Music faculty. Located steps from Waterloo — great access to tech industry.",
     programs: [
@@ -1383,6 +1405,7 @@ const UNIVERSITIES = [
     avgRange: { low: 70, high: 82 },
     tuition: { domestic: 8800, intl: 26000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "81%",
     campusSize: "Mid-size (Niagara Region)",
     vibe: "Welcoming, accessible, located in wine country near Niagara Falls. Known for Tourism, Kinesiology, Business, and Education. Great student-to-faculty ratio. Close to Toronto.",
     programs: [
@@ -1425,11 +1448,12 @@ const UNIVERSITIES = [
     citySize: "big",
     lat: 43.6577, lng: -79.3788,
     canadaRank: 27, worldRank: null,
-    comp: "mod",
-    compLabel: "Moderate",
+    comp: "comp",
+    compLabel: "Competitive",
     avgRange: { low: 75, high: 88 },
     tuition: { domestic: 9300, intl: 32000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "68%",
     campusSize: "Urban (downtown Toronto)",
     vibe: "Career-focused, urban, diverse. Strong in Engineering, Business, Media, and Design. Heart of Toronto — real city experience. Great for students who want industry connections from day one.",
     programs: [
@@ -1480,6 +1504,7 @@ const UNIVERSITIES = [
     avgRange: { low: 70, high: 82 },
     tuition: { domestic: 8900, intl: 26000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "76%",
     campusSize: "Mid-size (Oshawa, Ontario)",
     vibe: "Technology-focused with hands-on learning. Strong in Engineering, IT, and Health. New, modern campus. Located in Durham Region east of Toronto. Good for students who want tech without top-tier admission requirements.",
     programs: [
@@ -1522,6 +1547,7 @@ const UNIVERSITIES = [
     avgRange: { low: 70, high: 83 },
     tuition: { domestic: 8900, intl: 26000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "80%",
     campusSize: "Mid-size (border city, Detroit access)",
     vibe: "Uniquely positioned on the US-Canada border with access to Detroit's automotive industry. Known for Law, Engineering, and a collaborative student environment. Affordable option in Ontario.",
     programs: [
@@ -1567,6 +1593,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 5800, intl: 20000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "82%",
     campusSize: "Mid-size",
     vibe: "Accessible, affordable, and growing. Strong in Education, Journalism, Social Work, and Engineering. Close-knit community in Saskatchewan's capital. Great Indigenous programs.",
     programs: [
@@ -1613,6 +1640,7 @@ const UNIVERSITIES = [
     avgRange: { low: 70, high: 82 },
     tuition: { domestic: 8800, intl: 23000 },
     coop: true, coopLabel: "Yes (select programs)",
+    acceptanceRate: "78%",
     campusSize: "Small-Mid (Peterborough + Durham campus)",
     vibe: "Liberal arts tradition with a focus on sustainability and Indigenous education. Small classes, personal attention. Known for Environmental Sciences and Indigenous Studies. Beautiful natural setting.",
     programs: [
@@ -1657,6 +1685,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 7600, intl: 22000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "79%",
     campusSize: "Small-Mid (Thunder Bay + Orillia campus)",
     vibe: "Northern Ontario's university. Strong in Forestry, Indigenous studies, and Engineering. Close to nature — ideal for students who love the outdoors. Close-knit, inclusive community.",
     programs: [
@@ -1702,6 +1731,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 7800, intl: 19000 },
     coop: true, coopLabel: "Yes (select programs)",
+    acceptanceRate: "82%",
     campusSize: "Small (Charlottetown)",
     vibe: "Atlantic Canada's smallest province, warmest community. Known for Veterinary Medicine (one of four vet schools in Canada). Beautiful island campus. Very accessible and student-centred.",
     programs: [
@@ -1746,6 +1776,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 9700, intl: 20000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "80%",
     campusSize: "Small-Mid (Halifax)",
     vibe: "Affordable East Coast education with a close-knit community. Known for Business, Astronomy, and Criminology. Friendly, multicultural campus in Halifax.",
     programs: [
@@ -1789,6 +1820,7 @@ const UNIVERSITIES = [
     avgRange: { low: 68, high: 80 },
     tuition: { domestic: 9900, intl: 20000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "79%",
     campusSize: "Small (Wolfville, wine country NS)",
     vibe: "Intimate liberal arts experience. One of Canada's top undergraduate universities. Every student gets a MacBook. Beautiful Annapolis Valley campus. Strong community, excellent student-faculty relationships.",
     programs: [
@@ -1831,6 +1863,7 @@ const UNIVERSITIES = [
     avgRange: { low: 68, high: 80 },
     tuition: { domestic: 9400, intl: 19000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "76%",
     campusSize: "Small (Antigonish, NS)",
     vibe: "Legendary school spirit and community (X-Ring!). Small, tight-knit Atlantic campus. Strong in Health Sciences, Education, and Community Development. Famous for Coady Institute and international development.",
     programs: [
@@ -1875,6 +1908,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 7400, intl: 19000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "74%",
     campusSize: "Mid-size (Calgary)",
     vibe: "Undergraduate-only focus with small class sizes. Known for Nursing, Business, and Communication. Strong teaching focus and hands-on learning. Welcoming Calgary campus.",
     programs: [
@@ -1920,6 +1954,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 6900, intl: 17000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "79%",
     campusSize: "Urban (downtown Edmonton)",
     vibe: "Urban, accessible undergraduate university in downtown Edmonton. Known for Health Sciences, Social Work, Business, and the Arts. Welcoming, diverse, and affordable.",
     programs: [
@@ -1966,6 +2001,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 6900, intl: 18000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "80%",
     campusSize: "Small-Mid (Lethbridge, Alberta)",
     vibe: "Primarily undergraduate focus with personal attention. Strong in Neuroscience, Agriculture, and Fine Arts. Campus is architecturally famous. Sunny southern Alberta setting.",
     programs: [
@@ -2008,6 +2044,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 2850, intl: 17000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "73%",
     campusSize: "Urban (downtown Montréal, integrated into city)",
     vibe: "Urban, progressive, and French-language. Known for Social Sciences, Communication, Fine Arts, and Law. Very affordable. Deeply integrated into Montréal's cultural life.",
     programs: [
@@ -2052,6 +2089,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 6600, intl: 22000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "79%",
     campusSize: "Small (Prince George, BC)",
     vibe: "Northern BC's university. Strong environmental, Indigenous, and science programs. Small classes, personal faculty relationships. Outdoorsy culture with access to incredible wilderness.",
     programs: [
@@ -2091,6 +2129,7 @@ const UNIVERSITIES = [
     avgRange: { low: 60, high: 75 },
     tuition: { domestic: 6500, intl: 18000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "83%",
     campusSize: "Mid-size (Kamloops, BC + Williams Lake campus)",
     vibe: "Open and accessible university with a strong trades and applied arts tradition. Beautiful Kamloops setting. Known for Law, Business, and Environmental Sciences. Welcoming to diverse learners.",
     programs: [
@@ -2133,6 +2172,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 7900, intl: 17000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "81%",
     campusSize: "Small-Mid (Moncton, NB + Edmundston and Shippagan campuses)",
     vibe: "The heart of Francophone Atlantic Canada. Acadian culture, bilingualism, community focus. Strong in Business, Engineering, and Social Sciences. Growing tech sector in Moncton.",
     programs: [
@@ -2177,6 +2217,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 7600, intl: 22000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "82%",
     campusSize: "Small-Mid (Sudbury, Ontario)",
     vibe: "Bilingual university in Ontario's mining capital. Known for Mining Engineering and Indigenous Studies. Small classes, beautiful lake setting. Accessible and affordable.",
     programs: [
@@ -2220,6 +2261,7 @@ const UNIVERSITIES = [
     avgRange: { low: 60, high: 75 },
     tuition: { domestic: 5200, intl: 14000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "81%",
     campusSize: "Small (Brandon, Manitoba)",
     vibe: "Small, tight-knit community in Manitoba's second city. Strong Music program, Rural Development, and Indigenous Studies. Affordable and welcoming.",
     programs: [
@@ -2257,6 +2299,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 3600, intl: 18000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "79%",
     campusSize: "Small (Lennoxville, Quebec)",
     vibe: "English-language liberal arts gem in Quebec. Affordable Quebec tuition. Residential campus feel — 95% of first-year students live on campus. Beautiful Eastern Townships setting.",
     programs: [
@@ -2296,6 +2339,7 @@ const UNIVERSITIES = [
     avgRange: { low: 60, high: 75 },
     tuition: { domestic: 8500, intl: 16000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "82%",
     campusSize: "Small (Sydney, Cape Breton Island)",
     vibe: "Accessible, welcoming, and culturally rich. Strong in Business, Indigenous Studies (Unama'ki College), and Tourism. International student-friendly. Cape Breton's beautiful landscape is a draw.",
     programs: [
@@ -2336,6 +2380,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 9300, intl: 19000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "83%",
     campusSize: "Small (Halifax, NS)",
     vibe: "Originally a women's university, now co-ed but with a focus on equity and women's leadership. Strong in Education, Nutrition, and Tourism. Personalized education in Halifax.",
     programs: [
@@ -2378,6 +2423,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 8400, intl: 16000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "80%",
     campusSize: "Small (Fredericton, NB — shares campus with UNB)",
     vibe: "Liberal arts Catholic university with small classes and personal faculty relationships. Strong in Social Work, Journalism, and Human Rights. Located steps from UNB.",
     programs: [
@@ -2415,6 +2461,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 7900, intl: 20000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "82%",
     campusSize: "Small (North Bay, Ontario)",
     vibe: "Small, tight-knit Northern Ontario university. Known for Education, Nursing, and the outdoors. Small class sizes and personal attention. Affordable option in Ontario.",
     programs: [
@@ -2453,6 +2500,7 @@ const UNIVERSITIES = [
     avgRange: { low: 60, high: 75 },
     tuition: { domestic: 7600, intl: 18000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "83%",
     campusSize: "Small (Sault Ste. Marie, Ontario — former Shingwauk residential school site)",
     vibe: "Unique mandate to reconciliation. Located on historic Anishinaabe land. Small classes and accessible admission. Strong Indigenous Studies. Affordable Northern Ontario option.",
     programs: [
@@ -2490,6 +2538,7 @@ const UNIVERSITIES = [
     avgRange: { low: 60, high: 75 },
     tuition: { domestic: 5600, intl: 17000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "80%",
     campusSize: "Multi-campus (Surrey, Richmond, Langley, Cloverdale)",
     vibe: "Accessible polytechnic in the Lower Mainland. Strong in Business, Design, and Horticulture. Open admissions for many programs. Practical, career-focused degrees.",
     programs: [
@@ -2532,6 +2581,7 @@ const UNIVERSITIES = [
     avgRange: { low: 60, high: 75 },
     tuition: { domestic: 5600, intl: 18000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "82%",
     campusSize: "Small-Mid (Nanaimo, BC + Powell River and Cowichan)",
     vibe: "Island lifestyle, outdoor culture, small-town community. Strong in Marine Studies, Education, and Indigenous Languages. Welcoming and accessible.",
     programs: [
@@ -2573,6 +2623,7 @@ const UNIVERSITIES = [
     avgRange: { low: 60, high: 75 },
     tuition: { domestic: 5500, intl: 16000 },
     coop: true, coopLabel: "Yes",
+    acceptanceRate: "83%",
     campusSize: "Multi-campus (Abbotsford, Chilliwack, Mission)",
     vibe: "Accessible teaching-focused university in the Fraser Valley. Strong in Criminology, Business, and Nursing. Agriculture and environmental science close to nature. Affordable Metro Vancouver-adjacent option.",
     programs: [
@@ -2615,6 +2666,7 @@ const UNIVERSITIES = [
     avgRange: { low: 80, high: 92 },
     tuition: { domestic: 0, intl: 0 },
     coop: false, coopLabel: "Military placements only",
+    acceptanceRate: "32%",
     campusSize: "Small (Kingston, Ontario — military campus)",
     vibe: "Canada's only degree-granting military college. Tuition-free for Canadian Forces officer candidates. Highly regimented, disciplined, and academically rigorous. Strong sense of duty and national service.",
     programs: [
@@ -2653,6 +2705,7 @@ const UNIVERSITIES = [
     avgRange: { low: 0, high: 100 },
     tuition: { domestic: 6500, intl: 14000 },
     coop: false, coopLabel: "No (online/distance university)",
+    acceptanceRate: "84%",
     campusSize: "Online/distance (no physical campus required)",
     vibe: "Canada's open online university. No minimum admission requirements for most programs. Ideal for working adults, mature students, or those who need flexible scheduling. Learn from anywhere.",
     programs: [
@@ -2693,6 +2746,7 @@ const UNIVERSITIES = [
     avgRange: { low: 68, high: 80 },
     tuition: { domestic: 11400, intl: 21000 },
     coop: true, coopLabel: "Yes (select programs)",
+    acceptanceRate: "77%",
     campusSize: "Small (Langley, BC)",
     vibe: "Christian liberal arts university. Strong sense of values-based community. Known for Nursing, Business, and Teacher Education. Small classes with mentoring relationships.",
     programs: [
@@ -2732,6 +2786,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 78 },
     tuition: { domestic: 5200, intl: 15000 },
     coop: false, coopLabel: "Limited",
+    acceptanceRate: "83%",
     campusSize: "Urban (downtown Winnipeg)",
     vibe: "Urban downtown university with a social justice and arts focus. Strong in Indigenous Studies, Environmental Science, and Humanities. Very affordable. Close-knit community in vibrant Winnipeg.",
     programs: [
@@ -2775,6 +2830,7 @@ const UNIVERSITIES = [
     avgRange: { low: 65, high: 80 },
     tuition: { domestic: 9500, intl: 22000 },
     coop: false, coopLabel: "Work-integrated learning",
+    acceptanceRate: "76%",
     campusSize: "Small (Colwood, BC — castle campus near Victoria)",
     vibe: "Applied, professional degrees in a stunning heritage campus setting. Cohort-based learning, real-world focus. Popular for adult learners and working professionals. Environmental and interdisciplinary strengths.",
     programs: [
@@ -2813,11 +2869,12 @@ const UNIVERSITIES = [
     citySize: "big",
     lat: 43.6526, lng: -79.3910,
     canadaRank: 60, worldRank: null,
-    comp: "mod",
-    compLabel: "Moderate",
+    comp: "comp",
+    compLabel: "Competitive",
     avgRange: { low: 70, high: 85 },
     tuition: { domestic: 8600, intl: 25000 },
     coop: true, coopLabel: "Yes (work-integrated learning)",
+    acceptanceRate: "51%",
     campusSize: "Urban (downtown Toronto)",
     vibe: "Canada's largest art and design university. Iconic building in downtown Toronto. Highly specialized — if you want Art, Design, or Digital Media, this is the place. Strong industry connections.",
     programs: [
@@ -2961,7 +3018,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Robotics Club (VEX, FIRST)","Hackathons (Hack the North)","Waterloo Math Contest","Engineering design teams","Research projects with professors","Student design competitions (SAE, Solar Car)"],
     scholarships: ["President's Scholarship ($2,000 – automatic 95%+)","Engineering Excellence Award (varies)","Waterloo Co-operative Education Award"],
-    notes: "The AIF (Admission Information Form) is MANDATORY for all Engineering applicants and is heavily weighted alongside your grades."
+    notes: "The AIF (Admission Information Form) is MANDATORY for all Engineering applicants and is heavily weighted alongside your grades.",
+    recommendedSubjects: ["AP Physics", "AP Calculus", "Engineering Design (if offered)", "Chemistry"]
   },
   "waterloo__computer-science": {
     degreeType: "BMath — Bachelor of Mathematics",
@@ -2978,7 +3036,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Canadian Computing Competition (CCC)","Competitive programming (LeetCode, Codeforces)","Hackathons","Open-source GitHub contributions","Math competitions (Euclid, AMC)","Personal programming projects"],
     scholarships: ["President's Scholarship ($2,000 – automatic 95%+)","Math Entrance Award (varies)","Computing Innovation Award"],
-    notes: "Most competitive CS program in Canada. Average entry student has 94–97% with a strong AIF and coding portfolio."
+    notes: "Most competitive CS program in Canada. Average entry student has 94–97% with a strong AIF and coding portfolio.",
+    recommendedSubjects: ["AP Computer Science", "AP Calculus", "AP Statistics", "Discrete Mathematics"]
   },
   "mcmaster__health-sciences": {
     degreeType: "BHSc — Bachelor of Health Sciences",
@@ -2994,7 +3053,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Hospital volunteering (200+ hours)","Research assistant positions","Health-related clubs","Community health initiatives","First aid/CPR certification","Science Olympics or health competitions"],
     scholarships: ["McMaster University Award of Excellence ($3,000–$5,000, automatic 90%+)","National Scholarship (up to $24,000)","Health Sciences Alumni Award"],
-    notes: "Acceptance rate ~5% despite very high grades. The program uses Problem-Based Learning (PBL) and heavily weighs interview performance (OMSAS or internal). Community impact matters as much as GPA."
+    notes: "Acceptance rate ~5% despite very high grades. The program uses Problem-Based Learning (PBL) and heavily weighs interview performance (OMSAS or internal). Community impact matters as much as GPA.",
+    recommendedSubjects: ["AP Biology", "AP Chemistry", "AP Psychology", "Statistics", "English"]
   },
   "mcmaster__engineering": {
     degreeType: "BEng — Bachelor of Engineering",
@@ -3010,7 +3070,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Engineering clubs","Robotics teams","Math competitions","Design challenges","Coding projects","Volunteering in STEM education"],
     scholarships: ["McMaster University Award of Excellence","Engineering Excellence Award","Ontario Engineering Scholarships"],
-    notes: "McMaster Engineering I is a common first year — you choose your specific discipline (Mechanical, Electrical, Chemical, etc.) after first year based on your grades and preferences."
+    notes: "McMaster Engineering I is a common first year — you choose your specific discipline (Mechanical, Electrical, Chemical, etc.) after first year based on your grades and preferences.",
+    recommendedSubjects: ["AP Physics", "AP Calculus", "AP Chemistry", "Engineering Design"]
   },
   "queens__commerce": {
     degreeType: "BCom — Bachelor of Commerce (Smith)",
@@ -3026,7 +3087,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Student investment clubs","Case competition teams","Entrepreneurship clubs","Leadership roles (council, head of committees)","Community volunteering with quantifiable impact","Sports teams (competitive varsity or club)"],
     scholarships: ["Principal's Scholarship ($8,000–$36,000)","Chancellor's Scholarship (full tuition)","Smith Commerce Alumni Awards"],
-    notes: "Smith Commerce at Queen's is ranked #1 in Canada for undergrad business. Strong emphasis on leadership, community, and extracurriculars — not just grades."
+    notes: "Smith Commerce at Queen's is ranked #1 in Canada for undergrad business. Strong emphasis on leadership, community, and extracurriculars — not just grades.",
+    recommendedSubjects: ["AP Economics", "AP Calculus", "Business", "AP Statistics", "English"]
   },
   "uoft__engineering": {
     degreeType: "BASc — Bachelor of Applied Science",
@@ -3042,7 +3104,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Research with U of T professors (NSERC)","FIRST Robotics","Engineering competitions","Math/Physics Olympiads","Hackathons (UofTHacks)","Coding projects and GitHub"],
     scholarships: ["University of Toronto Excellence Award ($5,000–$7,500)","National Scholarship Program ($10,000+)","Engineering Faculty Awards"],
-    notes: "U of T Engineering is extremely competitive and academically rigorous. PEY (16-month Professional Experience Year) available in 3rd year for co-op experience."
+    notes: "U of T Engineering is extremely competitive and academically rigorous. PEY (16-month Professional Experience Year) available in 3rd year for co-op experience.",
+    recommendedSubjects: ["AP Physics", "AP Calculus", "AP Chemistry", "Computer Science"]
   },
   "ubc__science": {
     degreeType: "BSc — Bachelor of Science",
@@ -3058,7 +3121,8 @@ const PROGRAM_DATA = {
     applyURL: "https://you.ubc.ca/applying-ubc/",
     ecHighlights: ["Science fairs","Research internships (NSERC USRA)","Biology/Chemistry clubs","Environmental volunteering","Science competitions","Lab volunteer work"],
     scholarships: ["Trek Excellence Scholarship ($4,000)","President's Entrance Scholarship","Science Faculty Awards"],
-    notes: "UBC Science has one of Canada's strongest co-op programs with placements at top research institutes and biotech companies."
+    notes: "UBC Science has one of Canada's strongest co-op programs with placements at top research institutes and biotech companies.",
+    recommendedSubjects: ["AP Biology", "AP Chemistry", "AP Physics", "AP Calculus", "Statistics"]
   },
 
   // ── Additional common program entries (slug variants) ─────────────────────
@@ -3072,7 +3136,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Engineering competitions (CanSat, SAE)","FIRST Robotics","Hackathons","Physics Olympiad","Design projects","Machine shop experience"],
     scholarships: ["U of T Excellence Award ($5,000–$7,500)","PEY Co-op placement","Engineering Faculty Awards"],
-    notes: "Mechanical Engineering at U of T is part of the Faculty of Applied Science & Engineering. PEY co-op (16-month) available in Year 3."
+    notes: "Mechanical Engineering at U of T is part of the Faculty of Applied Science & Engineering. PEY co-op (16-month) available in Year 3.",
+    recommendedSubjects: ["AP Physics", "AP Calculus", "AP Chemistry", "Engineering Design"]
   },
   "uoft__computer-science": {
     degreeType: "HBSc — Honours Bachelor of Science",
@@ -3084,7 +3149,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Competitive programming (USACO, Codeforces)","UofTHacks hackathon","Open-source projects","AI/ML research","GitHub portfolio","Math competitions"],
     scholarships: ["U of T Excellence Award ($5,000+)","CS Faculty Merit Awards","NSERC USRA Research Award"],
-    notes: "U of T CS is consistently ranked top 3 in Canada. PEY co-op available. Machine learning and AI specializations are world-class."
+    notes: "U of T CS is consistently ranked top 3 in Canada. PEY co-op available. Machine learning and AI specializations are world-class.",
+    recommendedSubjects: ["AP Computer Science", "AP Calculus", "Discrete Mathematics", "AP Statistics"]
   },
   "uoft__life-sciences": {
     degreeType: "HBSc — Honours Bachelor of Science",
@@ -3096,7 +3162,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Hospital volunteering","Lab research (NSERC)","Biology Olympiad","Science fairs","Pre-med clubs","Medical shadowing"],
     scholarships: ["U of T Excellence Award ($5,000+)","Life Sciences Merit Award","NSERC USRA"],
-    notes: "Life Sciences is the gateway to Medicine, Dentistry, and graduate research at U of T. Highly competitive for med school applicants."
+    notes: "Life Sciences is the gateway to Medicine, Dentistry, and graduate research at U of T. Highly competitive for med school applicants.",
+    recommendedSubjects: ["AP Biology", "AP Chemistry", "AP Psychology", "Statistics", "English"]
   },
   "mcmaster__health-sciences": {
     degreeType: "BHSc — Bachelor of Health Sciences",
@@ -3120,7 +3187,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["FIRST Robotics","Engineering design teams","Math competitions","Physics labs","Coding projects","CAD/SolidWorks experience"],
     scholarships: ["McMaster Award of Excellence ($3,000–$5,000)","Engineering Faculty Awards","Entrance Merit Scholarships"],
-    notes: "McMaster Engineering I is a common first year — students choose specialization in Year 2. Co-op available in most programs."
+    notes: "McMaster Engineering I is a common first year — students choose specialization in Year 2. Co-op available in most programs.",
+    recommendedSubjects: ["AP Physics", "AP Calculus", "AP Chemistry", "Computer Science"]
   },
   "queens__commerce": {
     degreeType: "BCom — Bachelor of Commerce",
@@ -3144,7 +3212,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Engineering design teams (Formula SAE, Concrete Canoe)","Physics/Math Olympiads","Robotics","Internship experience","Coding projects"],
     scholarships: ["Queen's Excellence Scholarship ($4,000)","Engineering Merit Awards","Dean's Scholarship"],
-    notes: "Queen's Engineering is well-regarded, with strong alumni networks and multiple specializations in 2nd year. Great campus community."
+    notes: "Queen's Engineering is well-regarded, with strong alumni networks and multiple specializations in 2nd year. Great campus community.",
+    recommendedSubjects: ["AP Physics", "AP Calculus", "AP Chemistry", "Computer Science"]
   },
   "western__ivey": {
     degreeType: "HBA — Honour Business Administration",
@@ -3157,7 +3226,8 @@ const PROGRAM_DATA = {
     applyURL: "https://www.ouac.on.ca",
     ecHighlights: ["Business case competitions (Ivey Case Competition)","Networking events","Finance clubs","Entrepreneurship","Leadership roles","International exchange"],
     scholarships: ["Western Scholarship of Excellence ($1,000–$4,000)","Ivey Business School Awards","National Scholarship Program"],
-    notes: "Ivey HBA is ranked #1 for MBA in Canada. Students apply after Year 2 of Western (from any program). Extremely strong alumni network and recruiting."
+    notes: "Ivey HBA is ranked #1 for MBA in Canada. Students apply after Year 2 of Western (from any program). Extremely strong alumni network and recruiting.",
+    recommendedSubjects: ["AP Economics", "AP Calculus", "AP Statistics", "English", "Business"]
   },
   "mcgill__engineering": {
     degreeType: "BEng — Bachelor of Engineering",
@@ -3169,7 +3239,25 @@ const PROGRAM_DATA = {
     applyURL: "https://www.mcgill.ca/applying/",
     ecHighlights: ["McGill Engineering Competitions","FSAE McGill Racing","Robotics clubs","Hackathons","Research with professors"],
     scholarships: ["McGill Entrance Scholarship ($3,000)","Engineering Faculty Awards","Quebec Bursary Programs"],
-    notes: "McGill Engineering is globally ranked. Montreal is an incredible city and tuition is among the lowest for a top-5 Canadian university."
+    notes: "McGill Engineering is globally ranked. Montreal is an incredible city and tuition is among the lowest for a top-5 Canadian university.",
+    recommendedSubjects: ["AP Physics", "AP Calculus", "AP Chemistry", "Computer Science", "French"]
+  },
+  "mcgill__psychology": {
+    degreeType: "BA or BSc — Bachelor of Arts / Science in Psychology",
+    length: "3 years (BA) / 4 years (Honours BSc)",
+    coopTerms: 0,
+    targetAvg: { low: 85, high: 90 },
+    deadline: "Jan 15",
+    tuition: 3000,
+    competitiveness: "comp",
+    requiredCourses: ["ENG4U"],
+    optionalCourse: true,
+    aifRequired: false,
+    applyURL: "https://www.mcgill.ca/applying/",
+    ecHighlights: ["Research assistant (RA) positions","Mental health volunteering","Debate and writing clubs","Statistics tutoring","Community outreach","Psychology Today reading and case studies"],
+    scholarships: ["McGill Entrance Scholarship ($3,000–$10,000)","Faculty of Science Excellence Award","Psychology Department Award"],
+    notes: "McGill offers Psychology in both the Faculty of Arts (BA) and Faculty of Science (BSc). The BSc route is more rigorous scientifically and better for graduate school. Strong statistics and biology background greatly helps.",
+    recommendedSubjects: ["AP Psychology", "Biology", "English", "Statistics", "AP Calculus (for BSc route)"]
   }
 };
 
