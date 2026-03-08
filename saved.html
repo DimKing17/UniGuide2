@@ -316,6 +316,55 @@
     .ec-how-list li { margin-bottom:4px; }
     .ec-project-template { font-size:.79rem; color:var(--navy); line-height:1.7; margin:0; }
     .roadmap-desc  { font-size:.82rem; color:var(--navy); line-height:1.5; }
+    /* ── Impact badges (1-10 scale) ── */
+    .ec-badge { font-size:.65rem; font-weight:800; padding:2px 8px; border-radius:50px; white-space:nowrap; }
+    .ec-badge.s9  { background:#fef3c7; color:#92400e; border:1px solid #fcd34d; }
+    .ec-badge.s7  { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
+    .ec-badge.s5  { background:#dcfce7; color:#166534; border:1px solid #86efac; }
+    .ec-badge.s3  { background:#f3f4f6; color:#6b7280; border:1px solid #d1d5db; }
+    .ec-badge.top-pick { background:#fde8ec; color:var(--red); border:1px solid #f7aab8; }
+    /* ── Select / In My List button ── */
+    .ec-select-btn { font-size:.72rem; font-weight:700; border-radius:50px; padding:3px 11px;
+      border:1.5px solid var(--border); background:#fff; cursor:pointer; color:var(--grey);
+      white-space:nowrap; transition:all .15s; flex-shrink:0; }
+    .ec-select-btn:hover { border-color:var(--red); color:var(--red); }
+    .ec-select-btn.in-list { background:#e6f7f0; border-color:#88d5b5; color:#166534; }
+    /* ── Your Activities Section ── */
+    .my-ec-section { background:var(--light); border:1.5px solid var(--border); border-radius:12px;
+      padding:16px 18px; margin-bottom:18px; }
+    .my-ec-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .my-ec-title { font-weight:800; font-size:.92rem; color:var(--navy); }
+    .my-ec-empty { font-size:.83rem; color:var(--grey); text-align:center; padding:12px 0; }
+    .my-ec-item { background:#fff; border:1.5px solid var(--border); border-radius:8px;
+      padding:11px 13px; margin-bottom:8px; }
+    .my-ec-item-top { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+    .my-ec-item-name { font-weight:800; font-size:.86rem; color:var(--navy); flex:1; }
+    .my-ec-item-score { font-size:.72rem; font-weight:800; padding:2px 9px; border-radius:50px; }
+    .my-ec-item-desc { font-size:.78rem; color:var(--grey); line-height:1.5; }
+    .my-ec-del { font-size:.72rem; color:var(--grey); background:none; border:none; cursor:pointer; padding:2px 6px; border-radius:4px; }
+    .my-ec-del:hover { background:#fee2e2; color:#991b1b; }
+    /* ── Add EC Form ── */
+    .add-ec-form { background:#fff; border:1.5px dashed var(--border); border-radius:10px;
+      padding:16px 18px; margin-top:12px; }
+    .add-ec-form h5 { margin:0 0 12px; font-size:.88rem; color:var(--navy); }
+    .add-ec-row { margin-bottom:10px; }
+    .add-ec-row label { display:block; font-size:.75rem; font-weight:700; color:var(--grey);
+      margin-bottom:4px; text-transform:uppercase; letter-spacing:.4px; }
+    .add-ec-row input, .add-ec-row textarea, .add-ec-row select {
+      width:100%; padding:8px 10px; border:1.5px solid var(--border); border-radius:8px;
+      font-size:.84rem; font-family:inherit; color:var(--navy); box-sizing:border-box; }
+    .add-ec-row input:focus, .add-ec-row textarea:focus { outline:none; border-color:var(--red); }
+    .add-ec-row-2col { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+    @media(max-width:560px){ .add-ec-row-2col { grid-template-columns:1fr; } }
+    .ai-rating-result { background:#f0fdf4; border:1.5px solid #86efac; border-radius:8px;
+      padding:12px 14px; margin-top:10px; }
+    .ai-rating-result .score { font-size:1.1rem; font-weight:900; color:#166534; }
+    .ai-rating-result .feedback { font-size:.80rem; color:var(--navy); line-height:1.55; margin-top:4px; }
+    /* ── Top pick banner ── */
+    .ec-top-pick-banner { background:linear-gradient(135deg,#fde8ec 0%,#fff4e0 100%);
+      border:1.5px solid #f7aab8; border-radius:10px; padding:12px 16px; margin-bottom:14px; }
+    .ec-top-pick-banner h4 { margin:0 0 6px; font-size:.86rem; color:var(--red); }
+    .ec-top-pick-banner ul { margin:0; padding-left:18px; font-size:.82rem; color:var(--navy); line-height:1.7; }
 
     /* ── Funding tab ── */
     .fnd-cards { display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
@@ -1299,542 +1348,542 @@ const EC_TYPES = {
 const EC_LIBRARY = [
   // ── COMPETITIONS ──────────────────────────────────────────
   { icon:'🏆', title:'Canadian Computing Competition (CCC)',
-    type:'competition', majors:['cs','engineering'], impact:'high', cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
+    type:'competition', majors:['cs','engineering'], impact:9, cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
     desc:'Run by the University of Waterloo, the CCC is the premier CS competition in Canada. Senior Division distinction is one of the strongest possible signals for CS and Software Engineering applicants.',
     howToShow:['List the division (Junior/Senior) and your score or honour in your AIF','Describe a specific problem you solved and your approach','Note if you progressed to the Canadian Computing Olympiad (CCO)','Mention how it shaped your interest in algorithms or systems'],
     projectTemplate:`Month 1–2: Study past CCC problems (all available on DMOJ.ca). Solve 2–3 per week, focusing on data structures and sorting. Month 3–4: Join a weekly online contest (Codeforces, LeetCode). Track your rating. Month 5: Enter the CCC. Month 6: Regardless of result, write a 300-word reflection on what you learned and what you'd prepare differently.` },
 
   { icon:'🤖', title:'FIRST Robotics Competition (FRC) or VEX',
-    type:'competition', majors:['engineering','cs'], impact:'high', cost:'low', remote:false, hoursPerWeek:10, gradeMin:9,
+    type:'competition', majors:['engineering','cs'], impact:9, cost:'low', remote:false, hoursPerWeek:10, gradeMin:9,
     desc:'Canada\'s top team engineering competition. Design, build, and drive a robot in a regional/national tournament. Waterloo, UofT, and McMaster Engineering admissions officers mention FRC by name.',
     howToShow:['Specify your role: mechanical, electrical, software, or drive team','Describe your robot\'s key mechanism and your contribution to it','Note any regional or district awards (especially Innovation in Control, Excellence)','Quantify hours — FRC teams typically put in 400+ hours from January to April'],
     projectTemplate:`Month 1: Join a team (find one at firstinspires.org) or start a rookie team at your school. Month 2–3 (build season): Contribute to robot design, CAD, wiring, or code. Log your work daily. Month 4: Compete at regional. Months 5–6: Write about the hardest problem your team solved and your specific role. Build a portfolio page.` },
 
   { icon:'🔢', title:'Euclid / AMC / Cayley Math Contests',
-    type:'competition', majors:['engineering','cs','science','math'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'competition', majors:['engineering','cs','science','math'], impact:8, cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Waterloo-run math competitions (Euclid, Cayley, Fermat) and the American AMC 10/12. Strong Euclid scores are explicitly noted by Waterloo Engineering and Math admissions.',
     howToShow:['List your score and year for each contest entered','Note if you qualified for CEMC follow-on rounds or made the honour roll','Describe how you prepared (resources used, hours per week)','Connect to your interest in applied mathematics'],
     projectTemplate:`Month 1: Download past Euclid papers (cemc.uwaterloo.ca). Attempt one full past paper. Month 2–3: Study problem areas using Art of Problem Solving resources. Month 4: Write mock contests under timed conditions. Month 5: Enter the contest. Month 6: Review missed problems — understanding why you got it wrong is the most important step.` },
 
   { icon:'🧬', title:'Science Fair (Canada-Wide or Sanofi)',
-    type:'competition', majors:['science','health','engineering'], impact:'high', cost:'low', remote:false, hoursPerWeek:5, gradeMin:9,
+    type:'competition', majors:['science','health','engineering'], impact:9, cost:'low', remote:false, hoursPerWeek:5, gradeMin:9,
     desc:'The Canada-Wide Science Fair and Sanofi BioTalent Challenge are recognized by health science, biology, and environmental engineering programs. A gold medal at CWSF is a significant credential.',
     howToShow:['State the level (regional, provincial, national) and your placement','Describe your research question and experimental method in one sentence','Note any special awards (university prizes, industry sponsor awards)','Explain what you would change or extend in a follow-up study'],
     projectTemplate:`Month 1: Pick a question you genuinely care about — ideally something observable in your community. Month 2: Design your experiment (control, variable, replication). Month 3–4: Run the experiment, collect data. Month 5: Write your report and make your display. Month 6: Submit to regional fair; refine for provincial/national based on feedback.` },
 
   { icon:'💼', title:'DECA / Business Case Competitions',
-    type:'competition', majors:['business','economics'], impact:'high', cost:'low', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'competition', majors:['business','economics'], impact:8, cost:'low', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'DECA is the most widely accessible business competition. Provincial or national placement is impressive for Queen\'s Commerce, Western Ivey, and Schulich applicants.',
     howToShow:['List your DECA chapter, event category, and your placement','Describe the business problem you analyzed and your key recommendation','Note any industry judge recognition or awards beyond placement','Connect the experience to why you want to study business'],
     projectTemplate:`Month 1: Choose your DECA event category (written, role-play, team). Month 2: Study the category\'s rubric and past winning reports. Month 3–4: Practice role-plays weekly with a partner. Month 5: Compete at district/regional. Month 6: Regardless of outcome, write up what you\'d do differently in your analysis.` },
 
   { icon:'🔐', title:'Cybersecurity / CTF Competitions (picoCTF)',
-    type:'competition', majors:['cs','engineering'], impact:'med', cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
+    type:'competition', majors:['cs','engineering'], impact:7, cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
     desc:'Capture The Flag competitions (picoCTF, National Cyber League) demonstrate hands-on security skills. Growing field with strong demand — impressive for CS and Software Engineering applicants.',
     howToShow:['List platforms used and your ranking or score percentile','Describe one specific challenge type you\'re strongest in (web, crypto, forensics)','Note any team competitions and your role','Link to a write-up or blog post explaining how you solved a challenge'],
     projectTemplate:`Month 1: Make an account on picoCTF.com and solve 10 beginner challenges. Month 2–3: Focus on one category (cryptography, web exploitation, or reverse engineering). Month 4: Enter picoCTF annually (March) or National Cyber League. Month 5–6: Write a public write-up for a problem you solved — even a short blog post demonstrates knowledge.` },
 
   { icon:'🎤', title:'Debate (OSDL / Model UN / Parliamentary)',
-    type:'competition', majors:['law','business','social','humanities'], impact:'med', cost:'low', remote:false, hoursPerWeek:3, gradeMin:9,
+    type:'competition', majors:['law','business','social','humanities'], impact:6, cost:'low', remote:false, hoursPerWeek:3, gradeMin:9,
     desc:'Competitive debate builds communication, research, and argumentation skills valued in law, social sciences, political science, and business programs.',
     howToShow:['List your debate format, organization, and any tournament placements','Note any best speaker awards or specific topics you researched deeply','Describe how debate changed how you construct and test arguments','Mention any role in coaching or organizing debate for younger students'],
     projectTemplate:`Month 1: Join your school debate club or Ontario Student Debating Union. Month 2: Study basic parliamentary debate structure. Month 3–4: Compete in 2–3 school or inter-school tournaments. Month 5: Research and practice one complex topic deeply (AI regulation, healthcare access). Month 6: Mentor a Grade 9 debater — teaching forces mastery.` },
 
   // ── RESEARCH & PROJECTS ─────────────────────────────────────
   { icon:'💻', title:'GitHub Portfolio / Personal Projects',
-    type:'research', majors:['cs','engineering'], impact:'high', cost:'free', remote:true, hoursPerWeek:5, gradeMin:9,
+    type:'research', majors:['cs','engineering'], impact:8, cost:'free', remote:true, hoursPerWeek:5, gradeMin:9,
     desc:'A public GitHub profile with active, original projects is the single strongest EC signal for CS and Software Engineering programs. Admissions at Waterloo explicitly ask about personal projects.',
     howToShow:['Share your GitHub URL in your AIF — make sure repos have READMEs','Describe one project in detail: problem, approach, tech stack, and what you learned','Note any traction: downloads, stars, users, or press','Explain how the project connects to something you want to study'],
     projectTemplate:`Month 1: Pick a real problem you experience (something you wish existed). Build a minimal version using a language you know. Month 2: Add a proper README and deploy it (GitHub Pages, Vercel). Month 3: Show it to 5 real users. Document their feedback. Month 4: Make meaningful improvements based on feedback. Month 5: Write a devlog or short blog post about the project. Month 6: Start your next project.` },
 
   { icon:'🤖', title:'Machine Learning / AI Project',
-    type:'research', majors:['cs','engineering','science'], impact:'high', cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
+    type:'research', majors:['cs','engineering','science'], impact:8, cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
     desc:'Building a real ML model — image classifier, recommendation engine, NLP tool — demonstrates cutting-edge CS knowledge. Kaggle competitions and papers make this even stronger.',
     howToShow:['Describe your dataset, model type, and accuracy achieved','Note the real-world problem your model addresses','If you entered a Kaggle competition, share your ranking','Reference any blog post, write-up, or notebook you published'],
     projectTemplate:`Month 1: Complete fast.ai\'s "Practical Deep Learning" (free online). Build their image classifier as a starting point. Month 2: Choose your own dataset on Kaggle or Hugging Face. Month 3: Train, evaluate, and improve your model. Month 4: Build a simple web interface so others can use it. Month 5: Write up your methodology and results as a README or blog post. Month 6: Enter a Kaggle competition in the same domain.` },
 
   { icon:'🌱', title:'Independent Environmental/Science Project',
-    type:'research', majors:['engineering','science','health','environment'], impact:'med', cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
+    type:'research', majors:['engineering','science','health','environment'], impact:6, cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
     desc:'A self-designed project addressing a local or global environmental challenge. Water quality testing, air pollution monitoring, biodiversity surveys — all show initiative and scientific rigor.',
     howToShow:['State your research question and the method you used to answer it','Share any data collected, even if results were inconclusive','Note if you presented findings to school, community, or local government','Describe what you\'d do differently with more resources'],
     projectTemplate:`Month 1: Identify a measurable environmental issue in your community (water, air, soil, species). Month 2: Design a simple observational or experimental protocol. Month 3–4: Collect data consistently — at least 4 data points per week. Month 5: Analyze your data and write a 1-page findings report. Month 6: Present at school or submit to a local organization (conservation authority, city council).` },
 
   { icon:'🔬', title:'University Research Lab Volunteer',
-    type:'research', majors:['health','science','engineering','cs'], impact:'high', cost:'free', remote:false, hoursPerWeek:4, gradeMin:11,
+    type:'research', majors:['health','science','engineering','cs'], impact:9, cost:'free', remote:false, hoursPerWeek:4, gradeMin:11,
     desc:'Volunteering in a university lab (even as a data-entry assistant) gives you direct exposure to real research and a faculty reference. Many professors accept motivated high school volunteers.',
     howToShow:['Name the lab, PI, and your specific tasks','Describe one experiment or dataset you worked on','Note any presentations, posters, or publications you contributed to','Ask the PI for a reference letter — this is extremely valuable'],
     projectTemplate:`Month 1: Email 10 professors whose research interests you (search university department pages). Be specific about why their work interests you. Month 2: Start with whatever task they offer — data entry, literature reviews, equipment cleaning. Month 3–5: Build trust, ask questions, and start understanding the broader project. Month 6: Ask to be acknowledged in any lab presentations or publications.` },
 
   { icon:'🌐', title:'Open Source Contribution',
-    type:'research', majors:['cs'], impact:'high', cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
+    type:'research', majors:['cs'], impact:8, cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
     desc:'Contributing to open source projects on GitHub — even small bug fixes, documentation improvements, or translations — demonstrates professional-level code collaboration.',
     howToShow:['Link to your merged pull requests','Describe what the project does and what you specifically improved','Note any recognition from maintainers (reviews, thanks, badges)','Explain how contributing to open source is different from solo projects'],
     projectTemplate:`Month 1: Find a project you actually use. Browse open issues tagged "good first issue" on GitHub. Month 2: Fix a documentation error or small bug. Submit your first pull request. Month 3: Work on a more complex issue. Engage with code reviewers. Month 4–5: Become a regular contributor. Join the project\'s Discord or mailing list. Month 6: Write a blog post about what you learned contributing to a real codebase.` },
 
   // ── VOLUNTEERING ─────────────────────────────────────────────
   { icon:'🏥', title:'Hospital / Clinical Volunteering',
-    type:'volunteer', majors:['health','nursing','medicine','kinesiology'], impact:'high', cost:'free', remote:false, hoursPerWeek:4, gradeMin:10,
+    type:'volunteer', majors:['health','nursing','medicine','kinesiology'], impact:9, cost:'free', remote:false, hoursPerWeek:4, gradeMin:10,
     desc:'The gold standard for health programs. Patient-facing volunteer work at a hospital, clinic, or hospice demonstrates empathy and exposure to healthcare. Most health science programs expect 100–200+ hours.',
     howToShow:['State the organization, your role, and total hours clearly','Describe one patient interaction that influenced your thinking','Note any specific department (oncology, paediatrics, ER)','Explain what you observed that confirmed or complicated your interest in health'],
     projectTemplate:`Month 1: Apply to 3–5 hospitals, LTC homes, or clinics in your area (most have formal volunteer programs). Month 2: Complete orientation and training. Month 3–5: Volunteer consistently (every week, same shift). Month 6: Write a 200-word reflection on a moment that shaped your understanding of what health professionals actually do.` },
 
   { icon:'🧠', title:'Mental Health Crisis Line / Advocacy',
-    type:'volunteer', majors:['health','social','psychology','nursing'], impact:'high', cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
+    type:'volunteer', majors:['health','social','psychology','nursing'], impact:8, cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
     desc:'Volunteering at a crisis text line (Kids Help Phone, Crisis Services Canada), mental health club, or awareness campaign. Highly valued for health sciences, nursing, social work, and psychology programs.',
     howToShow:['Name the organization and describe your training (crisis counsellors receive 30–60 hours of training)','Describe the population you served and why this matters to you','Note any peer outreach programs you helped run','Explain how this shaped your understanding of mental health systems'],
     projectTemplate:`Month 1: Apply as a Crisis Text Line volunteer (or Kids Help Phone). Complete their online training. Month 2–3: Begin taking shifts (typically 4 hours per shift, once per week). Month 4: Start or join a mental health awareness club at your school — "Bell Let\'s Talk" campaigns, workshops. Month 5–6: Organize one event (speaker series, resource fair, fundraiser) for your school.` },
 
   { icon:'🤝', title:'Sustained Community Volunteering (1+ year)',
-    type:'volunteer', majors:['any'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
+    type:'volunteer', majors:['any'], impact:7, cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
     desc:'Ongoing volunteering with the same organization for over a year — food bank, animal shelter, tutoring program — signals genuine commitment, not just resume-padding.',
     howToShow:['State your start date and total hours — duration matters more than total hours','Describe any responsibility or autonomy you earned over time','Note if you recruited or trained other volunteers','Explain what the organization does and why you chose it specifically'],
     projectTemplate:`Month 1: Choose one organization aligned with something you care about. Apply and complete orientation. Month 2–4: Show up every scheduled week. Build relationships with staff and the community you serve. Month 5: Propose one small improvement (a new process, a new program, a fundraiser). Month 6: Document your impact — meals served, students tutored, animals fostered.` },
 
   { icon:'🌍', title:'Cultural Community Service',
-    type:'volunteer', majors:['any'], impact:'med', cost:'free', remote:false, hoursPerWeek:2, gradeMin:9,
+    type:'volunteer', majors:['any'], impact:5, cost:'free', remote:false, hoursPerWeek:2, gradeMin:9,
     desc:'Serving your cultural, faith, or linguistic community through organized service — translation assistance, settlement services for newcomers, cultural festival organization.',
     howToShow:['Describe the specific community you served and the need you addressed','Note any languages you used in your service','Quantify the number of people or events you supported','Explain how this experience connects to your career or academic goals'],
     projectTemplate:`Month 1: Identify a gap in services to your community. Is there a newcomer family who needs school navigation help? An elder who needs tech support? Month 2: Create a simple program (even informally) to address it. Month 3–5: Run it consistently. Document what you did. Month 6: Expand — recruit one more volunteer, serve one more family.` },
 
   { icon:'👧', title:'Youth Mentoring / Tutoring Program',
-    type:'volunteer', majors:['any'], impact:'med', cost:'free', remote:true, hoursPerWeek:2, gradeMin:10,
+    type:'volunteer', majors:['any'], impact:6, cost:'free', remote:true, hoursPerWeek:2, gradeMin:10,
     desc:'Tutoring younger students in academics or running a mentorship program (Reading Buddies, after-school tutoring) shows leadership, patience, and a genuine investment in others.',
     howToShow:['State subject(s), grade levels tutored, and duration','Describe one breakthrough moment with a student you tutored','Note any measurable outcome (grade improvement, test score, reading level)','Mention if you designed any curriculum or materials'],
     projectTemplate:`Month 1: Connect with your school or local library to set up a tutoring program. Month 2: Begin 1–2 sessions per week with assigned students. Month 3–4: Track your students\' progress. Adjust your methods. Month 5: Create a simple reference sheet or resource you\'d give to a student who was stuck. Month 6: Write a brief guide on how to teach one topic effectively.` },
 
   // ── LEADERSHIP ───────────────────────────────────────────────
   { icon:'📣', title:'Student Council (Executive Role)',
-    type:'leadership', majors:['any'], impact:'med', cost:'free', remote:false, hoursPerWeek:4, gradeMin:9,
+    type:'leadership', majors:['any'], impact:6, cost:'free', remote:false, hoursPerWeek:4, gradeMin:9,
     desc:'President, VP, treasurer, or committee chair of student council. Leadership positions show responsibility and initiative. Impact matters more than title — describe what you actually changed.',
     howToShow:['Name the role and describe one initiative you led from idea to completion','Quantify: how many students participated, how much money raised, what changed','Note any challenges you navigated (budget cuts, low attendance, conflict)','Describe what you\'d do differently if you could start over'],
     projectTemplate:`Month 1: Run for or apply to a student government position. Develop a genuine platform — one specific change you\'d make. Month 2–3: Implement your first initiative (event, policy, fundraiser). Month 4: Evaluate: did it work? Why or why not? Month 5: Launch your second initiative, bigger than the first. Month 6: Document your year in council for your AIF — specific outcomes and lessons.` },
 
   { icon:'📰', title:'School Publication Editor (Newspaper / Yearbook / Magazine)',
-    type:'leadership', majors:['humanities','business','communications','any'], impact:'med', cost:'free', remote:false, hoursPerWeek:4, gradeMin:10,
+    type:'leadership', majors:['humanities','business','communications','any'], impact:6, cost:'free', remote:false, hoursPerWeek:4, gradeMin:10,
     desc:'Running a school publication demonstrates management, writing, and editorial judgment. Founded a publication? Even stronger.',
     howToShow:['State your role (editor-in-chief, section editor, founder)','Describe one article or edition you\'re most proud of and why','Note your publication\'s reach (print copies, website views)','Mention challenges: managing writers, editorial decisions, publishing deadlines'],
     projectTemplate:`Month 1: Join the school paper or propose a new publication (a subject-specific newsletter, a literary magazine). Month 2: Write 2–3 original pieces. Month 3: Pitch a role as section editor. Month 4–5: Commission, edit, and publish 3+ pieces from other writers. Month 6: Analyze your section\'s readership and propose improvements for next year.` },
 
   { icon:'🎓', title:'Club Founder or Revitalizer',
-    type:'leadership', majors:['any'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
+    type:'leadership', majors:['any'], impact:8, cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
     desc:'Starting a new club or reviving a dormant one shows initiative, not just participation. A club you founded — even small — is more impressive than a generic membership in a large club.',
     howToShow:['Explain why the club didn\'t exist before and why it was needed','Describe the founding: how you got students, a teacher advisor, and admin approval','Note your membership growth and any events or projects the club ran','Quantify: how many members, meetings per month, and impact'],
     projectTemplate:`Month 1: Identify a gap — what interest or need does your school not serve? Write a one-page proposal for the club. Month 2: Get a teacher advisor and school approval. Recruit founding members. Month 3: Hold your first meeting. Establish goals for the year. Month 4–5: Run 2–3 events or projects. Month 6: Document the year — what you built and what the club will become.` },
 
   { icon:'🏅', title:'Team Captain or Head Coach',
-    type:'leadership', majors:['any'], impact:'med', cost:'free', remote:false, hoursPerWeek:6, gradeMin:10,
+    type:'leadership', majors:['any'], impact:6, cost:'free', remote:false, hoursPerWeek:6, gradeMin:10,
     desc:'Leading a sports team as captain or coaching/refereeing younger athletes demonstrates accountability and the ability to motivate others under pressure.',
     howToShow:['State the sport, level of competition, and your role','Describe a moment you led through adversity — a loss, an injury, an internal conflict','Note any team culture changes you drove as captain','Mention if you organized extra training sessions or led team strategy'],
     projectTemplate:`Month 1–2: Earn your place on the team through performance; begin establishing trust with teammates. Month 3: Formally take on captain or assistant-captain role. Set one team goal for the season. Month 4–5: Lead by example — organize one additional practice, one team-building activity. Month 6: Reflect: What kind of leader were you? What would your teammates say about your captaincy?` },
 
   // ── CREATIVE ARTS ─────────────────────────────────────────────
   { icon:'🎭', title:'Theatre / Drama (Lead or Director)',
-    type:'creative', majors:['arts','humanities','any'], impact:'med', cost:'low', remote:false, hoursPerWeek:5, gradeMin:9,
+    type:'creative', majors:['arts','humanities','any'], impact:6, cost:'low', remote:false, hoursPerWeek:5, gradeMin:9,
     desc:'A leading or directing role in school or community theatre demonstrates stage presence, commitment, and creative collaboration. A directing credit is especially impressive.',
     howToShow:['List productions and your role in each (lead, director, stage manager, choreographer)','Describe the hardest moment of a production and how you handled it','Note any external (community theatre, provincial festival) participation','Mention any technical theatre skills: lighting, sound, set design'],
     projectTemplate:`Month 1: Audition for or join the school play. Alternatively, propose directing a short student production. Month 2–4: Rehearsal process — show up prepared, memorize lines early, support castmates. Month 5: Performance week — document it with photos or video. Month 6: Write a reflection on collaboration and vulnerability in performance.` },
 
   { icon:'🎵', title:'Music (Band, Orchestra, Choir — Advanced Level)',
-    type:'creative', majors:['arts','any'], impact:'med', cost:'low', remote:false, hoursPerWeek:4, gradeMin:9,
+    type:'creative', majors:['arts','any'], impact:6, cost:'low', remote:false, hoursPerWeek:4, gradeMin:9,
     desc:'Sustained musical training — especially to Grade 8+ RCM, ARCT, or provincial honor band level — demonstrates discipline and mastery. Composition or arranging adds a creative dimension.',
     howToShow:['Note your instrument, years of study, and highest exam grade achieved (RCM level)','List ensembles (school band, youth symphony, worship band, jazz ensemble)','Describe any solo performances or competitions entered','Note if you teach, compose, or arrange music'],
     projectTemplate:`Month 1: Commit to 30 minutes of deliberate practice daily. Register for your next RCM or equivalent exam. Month 2–3: Learn one challenging piece outside your comfort zone. Month 4: Perform it at an open mic, school event, or online. Month 5: Start teaching a beginner — even informally. Month 6: Record and upload one performance. Reflect on what consistent practice built.` },
 
   { icon:'🎨', title:'Visual Art / Graphic Design Portfolio',
-    type:'creative', majors:['arts','architecture','design'], impact:'med', cost:'low', remote:true, hoursPerWeek:4, gradeMin:9,
+    type:'creative', majors:['arts','architecture','design'], impact:6, cost:'low', remote:true, hoursPerWeek:4, gradeMin:9,
     desc:'A coherent portfolio of visual work — illustration, photography, digital design, sculpture — is essential for fine arts and architecture applicants and impressive for all others.',
     howToShow:['Share a portfolio link (Behance, personal site, Instagram) in your AIF','Describe your primary medium and your artistic interests or themes','Note any shows, publications, or commissions','Explain your creative process for one specific piece'],
     projectTemplate:`Month 1: Choose a theme for a 6-piece series. Sketch 20 rough ideas. Month 2–3: Execute 3 completed pieces with clear intent. Month 4: Get critique from an artist or teacher. Revise. Month 5: Complete the series. Photograph or digitize all work professionally. Month 6: Upload to a portfolio site with artist statements for each piece.` },
 
   { icon:'🎬', title:'Filmmaking / Video Production',
-    type:'creative', majors:['arts','communications','cs'], impact:'med', cost:'low', remote:false, hoursPerWeek:4, gradeMin:9,
+    type:'creative', majors:['arts','communications','cs'], impact:6, cost:'low', remote:false, hoursPerWeek:4, gradeMin:9,
     desc:'Writing, directing, or editing short films or documentaries. Especially relevant for communications, film, and media programs. Also impressive for CS (technical production) and humanities (storytelling).',
     howToShow:['Share a YouTube or Vimeo link to your best work','Describe your role in production (writer, director, editor, DP)','Note any film festivals, competitions, or recognition received','Explain the story you were trying to tell and why it matters to you'],
     projectTemplate:`Month 1: Write a 5-page short film script. Month 2: Recruit 2–3 friends and shoot it on a weekend. Month 3: Edit the film using DaVinci Resolve (free) or Premiere. Month 4: Submit to one film festival or competition (Film Circuit, student film festivals). Month 5: Analyze what worked and what didn\'t. Month 6: Start your next project, one step more ambitious.` },
 
   // ── SPORT & ATHLETICS ─────────────────────────────────────────
   { icon:'⚽', title:'Varsity Team Sport (School)',
-    type:'sport', majors:['any'], impact:'med', cost:'low', remote:false, hoursPerWeek:8, gradeMin:9,
+    type:'sport', majors:['any'], impact:5, cost:'low', remote:false, hoursPerWeek:8, gradeMin:9,
     desc:'Playing on a school varsity team demonstrates commitment, teamwork, and time management. OFSAA participation or provincial recognition is a notable plus.',
     howToShow:['List sport, position, and number of years on the team','Note any OFSAA appearances or championship results','Describe what you contributed beyond scoring/playing (team culture, mentoring JV players)','Mention your commitment to the sport outside of school practice'],
     projectTemplate:`Month 1: Commit fully to your sport — attend every practice, study film, set a personal improvement goal. Month 2–3: Track your improvement on one measurable skill (sprint time, serve accuracy, shot percentage). Month 4: Take on one team responsibility beyond playing (equipment, stats, helping a newer player). Month 5–6: Reflect on what the sport has taught you about persistence and collaboration.` },
 
   { icon:'🥊', title:'Individual / Martial Arts Sport',
-    type:'sport', majors:['any'], impact:'med', cost:'mid', remote:false, hoursPerWeek:5, gradeMin:9,
+    type:'sport', majors:['any'], impact:5, cost:'mid', remote:false, hoursPerWeek:5, gradeMin:9,
     desc:'Individual sports (swimming, rowing, track, cycling, wrestling, fencing) demonstrate sustained personal discipline. Martial arts (judo, taekwondo, boxing) show commitment to a craft over years.',
     howToShow:['State your event/style and competitive level (regional, provincial, national)','Note any belt ranks, certifications, or personal bests','Describe how you train and your development over time','Explain what individual training has taught you about self-motivation'],
     projectTemplate:`Month 1: Set a specific performance goal (time, rank, skill). Write it down. Month 2–4: Train 4–5 days per week. Log every session. Month 5: Enter one competition or grading. Month 6: Reflect on the gap between your goal and your result — what does that gap tell you about your process?` },
 
   { icon:'🏊', title:'Lifeguard / Swim Instructor / Coach',
-    type:'sport', majors:['any','health','kinesiology'], impact:'med', cost:'low', remote:false, hoursPerWeek:6, gradeMin:15,
+    type:'sport', majors:['any','health','kinesiology'], impact:5, cost:'low', remote:false, hoursPerWeek:6, gradeMin:15,
     desc:'National Lifeguard (NLS) certification and swim instruction are paid employment that simultaneously demonstrate safety training, responsibility, and leadership — a triple win.',
     howToShow:['List certifications held (Bronze Cross, Bronze Medallion, NLS, WSI)','State hours worked per week and approximate duration of employment','Note any notable incidents you managed or training you provided to new guards','Explain how lifeguarding builds skills relevant to your intended program'],
     projectTemplate:`Month 1: Enroll in Bronze Cross (prerequisite for NLS). Complete the course. Month 2: Earn your National Lifeguard certification. Month 3: Apply to local pools, YMCAs, or summer camps as a lifeguard. Month 4–5: Work consistently; aim for 100+ hours this summer. Month 6: Add Swim Instructor certification to your credentials.` },
 
   // ── WORK & ENTREPRENEURSHIP ───────────────────────────────────
   { icon:'🚀', title:'Starting a Small Business or Side Hustle',
-    type:'employment', majors:['business','engineering','cs','any'], impact:'high', cost:'free', remote:true, hoursPerWeek:5, gradeMin:9,
+    type:'employment', majors:['business','engineering','cs','any'], impact:8, cost:'free', remote:true, hoursPerWeek:5, gradeMin:9,
     desc:'Even a micro-business (tutoring, photography, crafts, lawn care, web design freelance) demonstrates entrepreneurial initiative. The key is revenue and learning, not scale.',
     howToShow:['State what you sold/offered, how you found customers, and your approximate revenue','Describe the hardest business problem you solved (pricing, marketing, customer service)','Note any reinvestment of profits or growth over time','Explain what running a business taught you that you couldn\'t learn in a classroom'],
     projectTemplate:`Month 1: Identify a skill someone will pay for. Price it. Make your first pitch (friend, neighbor, local business). Month 2: Complete your first 3 paying engagements. Ask for testimonials. Month 3–4: Refine your offer. Raise your price if demand is high. Month 5: Track revenue, costs, and profit. Month 6: Write a 1-page business review: what worked, what didn\'t, what you\'d do differently.` },
 
   { icon:'💼', title:'Part-Time Job (Any Sector)',
-    type:'employment', majors:['any'], impact:'med', cost:'free', remote:false, hoursPerWeek:10, gradeMin:14,
+    type:'employment', majors:['any'], impact:5, cost:'free', remote:false, hoursPerWeek:10, gradeMin:14,
     desc:'Sustained paid employment demonstrates time management, responsibility, and real-world skill. Even retail or food service jobs are valued — don\'t undersell them.',
     howToShow:['State your employer, role, and duration','Describe one responsibility that grew over time (e.g., opening/closing, training new staff)','Note any recognition — employee of the month, promotion, raise','Explain how balancing work and school honed your time management'],
     projectTemplate:`Month 1: Apply broadly — don\'t wait for the perfect job. Month 2: After you\'re hired, focus on reliability — show up early, learn quickly. Month 3: Volunteer for additional responsibility: lead a task, train a colleague, solve a problem management hasn\'t noticed. Month 4–6: Track your development — what can you do now that you couldn\'t do on day one?` },
 
   { icon:'📸', title:'Freelance Photography / Design / Writing',
-    type:'employment', majors:['arts','communications','business','any'], impact:'med', cost:'low', remote:true, hoursPerWeek:3, gradeMin:9,
+    type:'employment', majors:['arts','communications','business','any'], impact:6, cost:'low', remote:true, hoursPerWeek:3, gradeMin:9,
     desc:'Freelance creative work — portrait photography, social media design, blog writing — demonstrates both creative skill and entrepreneurial initiative.',
     howToShow:['Share a portfolio link','State your rate structure and approximate client count','Describe one project you\'re most proud of (the brief, your approach, client\'s reaction)','Note any referrals or repeat clients — these signal quality'],
     projectTemplate:`Month 1: Choose one service. Set a rate (even low — $25–$50 to start). Tell your network. Month 2: Complete 3 free or discounted projects to build portfolio. Month 3: Raise your rate. Collect testimonials. Month 4–5: Invest in one skill (a Lightroom preset, a Figma course). Month 6: Create a simple portfolio website. Reflect on your best and worst project.` },
 
   { icon:'🌾', title:'Social Enterprise or Non-Profit Initiative',
-    type:'employment', majors:['business','social','environment','any'], impact:'high', cost:'free', remote:false, hoursPerWeek:4, gradeMin:10,
+    type:'employment', majors:['business','social','environment','any'], impact:8, cost:'free', remote:false, hoursPerWeek:4, gradeMin:10,
     desc:'Creating a social enterprise or launching a community initiative — clothing drive, community fridge, tutoring program — is entrepreneurship with purpose. Highly valued for business, social work, and global affairs programs.',
     howToShow:['Describe the problem you identified and the solution you created','Quantify the impact: people served, money raised, items collected','Note any partnerships (local businesses, community centres)','Explain what surprised you about running something community-facing'],
     projectTemplate:`Month 1: Identify a gap in your community. Research whether a solution exists. Month 2: Design your initiative — what will it do, who will it serve, how will you fund it? Month 3: Soft launch. Get your first 5–10 participants or donations. Month 4–5: Grow. Add partners or volunteers. Month 6: Measure impact. Write a brief impact report.` },
 
   // ── STEM CLUBS & MAKER ────────────────────────────────────────
   { icon:'⚙️', title:'Engineering Design / Maker Club',
-    type:'stem', majors:['engineering','cs'], impact:'med', cost:'low', remote:false, hoursPerWeek:3, gradeMin:9,
+    type:'stem', majors:['engineering','cs'], impact:6, cost:'low', remote:false, hoursPerWeek:3, gradeMin:9,
     desc:'School or community maker spaces, engineering clubs, electronics clubs — building physical things demonstrates applied curiosity and hands-on learning that engineering schools value.',
     howToShow:['Describe the most complex thing you built and how it worked','Note any tools or software you learned (CAD, Arduino, 3D printing, PCB design)','List competitions you entered or displays you presented','Explain one engineering failure and what you learned from it'],
     projectTemplate:`Month 1: Join or start a maker club. Set a project goal: build something with Arduino or a 3D printer. Month 2–3: Build your first prototype. Document it with photos. Month 4: Identify one failure in your design. Fix it. Month 5: Demo your project to a class, parent, or community event. Month 6: Enter your project in an engineering fair or post it on Instructables.` },
 
   { icon:'🌞', title:'Solar Car or Formula SAE (High School Division)',
-    type:'stem', majors:['engineering','physics'], impact:'high', cost:'low', remote:false, hoursPerWeek:8, gradeMin:10,
+    type:'stem', majors:['engineering','physics'], impact:8, cost:'low', remote:false, hoursPerWeek:8, gradeMin:10,
     desc:'Some university teams have high school pipelines; other schools have their own solar or formula competitions. Building a competition vehicle is one of the strongest possible engineering ECs.',
     howToShow:['Describe your role: mechanical design, electrical, software, manufacturing','Note the team\'s race results and any engineering innovation awards','Explain the hardest engineering constraint you had to solve','Mention the technical skills you gained (SolidWorks, welding, EV systems)'],
     projectTemplate:`Month 1: Find a local FRC, solar car, or eCar team. Apply. Month 2–3: Contribute to whatever task is assigned. Learn the tools. Month 4–5: Propose to own a component or system. Document your work. Month 6: Compete. Write a debrief on your team\'s performance and your personal contribution.` },
 
   { icon:'🔌', title:'Electronics / Arduino / Raspberry Pi Projects',
-    type:'stem', majors:['engineering','cs'], impact:'med', cost:'low', remote:true, hoursPerWeek:3, gradeMin:9,
+    type:'stem', majors:['engineering','cs'], impact:6, cost:'low', remote:true, hoursPerWeek:3, gradeMin:9,
     desc:'Building real circuits, microcontroller projects, or IoT devices at home demonstrates initiative and technical curiosity far beyond what\'s covered in school.',
     howToShow:['Describe your 2–3 best projects with what they do and what you learned','Share a GitHub repo, video, or Instructables post about one project','Note any technical challenges you had to research and solve independently','Explain how these projects connect to what you want to study'],
     projectTemplate:`Month 1: Complete one Arduino beginner kit project (traffic light, temperature sensor). Month 2: Design your own project from scratch — pick a problem to solve. Month 3: Build and test it. Document bugs and fixes. Month 4: Share it (Reddit, Instructables, school STEM fair). Month 5: Improve based on feedback. Month 6: Tackle a harder challenge — ESP32 WiFi, Raspberry Pi, or custom PCB.` },
 
   { icon:'🧮', title:'Math Circle or Advanced Math Study',
-    type:'stem', majors:['math','cs','engineering','science'], impact:'med', cost:'free', remote:true, hoursPerWeek:3, gradeMin:9,
+    type:'stem', majors:['math','cs','engineering','science'], impact:6, cost:'free', remote:true, hoursPerWeek:3, gradeMin:9,
     desc:'Participating in a math circle, studying competition math beyond the curriculum, or taking university-level online math courses demonstrates intellectual depth valued by top programs.',
     howToShow:['List the resources you used (AoPS, Brilliant.org, MIT OpenCourseWare)','Describe a problem or concept that challenged you and how you worked through it','Note any math circles attended (Fields Institute, university programs)','Explain how your advanced study appeared in a competition result or course'],
     projectTemplate:`Month 1: Start Art of Problem Solving's "Introduction to Algebra" or a comparable resource at your level. Set a daily 30-minute practice habit. Month 2–3: Work through one full competition problem set per week. Month 4: Attend a math circle (many are free online). Month 5: Enter a math competition. Month 6: Teach one concept to a friend or younger student.` },
 
   // ── ADVOCACY & SOCIAL IMPACT ──────────────────────────────────
   { icon:'🌿', title:'Environmental / Climate Advocacy',
-    type:'advocacy', majors:['environment','science','engineering','social'], impact:'med', cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
+    type:'advocacy', majors:['environment','science','engineering','social'], impact:6, cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
     desc:'Leading or founding a sustainability club, organizing a climate event, or running a school waste audit demonstrates civic engagement and environmental commitment.',
     howToShow:['Describe one concrete change you made (reduced plastic use, green space created, policy change)','Note any media coverage, school recognition, or community partnership','Quantify: tonnes of waste diverted, trees planted, people educated','Explain why you care — what event or realization sparked this?'],
     projectTemplate:`Month 1: Audit one environmental issue at your school (waste, energy use, idling vehicles). Collect data. Month 2: Present your findings and a proposed solution to administration. Month 3: Launch the solution (recycling drive, no-idling campaign, energy audit). Month 4–5: Track results. Month 6: Write a 1-page impact summary to share with school and include in your AIF.` },
 
   { icon:'🏳️‍🌈', title:'Equity & Inclusion Advocacy / GSA',
-    type:'advocacy', majors:['social','health','humanities','any'], impact:'med', cost:'free', remote:false, hoursPerWeek:2, gradeMin:9,
+    type:'advocacy', majors:['social','health','humanities','any'], impact:5, cost:'free', remote:false, hoursPerWeek:2, gradeMin:9,
     desc:'Running a GSA, DEI committee, anti-racism initiative, or disability advocacy group demonstrates empathy and civic leadership.',
     howToShow:['Describe a specific initiative you launched (workshop, policy change, event)','Note any school or board-level recognition','Explain a challenge you faced and how you navigated it diplomatically','Connect the experience to your intended field of study'],
     projectTemplate:`Month 1: Identify the most pressing equity gap in your school. Consult community members who are affected. Month 2: Propose a response (education campaign, policy recommendation, support group). Month 3–5: Run the initiative. Month 6: Assess impact. Would the people you were trying to serve say it helped?` },
 
   { icon:'📢', title:'Peer Mediation / Conflict Resolution',
-    type:'advocacy', majors:['law','social','health','education'], impact:'med', cost:'free', remote:false, hoursPerWeek:2, gradeMin:10,
+    type:'advocacy', majors:['law','social','health','education'], impact:5, cost:'free', remote:false, hoursPerWeek:2, gradeMin:10,
     desc:'School peer mediators are trained to resolve conflicts between students. The training and practice builds communication and empathy skills highly valued in law, social work, and psychology.',
     howToShow:['State the training you received and the number of cases you handled','Describe how you helped two parties find resolution (without naming names)','Note any improvements to the program you suggested','Explain what mediation taught you about human conflict that you couldn\'t learn in class'],
     projectTemplate:`Month 1: Apply to your school\'s peer mediation program (most schools have one). Complete training. Month 2–4: Handle assigned cases. Keep private notes on what worked and what didn\'t. Month 5: Propose one program improvement. Month 6: Reflect on what you learned about communication, bias, and fairness.` },
 
   // ── ACADEMIC ENRICHMENT ────────────────────────────────────────
   { icon:'🎓', title:'University Course (Dual Credit / Online)',
-    type:'academic', majors:['any'], impact:'high', cost:'low', remote:true, hoursPerWeek:4, gradeMin:11,
+    type:'academic', majors:['any'], impact:7, cost:'low', remote:true, hoursPerWeek:4, gradeMin:11,
     desc:'Taking a first-year university course while in high school — through dual credit programs, Coursera, edX, or MIT OCW — signals you\'re already operating post-secondary. Receiving a grade is much stronger than just completing.',
     howToShow:['Name the course, institution, and your final grade or certificate','Describe the most challenging concept and how you worked through it','Explain how it went beyond your high school curriculum','Note how it confirmed or changed your intended major'],
     projectTemplate:`Month 1: Browse dual credit programs in your board or online (Coursera, edX for credit). Choose a course directly aligned with your intended major. Month 2–4: Complete all assignments and assessments. Month 5: Write a 200-word summary of the most important idea in the course. Month 6: Apply something from the course in a project, essay, or real-world context.` },
 
   { icon:'✍️', title:'Independent Research Essay or Paper',
-    type:'academic', majors:['humanities','social','science','law'], impact:'med', cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
+    type:'academic', majors:['humanities','social','science','law'], impact:6, cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
     desc:'Writing a research essay beyond your coursework — on a topic you care about, with proper citations — demonstrates intellectual initiative and writing ability.',
     howToShow:['Describe the topic and your argument or thesis','Note any sources you engaged with (journals, books, primary documents)','Explain what surprised you in your research','Mention if you shared it: school publication, a teacher\'s endorsement, online forum'],
     projectTemplate:`Month 1: Choose a question you genuinely want to answer — something that doesn\'t have an obvious answer. Write a research plan. Month 2: Read 5 academic sources and take notes. Month 3: Write a 1,500-word draft. Month 4: Get feedback from a teacher and revise. Month 5: Finalize and share (school publication, personal blog, Substack). Month 6: Start your next paper.` },
 
   { icon:'🏕️', title:'Academic Summer Program (UofT OSSI, Western Summer Academy)',
-    type:'academic', majors:['any'], impact:'high', cost:'mid', remote:false, hoursPerWeek:40, gradeMin:10,
+    type:'academic', majors:['any'], impact:8, cost:'mid', remote:false, hoursPerWeek:40, gradeMin:10,
     desc:'Residential academic programs at universities (UofT Sciences, Western Science Academy, Shad) give hands-on university-level experience and show you\'ve invested in your academic development beyond the minimum.',
     howToShow:['Name the program, institution, and summer','Describe a project or activity you completed','Note any recognition (certificate, published work, award)','Explain how the program shaped your academic plans'],
     projectTemplate:`Month 1: Research programs appropriate for your grade and interests (Shad, UofT OSSI, university-specific summer academies). Month 2: Apply — most require essays and teacher references. Month 3–4: Attend and fully engage — make relationships, ask questions, do the optional sessions. Month 5: After the program, document 3 things you learned that you couldn\'t learn at school. Month 6: Stay in touch with one professor or peer you met.` },
 
   { icon:'📖', title:'Self-Directed Deep Reading & Learning',
-    type:'academic', majors:['any'], impact:'med', cost:'free', remote:true, hoursPerWeek:3, gradeMin:9,
+    type:'academic', majors:['any'], impact:4, cost:'free', remote:true, hoursPerWeek:3, gradeMin:9,
     desc:'Reading deeply in your field — textbooks, academic papers, serious non-fiction — and being able to discuss it specifically is impressive. Especially valuable for humanities, law, philosophy, and social science applicants.',
     howToShow:['List 3–5 significant books or papers you\'ve read in your intended field','Describe the idea from one of them that most changed how you think','Note how your reading has influenced your course choices or projects','Explain how you found these resources (recommendation from teacher, following an author)'],
     projectTemplate:`Month 1: Ask a teacher in your intended field to recommend the most important book in that field. Read it. Month 2: Start a reading journal — one paragraph per chapter summarizing your reaction. Month 3: Find one journal article (Google Scholar) on the same topic. Read the abstract and conclusion. Month 4: Discuss what you read with your teacher or a peer. Month 5–6: Write a 500-word response — what argument do you agree or disagree with, and why?` },
 
   // ── COMPETITION ──────────────────────────────────────────────────────────────
   { icon:'🧫', title:'Biology / Chemistry Olympiad (IBO prep, UCC Biology Bowl)',
-    type:'competition', majors:['science','health'], impact:'high', cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
+    type:'competition', majors:['science','health'], impact:9, cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
     desc:'National science olympiads in biology and chemistry are one of the most respected signals for pre-med, biochem, and pharmacy applicants. Even qualifying for provincials is noteworthy.',
     howToShow:['State your exact placement or whether you advanced to provincials / nationals','Describe the hardest topic you had to learn specifically for the competition','Note how it went beyond your curriculum (university-level content)','Mention how many hours per week you dedicated to prep'],
     projectTemplate:`Month 1: Register for your provincial Biology / Chemistry Olympiad (search your province + "biology olympiad"). Month 2–4: Work through one university-level textbook chapter per week on the topics tested. Month 5: Write two past practice exams under timed conditions. Month 6: Write the qualifying exam. Regardless of result, document your score and prep process.` },
 
   { icon:'🏗️', title:'Engineering Physics / Physics Olympiad (CAP, IPhO)',
-    type:'competition', majors:['engineering','science'], impact:'high', cost:'free', remote:true, hoursPerWeek:5, gradeMin:10,
+    type:'competition', majors:['engineering','science'], impact:9, cost:'free', remote:true, hoursPerWeek:5, gradeMin:10,
     desc:'The Canadian Association of Physicists (CAP) high school physics exam and IPhO pathway is one of the most respected ECs for engineering-bound students. Problems require genuine physics thinking beyond the curriculum.',
     howToShow:['State your score or ranking relative to participants','Describe a problem type that required you to invent a solution method','Explain what you studied that was beyond Grade 12 content','Mention if a teacher or professor coached you'],
     projectTemplate:`Month 1: Download 3 past CAP exam papers (cap.ca). Attempt them without prep. Month 2–3: Study the topics you couldn't solve using Halliday/Resnick or Khan Academy University Physics. Month 4: Attempt past papers again, track improvement. Month 5: Write the official exam. Month 6: Review solutions; attempt one IPhO long-form problem.` },
 
   { icon:'💡', title:'Entrepreneurship / Business Plan Competition',
-    type:'competition', majors:['business','any'], impact:'high', cost:'free', remote:false, hoursPerWeek:4, gradeMin:10,
+    type:'competition', majors:['business','any'], impact:8, cost:'free', remote:false, hoursPerWeek:4, gradeMin:10,
     desc:'Competitions like Junior Achievement, the Ontario Network of Entrepreneurs student pitch competitions, or school-based business plan challenges reward real creative and analytical thinking — very compelling for business, economics, and management programs.',
     howToShow:['Describe the business idea and the problem it solves','Name the competition and your placement','Quantify anything: revenue, users, savings, votes, downloads','Mention what feedback you received from judges'],
     projectTemplate:`Month 1: Find a local or provincial competition (Junior Achievement, your school board, or an online search for "[city] student pitch competition"). Month 2: Brainstorm a problem in your school or community and sketch a solution. Month 3: Build a simple financial model (revenue, cost, profit). Month 4: Create a 5-slide deck and practice your pitch. Month 5: Enter the competition. Month 6: Write a 1-page post-mortem: what you'd do differently.` },
 
   { icon:'🤯', title:'Hack the North / School Hackathon',
-    type:'competition', majors:['cs','engineering'], impact:'high', cost:'free', remote:false, hoursPerWeek:12, gradeMin:10,
+    type:'competition', majors:['cs','engineering'], impact:8, cost:'free', remote:false, hoursPerWeek:12, gradeMin:10,
     desc:'Hackathons are weekend-long sprint competitions where teams build a working prototype in 24–48 hours. Hack the North (Waterloo) is Canada\'s largest. Even a local high-school hackathon is valuable for CS and engineering applicants.',
     howToShow:['Name the hackathon and any award or finalist recognition','Describe what you built in one clear sentence','Explain your specific role: frontend, backend, ML, hardware','Mention the most technical decision you had to make under time pressure'],
     projectTemplate:`Month 1: Find a hackathon via mlh.io (Major League Hacking) or search "[city] high school hackathon". Month 2: Learn one new tool you'll want to use at the event (e.g. React, Flask, Arduino). Month 3: Attend a smaller practice hackathon if available. Month 4: Build your hackathon team (3–4 people with complementary skills). Month 5: Attend and build. Month 6: Polish your project and post to GitHub with a proper README.` },
 
   { icon:'⚖️', title:'Moot Court / Mock Trial Competition',
-    type:'competition', majors:['law','humanities','social'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'competition', majors:['law','humanities','social'], impact:8, cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Moot Court and Mock Trial competitions are the gold standard EC for pre-law applicants. They require reading case law, constructing arguments, and performing under pressure — exactly what law schools value.',
     howToShow:['State the competition name and your role (Crown, Defence, Judge\'s clerk)','Describe the case and the legal issue at stake','Note any award: Best Advocate, Best Brief, top placing','Explain what you learned about how courts actually work'],
     projectTemplate:`Month 1: Ask your school if they have a mock trial club or check your local law society's high school outreach program. Month 2: Read a summary of Canadian constitutional law and one Supreme Court case (SCC decisions are public at scc-csc.ca). Month 3: Join or form a mock trial team. Month 4: Practice oral argument — 3 min argument, then 2 min rebuttal. Month 5: Compete. Month 6: Debrief with a mentor who is a lawyer, paralegal, or law student.` },
 
   // ── RESEARCH ─────────────────────────────────────────────────────────────────
   { icon:'🧪', title:'Science Fair with Industry Mentorship',
-    type:'research', majors:['science','engineering','health'], impact:'high', cost:'free', remote:false, hoursPerWeek:5, gradeMin:10,
+    type:'research', majors:['science','engineering','health'], impact:9, cost:'free', remote:false, hoursPerWeek:5, gradeMin:10,
     desc:'A science fair project supervised by a university researcher or industry professional carries significantly more credibility than a solo project. It signals that your work meets an external professional standard.',
     howToShow:['Name your mentor\'s institution and title','Describe the hypothesis and the method you used','State your result — even a null result is fine','Note whether you advanced to regionals, provincials, or Canada-Wide'],
     projectTemplate:`Month 1: Email 5 professors in your area whose research interests you. Explain you're a high school student looking for a science fair mentor. Most will say yes to a coffee meeting. Month 2: Design a feasible experiment that uses their expertise. Month 3–4: Run experiments, record data meticulously. Month 5: Write your research paper in standard IMRaD format. Month 6: Enter your regional science fair.` },
 
   { icon:'💊', title:'Hospital / Clinical Research Observation',
-    type:'research', majors:['health','science'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:11,
+    type:'research', majors:['health','science'], impact:9, cost:'free', remote:false, hoursPerWeek:3, gradeMin:11,
     desc:'Shadowing a physician or being in a clinical setting — even without doing procedures — gives you an authentic understanding of healthcare that most applicants lack. For health sciences and medicine, this is almost essential.',
     howToShow:['Name the specialty and type of setting (ER, ward, clinic, OR)','Describe a case or situation you witnessed (without violating patient privacy)','Explain how it affected your decision to pursue health sciences','State how many hours total you observed'],
     projectTemplate:`Month 1: Contact your family doctor or a local specialist and ask to shadow them for a day. If refused, contact a hospital volunteer office. Month 2: Begin regular visits (even 3 hours/month is enough). Month 3: Keep a private reflection log — what surprised you? what did you see that changed your assumptions? Month 4–6: Complete at least 40 total hours of observation. Write a 300-word summary of the most meaningful moment.` },
 
   { icon:'🛸', title:'Independent Engineering Design Project (CAD + Prototype)',
-    type:'research', majors:['engineering'], impact:'high', cost:'low', remote:false, hoursPerWeek:5, gradeMin:10,
+    type:'research', majors:['engineering'], impact:8, cost:'low', remote:false, hoursPerWeek:5, gradeMin:10,
     desc:'Designing, CADing, and building a physical prototype — even something simple like a structural bridge, a drone frame, or a water filtration device — demonstrates engineering instincts that no grade can show.',
     howToShow:['Describe the problem you were trying to solve','Explain your design process: sketch → CAD → physical model → iteration','Mention any software used (Fusion 360, Solidworks, MATLAB)','Quantify the result: load capacity, efficiency, cost, weight'],
     projectTemplate:`Month 1: Choose a simple engineering challenge (longest spaghetti bridge, cheapest water filter, lightest load-bearing structure). Download free Fusion 360 (Autodesk student license). Month 2: Sketch 3 designs. Choose the most promising and CAD it. Month 3: 3D print or build from accessible materials. Month 4: Test under real conditions; document with video. Month 5: Redesign based on failure analysis. Month 6: Document on GitHub or YouTube with engineering commentary.` },
 
   { icon:'📊', title:'Data Analysis / Statistics Independent Study',
-    type:'research', majors:['cs','science','social','business'], impact:'med', cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
+    type:'research', majors:['cs','science','social','business'], impact:6, cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
     desc:'Taking a real public dataset (Stats Canada, WHO, Kaggle) and performing original analysis — then writing up your findings — demonstrates analytical thinking that\'s rare in high school.',
     howToShow:['Describe your research question and the dataset you used','Explain the method (regression, visualization, clustering)','State what you found and whether it was what you expected','Note if you published it (GitHub, personal blog, or school presentation)'],
     projectTemplate:`Month 1: Go to kaggle.com/datasets or statcan.gc.ca and find a dataset on a topic you find interesting. Install Python + pandas + matplotlib. Month 2: Clean the data and make 5 basic visualizations. Month 3: Identify a pattern or anomaly. Form a hypothesis. Month 4: Run a simple statistical test (correlation, regression). Month 5: Write a 700-word analysis report. Month 6: Post to GitHub with a readable README and share in a relevant subreddit for feedback.` },
 
   // ── VOLUNTEERING ─────────────────────────────────────────────────────────────
   { icon:'🧑‍🦼', title:'Disability / Accessibility Support Volunteering',
-    type:'volunteer', majors:['health','social','any'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'volunteer', majors:['health','social','any'], impact:7, cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Working with individuals with physical or cognitive disabilities — through school boards, community centres, or disability organizations — shows empathy, adaptability, and commitment that health sciences programs value highly.',
     howToShow:['Describe the population you worked with (without identifying individuals)','Explain a specific challenge and how you adapted','Mention if you received any training (WHMIS, Safe Talk, CPR)','State the total hours and duration of commitment'],
     projectTemplate:`Month 1: Contact your local school board's special education department or a community org like Canadian Foundation for Physically Disabled Persons. Month 2: Complete any required training (organizations usually provide this). Month 3 onward: Weekly shifts; keep a log. Month 6: Write a 200-word reflection on how this changed how you communicate with people.` },
 
   { icon:'🍲', title:'Food Bank / Hunger Advocacy Volunteering',
-    type:'volunteer', majors:['social','health','any'], impact:'med', cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
+    type:'volunteer', majors:['social','health','any'], impact:5, cost:'free', remote:false, hoursPerWeek:3, gradeMin:9,
     desc:'Volunteering at a food bank is widespread, but if you progress into a coordination or advocacy role (building donor relationships, organizing drives, writing grants), it becomes a leadership EC.',
     howToShow:['Describe your progression from volunteer to any coordination role','Quantify your impact: meals served, donors contacted, pounds of food collected','Explain a systemic issue you learned about (food deserts, SNAP gaps)','Mention if you initiated any campaign or fundraiser'],
     projectTemplate:`Month 1: Volunteer at a food bank in a basic sort/pack role. Month 2: Learn the organization's donor outreach process. Month 3: Ask if you can take on a coordination role (calling donors, organizing a food drive). Month 4: Run a food drive at your school — set a goal and track results. Month 5: Research one policy cause of food insecurity in your province. Month 6: Write and deliver a 2-minute advocacy speech at your school or a community event.` },
 
   { icon:'🌱', title:'Seniors / Elder Care Companion Volunteering',
-    type:'volunteer', majors:['health','social','any'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'volunteer', majors:['health','social','any'], impact:7, cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Consistent companionship visits to seniors — in long-term care homes or through programs like Friendly Faces — is one of the most authentic volunteering activities for health sciences, social work, and education applicants.',
     howToShow:['Describe the relationship you built with a resident or group','Explain the most meaningful conversation or activity you facilitated','Mention any special situations (dealing with dementia, grief, loneliness)','State total hours and duration'],
     projectTemplate:`Month 1: Contact your local long-term care home or VON (Victorian Order of Nurses) about their volunteer companion program. Month 2: Complete orientation and first 2 visits. Month 3 onward: Weekly 1-hour visits. Month 5: Organize an activity — a craft, a trivia game, a small holiday event — for 5–10 residents. Month 6: Reflect on how this experience shifted your assumptions about aging.` },
 
   { icon:'🐕', title:'Animal Shelter / Humane Society Volunteering',
-    type:'volunteer', majors:['science','health','any'], impact:'med', cost:'free', remote:false, hoursPerWeek:3, gradeMin:14,
+    type:'volunteer', majors:['science','health','any'], impact:5, cost:'free', remote:false, hoursPerWeek:3, gradeMin:14,
     desc:'Working directly with animals — socializing dogs, fostering kittens, assisting with adoption events — is compelling for pre-vet, biology, and animal behaviour applicants. It requires responsibility and emotional resilience.',
     howToShow:['Describe your specific role and the animals you worked with','Mention any animals you helped get adopted','Explain a difficult situation (aggressive animal, euthanasia, surrender)','State total hours and progression of responsibility'],
     projectTemplate:`Month 1: Apply to your local SPCA or humane society. Most require you to be 16+. Month 2: Complete orientation; start in socialization (playing with cats, walking dogs). Month 3: Progress to intake assessments if offered. Month 4: Foster one litter or individual animal. Month 5: Help run an adoption event. Month 6: Write a post summarizing what the experience taught you about animal welfare systems.` },
 
   // ── LEADERSHIP ───────────────────────────────────────────────────────────────
   { icon:'🏫', title:'Peer Tutoring Program (Organizer)',
-    type:'leadership', majors:['any'], impact:'med', cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'leadership', majors:['any'], impact:6, cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Running a peer tutoring program — not just tutoring — is a leadership EC. Recruiting tutors, matching students, tracking outcomes, and improving the program show organizational and managerial skill.',
     howToShow:['Describe the scope: how many tutors, students, subjects','Quantify outcome: pass rates, sessions delivered, student feedback','Explain a problem you encountered and how you solved it','Mention how you recruited tutors and managed scheduling'],
     projectTemplate:`Month 1: Identify a subject your school struggles with (Grade 10 math? Grade 11 chem?). Propose a peer tutoring program to your department head or student council. Month 2: Recruit 5 volunteer tutors from Grade 11–12. Month 3: Launch with your first 10 students. Month 4: Track attendance and run a 3-question feedback survey. Month 5: Improve based on feedback. Month 6: Present results to the administration with a 1-page impact summary.` },
 
   { icon:'🌐', title:'Model United Nations (Chair or Secretary-General)',
-    type:'leadership', majors:['law','social','humanities','any'], impact:'high', cost:'low', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'leadership', majors:['law','social','humanities','any'], impact:8, cost:'low', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Leading an MUN conference — chairing a committee or serving as Secretary-General — is a significant organizational and public-speaking achievement, especially for law, political science, and international relations applicants.',
     howToShow:['Describe your committee and the resolution you helped produce','Mention the conference size (number of delegates, schools)','Explain a contentious moment and how you managed it as chair','Note any award: Best Delegate, Outstanding Delegate, Verbal Commendation'],
     projectTemplate:`Month 1: Participate as a delegate in one MUN conference at your school or a nearby school. Month 2–3: Study procedure (Robert's Rules, amendment process, bloc voting). Month 4: Apply for a Chair position at an upcoming regional conference. Month 5: Write your chair\'s background guide for delegates. Month 6: Run the committee at the conference; debrief afterward with your advisor.` },
 
   { icon:'📻', title:'School Radio / Podcast Host or Producer',
-    type:'leadership', majors:['humanities','social','business','any'], impact:'med', cost:'free', remote:true, hoursPerWeek:3, gradeMin:9,
+    type:'leadership', majors:['humanities','social','business','any'], impact:6, cost:'free', remote:true, hoursPerWeek:3, gradeMin:9,
     desc:'Producing a regular podcast or school radio program — not just appearing on one — shows communication skills, consistency, and initiative. Especially strong for journalism, communications, and public policy applicants.',
     howToShow:['State how many episodes and how long you\'ve been producing','Describe your listenership or audience growth','Explain your editing process: recording, cutting, mixing, distributing','Mention a notable guest or episode and what you learned from it'],
     projectTemplate:`Month 1: Decide on a niche (school news, tech, mental health, interviews). Record a 5-minute pilot with any microphone. Month 2: Post to Spotify (free via Anchor/Buzzsprout) and share in your school. Month 3: Publish weekly or bi-weekly. Month 4: Recruit a co-host or a producer to help. Month 5: Invite one guest (teacher, local entrepreneur, student activist). Month 6: Write a short blog post about what you learned from 6 months of consistent publishing.` },
 
   { icon:'🏛️', title:'Municipal / Federal Riding Youth Council',
-    type:'leadership', majors:['social','law','humanities'], impact:'high', cost:'free', remote:false, hoursPerWeek:2, gradeMin:10,
+    type:'leadership', majors:['social','law','humanities'], impact:8, cost:'free', remote:false, hoursPerWeek:2, gradeMin:10,
     desc:'Serving on an official youth advisory panel for a city council, MP\'s office, or federal department gives you real exposure to policy-making and access to decision-makers. Highly impressive for political science and law applicants.',
     howToShow:['Name the council and your municipality/MP','Describe one policy issue you worked on','Explain whether your recommendations were adopted or considered','Mention any public speaking you did (deputations, presentations to council)'],
     projectTemplate:`Month 1: Search "[your city] youth council" or "[your MP's name] youth council" — most cities and many MPs have these. Apply. Month 2: Attend your first meeting; listen. Month 3: Volunteer to research a specific issue for a committee. Month 4: Draft a 1-page policy brief on your issue. Month 5: Present your brief at a meeting. Month 6: Write a reflection on how local policy actually gets made vs. what civics class taught you.` },
 
   // ── CREATIVE ─────────────────────────────────────────────────────────────────
   { icon:'📝', title:'Literary Magazine or Fiction / Poetry Publication',
-    type:'creative', majors:['humanities','social','any'], impact:'med', cost:'free', remote:true, hoursPerWeek:2, gradeMin:9,
+    type:'creative', majors:['humanities','social','any'], impact:6, cost:'free', remote:true, hoursPerWeek:2, gradeMin:9,
     desc:'Getting a poem, short story, or essay published in a recognized literary journal — even a prestigious high school one like The Claremont Review — is an externally validated creative achievement that sets humanities applicants apart.',
     howToShow:['Name the publication and any competition context','Describe the piece: genre, theme, length','Mention the rejection-to-acceptance ratio if you know it','Explain what the piece is about and why you wrote it'],
     projectTemplate:`Month 1: Write one piece you\'re proud of — a poem, a short story, or a personal essay. Month 2: Find 5 literary journals that accept teen writers (The Claremont Review, Polyphony Lit, Merlyn\'s Pen). Read their submission guidelines. Month 3: Revise your piece with feedback from an English teacher. Month 4: Submit to 3 publications. Month 5: If rejected, revise again and resubmit; also post to a serious platform like Medium or Substack. Month 6: Start your next piece — consistency matters more than one publication.` },
 
   { icon:'🖼️', title:'Commissioned / Exhibited Artwork',
-    type:'creative', majors:['arts','any'], impact:'high', cost:'low', remote:false, hoursPerWeek:4, gradeMin:10,
+    type:'creative', majors:['arts','any'], impact:8, cost:'low', remote:false, hoursPerWeek:4, gradeMin:10,
     desc:'Having artwork accepted into a juried exhibition or receiving a paid commission (even one small commission) transforms your creative practice from a hobby into a recognized professional activity.',
     howToShow:['Describe the piece(s) and the medium','Name the exhibition or the client for commissioned work','State any prize, purchase award, or sale price','Mention how you marketed your work'],
     projectTemplate:`Month 1: Complete a portfolio of 5 high-quality pieces. Month 2: Research local juried shows (check your city\'s arts council website). Submit to one. Month 3: Create a simple portfolio website (Cargo Collective or Adobe Portfolio — both free). Month 4: Offer to create a piece for a local business, school, or event — even for free initially. Month 5: If accepted to a show, attend and network with other exhibitors. Month 6: Document all work professionally (clean photos, consistent style, artist statement).` },
 
   { icon:'🎼', title:'Original Music Composition / Production (SoundCloud / Spotify)',
-    type:'creative', majors:['arts','any'], impact:'high', cost:'low', remote:true, hoursPerWeek:4, gradeMin:9,
+    type:'creative', majors:['arts','any'], impact:8, cost:'low', remote:true, hoursPerWeek:4, gradeMin:9,
     desc:'Composing and releasing original music — through any DAW, on any platform — is far more impressive than performing others\' music. Even a small catalogue of self-released tracks on SoundCloud or Spotify demonstrates technical skill and creative ownership.',
     howToShow:['State the platform, number of tracks, and any streaming numbers (even small ones)','Describe your production process: which DAW, what genre, how you mix/master','Mention any collaboration (featuring vocalists, other producers)','Note if your music was used anywhere (short film, event, game)'],
     projectTemplate:`Month 1: Download Garageband (free, Mac) or LMMS (free, all platforms). Watch 3 beginner production tutorials. Complete one beat. Month 2: Start releasing: create a free SoundCloud account and post weekly. Month 3: Learn one new technique per week (chord progressions, sampling, mixing). Month 4: Collaborate with a vocalist or another producer from your school. Month 5: Release your best track on Spotify via DistroKid ($22/year for unlimited releases). Month 6: Aim for 100 plays total across your catalogue.` },
 
   { icon:'🎙️', title:'Stand-Up Comedy / Spoken Word / Slam Poetry',
-    type:'creative', majors:['humanities','any'], impact:'med', cost:'free', remote:false, hoursPerWeek:2, gradeMin:10,
+    type:'creative', majors:['humanities','any'], impact:5, cost:'free', remote:false, hoursPerWeek:2, gradeMin:10,
     desc:'Performing original material at open mics — whether comedy, slam poetry, or spoken word — requires enormous courage and demonstrates communication skills, self-awareness, and authentic voice. Unique among high school ECs.',
     howToShow:['State where you performed: school, open mic, slam competition','Describe your material: themes, format, how long your set runs','Mention audience reaction or any award','Explain how you developed your performance voice'],
     projectTemplate:`Month 1: Write 3 minutes of original material on something you genuinely find funny or meaningful. Perform it in front of a mirror. Month 2: Find an open mic in your city (most are free to attend and participate). Watch for one night before signing up. Month 3: Perform for the first time. Expect it to feel terrifying. Month 4: Revise your set based on what landed and what didn\'t. Month 5: Look for a youth-specific slam competition (Poetry Slam Canada has regional events). Month 6: Record a clean video of your set for your portfolio.` },
 
   // ── SPORT ─────────────────────────────────────────────────────────────────
   { icon:'🎾', title:'Racket Sports (Tennis / Badminton / Squash) — Provincial Level',
-    type:'sport', majors:['any'], impact:'med', cost:'mid', remote:false, hoursPerWeek:8, gradeMin:9,
+    type:'sport', majors:['any'], impact:6, cost:'mid', remote:false, hoursPerWeek:8, gradeMin:9,
     desc:'Competing at the provincial or regional level in any individual racket sport signals discipline and competitive resilience. The training regimen and tournament scheduling also demonstrates time management.',
     howToShow:['State your ranking: provincial, regional, or club-level','Describe your training schedule and how you manage it alongside school','Mention your best tournament result and who you beat to achieve it','Explain how you recovered from a significant loss'],
     projectTemplate:`Month 1: Register with your provincial tennis/badminton association and enter one satellite tournament. Month 2: Identify the gap between your game and the top player you lost to. Work with a coach on that gap. Month 3: Enter a second tournament — track your unforced errors, not just wins. Month 4: Learn about college racket sport programs in Canada (many provide bursaries). Month 5: Write a 200-word player profile of yourself as if for a recruiting database. Month 6: Post tournament results and stats on LinkedIn or a personal athletics site.` },
 
   { icon:'🤼', title:'Wrestling / Judo / Gymnastics (Competitive)',
-    type:'sport', majors:['health','any'], impact:'med', cost:'mid', remote:false, hoursPerWeek:10, gradeMin:9,
+    type:'sport', majors:['health','any'], impact:6, cost:'mid', remote:false, hoursPerWeek:10, gradeMin:9,
     desc:'Weight-category sports like wrestling and judo require extreme discipline, weight management, and mental toughness. They are rare among academic applicants and signal a willingness to endure real hardship.',
     howToShow:['State your weight class and competitive level','Describe your training regimen in concrete terms (hours/week, periodization)','Mention a competition result — even a difficult loss that taught you something','Explain how you manage weight and nutrition alongside academic demands'],
     projectTemplate:`Month 1: Join your school wrestling team or a local judo club. Month 2: Train 3x per week minimum; learn the fundamentals. Month 3: Enter your first interschool meet or recreational tournament. Month 4: Identify your strongest technique and your weakest. Month 5: Compete in a regional event. Month 6: Write a training log covering 6 months — time per session, key lessons, performance trends.` },
 
   { icon:'⛷️', title:'Winter Sport (Ski / Snowboard / Speed Skating — Club Level)',
-    type:'sport', majors:['any'], impact:'med', cost:'high', remote:false, hoursPerWeek:10, gradeMin:9,
+    type:'sport', majors:['any'], impact:5, cost:'high', remote:false, hoursPerWeek:10, gradeMin:9,
     desc:'Training in a winter sport through a racing or competitive club program signals dedication, physical conditioning, and the ability to perform in uncomfortable conditions. Strong for applicants in northern or mountain-region universities.',
     howToShow:['State your discipline and competitive level (club, provincial, FIS points)','Describe your seasonal training schedule and how it affects school attendance','Mention your best race result','Explain how you balance travel, racing, and academics'],
     projectTemplate:`Month 1: Register with your provincial ski/speed skating racing association. Month 2: Begin dry-land training (fall conditioning). Month 3: First races of the season. Month 4: Review race data and identify training focus. Month 5: Provincial event. Month 6: Off-season: strength training and dry-land. Document your training plan in writing.` },
 
   { icon:'🏋️', title:'Powerlifting / Olympic Weightlifting (Certified Meet)',
-    type:'sport', majors:['health','any'], impact:'med', cost:'low', remote:false, hoursPerWeek:5, gradeMin:15,
+    type:'sport', majors:['health','any'], impact:5, cost:'low', remote:false, hoursPerWeek:5, gradeMin:15,
     desc:'Competing in sanctioned powerlifting or Olympic lifting meets — with official totals recorded — is a unique, verifiable athletic achievement that very few applicants have. Shows structured training and long-term physical commitment.',
     howToShow:['State your best lifts and your Wilks / DOTS score (relative strength metric)','Name the federation (IPF, CPU, OWF) and events you competed in','Describe your programming approach (linear progression, percentage-based)','Explain how strength training has affected your academic focus and discipline'],
     projectTemplate:`Month 1: Join a barbell gym and get a coach or follow a beginner program (Starting Strength, GZCLP). Month 2–4: Build your base. Month 5: Find a sanctioned meet through the Canadian Powerlifting Union (cpu.ca) or provincial federation. Register. Month 6: Compete. Document your attempt selection, attempts made, and total. This is now a verifiable, official athletic result.` },
 
   // ── EMPLOYMENT ───────────────────────────────────────────────────────────────
   { icon:'💻', title:'Freelance Software Development (Paid Clients)',
-    type:'employment', majors:['cs','engineering','business'], impact:'high', cost:'free', remote:true, hoursPerWeek:5, gradeMin:10,
+    type:'employment', majors:['cs','engineering','business'], impact:8, cost:'free', remote:true, hoursPerWeek:5, gradeMin:10,
     desc:'Building websites or apps for paying clients — even at $200/site — is fundamentally different from personal projects. A client relationship requires scoping, communicating, managing revisions, and delivering on a deadline.',
     howToShow:['State how many clients you\'ve had and your total revenue','Describe your most complex project: what did you build, for what purpose','Explain how you handled a revision request you didn\'t agree with','Mention your tech stack and what you learned from deploying real software'],
     projectTemplate:`Month 1: Build a portfolio site with 2 of your best projects (GitHub Pages, free). Month 2: Offer to build one free website for a local business or organization. Document the process. Month 3: Post your portfolio to Fiverr and Upwork (free) with a basic gig: "Simple business website — $150." Month 4: Land your first paid client. Month 5: Complete the project; get a written testimonial. Month 6: Raise your price to $250 and describe your experience in your AIF: what you built, how much you earned, what you learned.` },
 
   { icon:'📐', title:'Tutoring or Academic Coaching (Paid)',
-    type:'employment', majors:['any'], impact:'med', cost:'free', remote:true, hoursPerWeek:4, gradeMin:11,
+    type:'employment', majors:['any'], impact:6, cost:'free', remote:true, hoursPerWeek:4, gradeMin:11,
     desc:'Charging for tutoring — even informally through word of mouth — is a business. It signals subject mastery, communication skill, and entrepreneurial initiative. Medical, engineering, and education applicants especially benefit.',
     howToShow:['State the subjects and grade levels you tutored','Mention your hourly rate and total hours or clients','Describe your teaching approach: how do you explain a concept someone doesn\'t understand?','Note any student outcome: grade improvement, exam passed'],
     projectTemplate:`Month 1: Identify a subject you can teach at 2 grade levels below yours. Set a rate ($15–25/hr). Month 2: Ask your teacher or guidance counsellor to refer students. Month 3: Begin tutoring; track student progress. Month 4: Create one simple worksheet or explainer sheet for a concept your students struggle with. Month 5: Expand to 2–3 students. Month 6: Write a 150-word teaching philosophy: what is your approach and what evidence do you have that it works?` },
 
   { icon:'🛠️', title:'Skilled Trade Apprenticeship or Co-op (Electrical, Carpentry, Welding)',
-    type:'employment', majors:['engineering','any'], impact:'high', cost:'free', remote:false, hoursPerWeek:10, gradeMin:16,
+    type:'employment', majors:['engineering','any'], impact:8, cost:'free', remote:false, hoursPerWeek:10, gradeMin:16,
     desc:'Working in a skilled trade — even one co-op semester as a helper in an electrician shop, carpentry crew, or fabrication shop — gives engineering applicants hands-on experience that most of their peers completely lack. It also signals work ethic and maturity.',
     howToShow:['Name the trade and employer','Describe a specific task you performed, not just your title','Explain what you learned that surprised you about the trade','Mention any safety certifications (WHMIS, Working at Heights)'],
     projectTemplate:`Month 1: Search your school board's co-op program or email 5 local contractors, fabrication shops, or electrical firms asking if you can shadow or help on weekends. Month 2: Begin regular presence — even 2 hours on Saturdays. Month 3: Learn the names of every tool you use. Month 4: Ask to take on a specific subtask with real responsibility. Month 5: Complete your WHMIS online certification (free at worksafebc.com). Month 6: Document the experience: what you built, what you learned, and how it relates to your intended engineering degree.` },
 
   { icon:'📣', title:'Social Media Content Creator (Niche / Educational)',
-    type:'employment', majors:['business','humanities','any'], impact:'med', cost:'free', remote:true, hoursPerWeek:4, gradeMin:9,
+    type:'employment', majors:['business','humanities','any'], impact:5, cost:'free', remote:true, hoursPerWeek:4, gradeMin:9,
     desc:'Running a niche educational or creative social media account with real engagement — even 500 followers who care about your content — demonstrates communication, consistency, and entrepreneurial skills.',
     howToShow:['State the platform, niche, and follower count or engagement rate','Describe your content production process (shooting, editing, scripting)','Mention your best-performing post and why it worked','Explain how you\'ve monetized or plan to monetize'],
     projectTemplate:`Month 1: Choose a niche you know well (math tricks, chemistry memes, local history, sustainable fashion) and post 3 times per week for 30 days. Month 2: Analyze which posts got more engagement and double down on that format. Month 3: Collaborate with one other student creator. Month 4: Apply to YouTube Partner Program, Patreon, or seek a small sponsorship. Month 5: Hit a meaningful milestone (1,000 views on one video, 250 followers, first paid partnership). Month 6: Write a 200-word business case: what is your content, who is your audience, what is your value proposition?` },
 
   // ── STEM ─────────────────────────────────────────────────────────────────────
   { icon:'🚀', title:'Rocketry (High Power / Model Rocket Design)',
-    type:'stem', majors:['engineering','science'], impact:'high', cost:'mid', remote:false, hoursPerWeek:4, gradeMin:10,
+    type:'stem', majors:['engineering','science'], impact:8, cost:'mid', remote:false, hoursPerWeek:4, gradeMin:10,
     desc:'Building and flying model or high-power rockets — especially with a certified motor and recovery system — is a niche engineering EC that directly signals interest in aerospace, mechanical, and systems engineering.',
     howToShow:['State your certification level if applicable (NAR Level 1 or 2)','Describe your rocket\'s design: materials, motor class, apogee achieved','Explain a design failure and how you diagnosed and fixed it','Mention any competition: Canada Rocketry, Team America Rocketry Challenge (TARC)'],
     projectTemplate:`Month 1: Build your first Estes model rocket kit ($30 at hobby shop). Fly it. Month 2: Design a rocket from scratch using OpenRocket (free simulation software). Month 3: Build and fly your scratch design; record apogee. Month 4: Find a local rocketry club (Tripoli or NAR chapter). Attend a launch. Month 5: Begin working toward NAR Level 1 certification. Month 6: Document your rockets with CAD drawings, simulation screenshots, and flight logs in a portfolio.` },
 
   { icon:'🌊', title:'Underwater ROV / AUV Build (MATE Robotics)',
-    type:'stem', majors:['engineering','cs','science'], impact:'high', cost:'mid', remote:false, hoursPerWeek:6, gradeMin:10,
+    type:'stem', majors:['engineering','cs','science'], impact:8, cost:'mid', remote:false, hoursPerWeek:6, gradeMin:10,
     desc:'MATE ROV (Marine Advanced Technology Education) is a global underwater robot competition with a strong Canadian presence. Building a remotely operated vehicle teaches control systems, waterproofing, and teamwork under strict constraints.',
     howToShow:['Describe your ROV\'s design and any innovations your team added','State your competition result and pool/depth tested','Explain the most difficult engineering problem you solved (buoyancy control, tether management, camera)','Mention your specific role: mechanical, software, systems integration'],
     projectTemplate:`Month 1: Find MATE ROV Canada (materovcompetition.com) — register a team. Month 2: Learn about ROV design; watch past competition footage. Month 3: Prototype using PVC and bilge pump motors. Month 4: Waterproof electronics; test in a bathtub. Month 5: Attend regional competition. Month 6: Write a technical report on your design decisions and their trade-offs.` },
 
   { icon:'🧠', title:'AI / Machine Learning Study Group (Founded)',
-    type:'stem', majors:['cs','engineering','science'], impact:'med', cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
+    type:'stem', majors:['cs','engineering','science'], impact:6, cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
     desc:'Founding and running a study group where peers work through ML content together — and then producing something tangible (a project, a demo, a presentation) — shows initiative that solo studying doesn\'t.',
     howToShow:['State how many members and how regularly you meet','Describe the curriculum you used (fast.ai, Coursera Deep Learning, CS231n)','Mention a project the group completed together','Explain what you contributed that others couldn\'t have without you'],
     projectTemplate:`Month 1: Recruit 3–5 interested students (Discord or posters). Month 2: Start with fast.ai (free, practical) — do one lesson per week as a group. Month 3: Each member builds a different beginner ML model (image classifier, sentiment analysis, recommendation system). Month 4: Present to each other; review code. Month 5: Build one shared capstone project. Month 6: Post the project to GitHub with a joint README; present to a CS teacher.` },
 
   { icon:'🛰️', title:'Amateur Radio (Ham Radio) License',
-    type:'stem', majors:['engineering','science','cs'], impact:'med', cost:'low', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'stem', majors:['engineering','science','cs'], impact:5, cost:'low', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Getting your amateur radio license (Basic or Advanced) and actually operating a radio demonstrates real interest in electronics, signal theory, and telecommunications — technical knowledge almost no high school student has.',
     howToShow:['State your callsign and license class (Basic, Advanced)','Describe a contact (QSO) you made — distance, band, mode (CW, SSB, digital)','Explain a technical aspect of radio you learned (antenna design, propagation)','Mention any involvement with a radio club (ARRL, RAC affiliated)'],
     projectTemplate:`Month 1: Download the Canadian Radio Amateur Exam Study Guide (free, Radio Amateurs of Canada). Month 2: Study 30 min/day; focus on electronics theory, not just rules. Month 3: Write the Basic qualification exam at an Industry Canada exam session. Month 4: Set up a budget station (a basic HF transceiver and a wire antenna can cost under $200). Month 5: Make 10 contacts, log them. Month 6: Work toward Advanced qualification; describe what you learned about radio propagation.` },
 
   { icon:'🔭', title:'Astronomy / Astrophotography Club (Active Member or Founder)',
-    type:'stem', majors:['science','engineering'], impact:'med', cost:'low', remote:false, hoursPerWeek:3, gradeMin:9,
+    type:'stem', majors:['science','engineering'], impact:5, cost:'low', remote:false, hoursPerWeek:3, gradeMin:9,
     desc:'Actively engaging with astronomy — astrophotography, telescope building, variable star observation — signals genuine scientific curiosity and patience. Very compelling for astrophysics, physics, and engineering applicants.',
     howToShow:['Describe the equipment you use and what you\'ve imaged or observed','Mention any contribution to citizen science (AAVSO variable star reports, Planet Hunters)','Note if you\'ve given a presentation to a club or school','Explain one scientific phenomenon you better understand through direct observation'],
     projectTemplate:`Month 1: Find your local Royal Astronomical Society of Canada (RASC) chapter — they run free public star parties. Attend one. Month 2: Borrow or build a basic Dobsonian telescope. Observe 10 Messier objects. Month 3: Learn to polar align for astrophotography; take your first tracked image. Month 4: Submit a variable star observation to AAVSO (citizen science). Month 5: Give a 10-minute talk to your school science club. Month 6: Enter a provincial or national astrophotography competition.` },
 
   { icon:'🧬', title:'Bioinformatics / Genomics Self-Study Project',
-    type:'stem', majors:['science','cs','health'], impact:'high', cost:'free', remote:true, hoursPerWeek:4, gradeMin:11,
+    type:'stem', majors:['science','cs','health'], impact:8, cost:'free', remote:true, hoursPerWeek:4, gradeMin:11,
     desc:'Learning bioinformatics tools (BLAST, Python Biopython, R for genomics) and running an analysis on public genomic data puts you years ahead of most science applicants. Exceptional for molecular biology, biochemistry, bioinformatics, and pre-med tracks.',
     howToShow:['Describe the dataset and the biological question you investigated','Name the tools: Python, R, BLAST, NCBI, Galaxy','State what you found — even a known result reproduced independently is valuable','Mention if a biology or CS teacher verified your methodology'],
     projectTemplate:`Month 1: Install Anaconda (Python) and Biopython. Complete the Rosalind bioinformatics problems (rosalind.info) — free, self-paced. Month 2: Download a public FASTA file from NCBI (a gene of interest to you). Run BLAST alignment. Month 3: Visualize the phylogenetic tree using Biopython. Month 4: Write a 500-word explanation of what the analysis shows, as if for a peer. Month 5: Find a Bioinformatics professor at a nearby university and email them your write-up asking for feedback. Month 6: Post your code and analysis to GitHub with a README.` },
 
   // ── ADVOCACY ─────────────────────────────────────────────────────────────────
   { icon:'♿', title:'Accessibility Advocacy (Campus / Community Project)',
-    type:'advocacy', majors:['health','social','law','any'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'advocacy', majors:['health','social','law','any'], impact:7, cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Working to make a specific space, organization, or system more accessible — documenting barriers, proposing solutions, and following through — is more compelling than general disability awareness campaigns.',
     howToShow:['Describe the specific barrier you identified (a ramp, a form, a communication gap)','Explain the process: who did you approach, how did you make your case','State whether your proposal was adopted (even partial wins count)','Mention any policy or language you helped change'],
     projectTemplate:`Month 1: Do an accessibility audit of your school — find one genuine barrier (no tactile strips, inaccessible washroom, website without alt text). Month 2: Research the relevant legislation (AODA in Ontario, ACA federally). Month 3: Write a formal 1-page proposal for the administration. Month 4: Present at a school board or student council meeting. Month 5: Follow up; if adopted, document the change. Month 6: Connect with Accessibility Canada (accessible.canada.ca) to understand federal standards.` },
 
   { icon:'💧', title:'Water / Environmental Quality Advocacy',
-    type:'advocacy', majors:['science','social','environment','any'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'advocacy', majors:['science','social','environment','any'], impact:7, cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Working on a specific environmental problem in your community — water quality, urban heat islands, local wetland destruction — is far more impressive than general climate advocacy. The specificity shows intellectual rigor.',
     howToShow:['Describe the specific environmental issue: what, where, why it matters','Explain the action you took: petition, council deputation, restoration project, monitoring project','State any measurable outcome: signatures, policy review, media coverage, trees planted','Mention any partnership with an environmental NGO or municipal department'],
     projectTemplate:`Month 1: Research one specific environmental issue in your municipality (check your local conservation authority's reports). Month 2: Contact the relevant body (city environmental office, conservation authority). Attend one public meeting. Month 3: Recruit 5–10 peers into a project team. Month 4: Take a concrete action: plant trees, test water quality with test kits, or draft a petition. Month 5: Deliver a deputation to your city council. Month 6: Document your project with before-and-after photos, data, and a 200-word impact statement.` },
 
   { icon:'🏘️', title:'Indigenous Reconciliation Initiative (Non-Indigenous Ally)',
-    type:'advocacy', majors:['social','law','humanities','any'], impact:'high', cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
+    type:'advocacy', majors:['social','law','humanities','any'], impact:7, cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Organizing or participating in a meaningful reconciliation project — land acknowledgement reform, Indigenous author reading circles, Truth and Reconciliation Commission calls to action review — is increasingly important and valued at Canadian universities. Must be genuine, not performative.',
     howToShow:['Describe the specific action and who you partnered with (Indigenous student groups, community organizations)','Explain what you learned that changed your assumptions','Note any school or community adoption of your initiative','Avoid centring yourself — focus on the community you worked alongside'],
     projectTemplate:`Month 1: Read the TRC's 94 Calls to Action (free online). Identify one that applies to your school. Month 2: Meet with your school's Indigenous student support worker or a local First Nations friendship centre. Ask how you can support — listen first. Month 3: Organize a reading of one Indigenous author at your school book club or English class. Month 4: Propose a concrete change based on Call to Action #62 (education). Month 5: Present the proposal to your principal or school board. Month 6: Write a reflection on what you learned, focused on how your perspective changed.` },
 
   { icon:'🧑‍💻', title:'Digital Literacy / Misinformation Awareness Campaign',
-    type:'advocacy', majors:['social','cs','humanities'], impact:'med', cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
+    type:'advocacy', majors:['social','cs','humanities'], impact:5, cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
     desc:'Creating an educational campaign about media literacy, AI-generated misinformation, or online safety — and reaching a real audience — is timely, original, and increasingly valued by communications, policy, and CS programs.',
     howToShow:['Describe the campaign format: website, social media, in-school presentation, workshop','State the reach: how many people saw or participated','Explain the specific misinformation issue you targeted','Mention any partnership with a teacher, librarian, or organization'],
     projectTemplate:`Month 1: Research one specific misinformation trend affecting teens (deepfakes, health misinformation, election interference). Month 2: Design a 20-minute workshop on how to identify it. Month 3: Deliver the workshop to at least one class at your school. Month 4: Create a one-page visual guide and post it online (free with Canva + a Google Site). Month 5: Partner with your school librarian to have it shared school-wide. Month 6: Write a post-mortem: what worked, what didn't, and what would you do differently for 100x the reach?` },
 
   // ── ACADEMIC ─────────────────────────────────────────────────────────────────
   { icon:'🗣️', title:'Foreign Language Proficiency (DELF, TOPIK, HSK, JLPT)',
-    type:'academic', majors:['humanities','social','any'], impact:'med', cost:'low', remote:true, hoursPerWeek:4, gradeMin:10,
+    type:'academic', majors:['humanities','social','any'], impact:5, cost:'low', remote:true, hoursPerWeek:4, gradeMin:10,
     desc:'Achieving a recognized proficiency certification in a second or third language — beyond French (which is expected in Canada) — signals intellectual persistence. B2 or higher in any language is notable.',
     howToShow:['Name the language, the exam, and your level achieved','Describe your study method: immersion, private lessons, app, classes','Explain why you chose this language and how you\'ve used it beyond the exam','Mention any real-world application: translation, tutoring, travel, conversation exchanges'],
     projectTemplate:`Month 1: Choose a language with a standardized proficiency exam (JLPT for Japanese, HSK for Mandarin, TOPIK for Korean, DELF for French beyond school level, SIELE for Spanish). Month 2: Find study resources: Anki for vocabulary, YouTube channels for grammar, language exchange apps (Tandem, HelloTalk). Month 3–5: Study consistently — 30 min/day is enough at B1. Month 6: Register and write the official exam. Regardless of result, document your study regimen as evidence of sustained effort.` },
 
   { icon:'🏛️', title:'Ancient Languages / Classics Study (Latin, Ancient Greek)',
-    type:'academic', majors:['humanities','law','any'], impact:'high', cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
+    type:'academic', majors:['humanities','law','any'], impact:7, cost:'free', remote:true, hoursPerWeek:3, gradeMin:10,
     desc:'Self-studying Latin or Ancient Greek — genuinely rare — signals intellectual depth and seriousness that humanities and pre-law programs find compelling. Even reaching an intermediate level is uncommon enough to stand out.',
     howToShow:['State how far you\'ve progressed: textbook, texts you can read, any exam taken','Describe a text you\'ve translated and what the process revealed about the language','Explain why you pursued this — be specific, not generic','Mention any connection to your intended program (legal Latin, classical philosophy, medical terminology)'],
     projectTemplate:`Month 1: Begin Lingua Latina per se Illustrata (Latin) or JACT\'s Reading Greek — both are available used or as PDFs. Month 2: 30 minutes/day; focus on morphology first. Month 3: Begin translating simple sentences without looking up every word. Month 4: Find an online Classics study group (Discord has active ones). Month 5: Translate a 10-line passage from Caesar, Cicero, or Plato. Month 6: Write a 300-word reflection: what does learning this language teach you about English, law, medicine, or logic?` },
 
   { icon:'🔬', title:'Extended Essay or Honours Research Project (IB / AP)',
-    type:'academic', majors:['any'], impact:'high', cost:'free', remote:true, hoursPerWeek:4, gradeMin:11,
+    type:'academic', majors:['any'], impact:8, cost:'free', remote:true, hoursPerWeek:4, gradeMin:11,
     desc:'The IB Extended Essay or a comparable 3,000–4,000 word independent research essay supervised by a subject-area teacher is one of the strongest academic ECs available. It demonstrates research, writing, and intellectual independence.',
     howToShow:['State the subject and your research question','Describe your methodology: primary sources, experiments, interviews, archival research','Mention the length and your supervisor\'s comments','Explain what your conclusion was and whether it surprised you'],
     projectTemplate:`Month 1: Choose a research question you genuinely want to answer — specific enough to investigate in 4,000 words. Month 2: Meet with your subject teacher to refine the question and methodology. Month 3: Gather sources — aim for at least 10 academic sources (journals, books), not just websites. Month 4: Write a first draft of 2,500 words. Month 5: Submit to supervisor, receive feedback, revise. Month 6: Final draft. Document the process in your AIF: topic, method, conclusion, and what you learned about research.` },
 
   { icon:'🌐', title:'Online Certification (Serious Technical Programs)',
-    type:'academic', majors:['cs','engineering','business','science'], impact:'med', cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
+    type:'academic', majors:['cs','engineering','business','science'], impact:5, cost:'free', remote:true, hoursPerWeek:4, gradeMin:10,
     desc:'Completing serious technical certifications — not basic "intro to coding" badges — signals that you pursue technical depth independently. Credible programs include MIT OpenCourseWare, Harvard CS50, Google Professional Certificates, IBM Data Science, and Coursera offerings from top universities.',
     howToShow:['Name the program, provider, and whether you received a verified certificate','Describe the most technically demanding assignment or project','Explain what you can do now that you couldn\'t before','Mention if you applied the skills in a personal project afterward'],
     projectTemplate:`Month 1: Choose one serious certification aligned with your program: CS50 (Harvard, free), IBM Data Science Professional (Coursera, auditable free), Google IT Support (Coursera), AWS Cloud Practitioner ($150 exam). Month 2–4: Complete all modules — don\'t skip labs. Month 5: Build one project using the skills you learned. Month 6: Post the project to GitHub or LinkedIn with a certificate screenshot. Write 100 words on what the hardest part was.` },
 
   { icon:'🎓', title:'Academic Competition Coaching or Teaching',
-    type:'academic', majors:['any'], impact:'high', cost:'free', remote:false, hoursPerWeek:2, gradeMin:11,
+    type:'academic', majors:['any'], impact:7, cost:'free', remote:false, hoursPerWeek:2, gradeMin:11,
     desc:'Teaching younger students how to compete in academic competitions you\'ve already succeeded in shows mastery, leadership, and a commitment to the school community. Far more impressive than just competing yourself.',
     howToShow:['Name the competition and the students you coached','Describe how you structured the coaching sessions','Mention any outcome for your students (their result, improvement, confidence)','Explain what you learned about teaching through this experience'],
     projectTemplate:`Month 1: Identify a competition you placed well in (CCC, science fair, debate, math contests). Month 2: Offer to coach 3–5 Grade 9–10 students in preparation for that competition. Month 3: Run weekly 45-minute practice sessions. Month 4: Create one original practice problem set or resource. Month 5: Attend the competition with your students. Month 6: Write a reflection: what did coaching teach you about your own understanding of the subject?` },
@@ -1855,8 +1904,13 @@ function getECsForProgram(prog, pd) {
   else if (name.includes('science') || name.includes('biology') || name.includes('chemistry') || name.includes('physics')) majorTag = 'science';
   else if (name.includes('social') || name.includes('political') || name.includes('sociology') || name.includes('psychology')) majorTag = 'social';
   else if (name.includes('humanities') || name.includes('english') || name.includes('history') || name.includes('philosophy')) majorTag = 'humanities';
-  else if (name.includes('environment') || name.includes('ecology')) majorTag = 'environment';
-  else if (name.includes('law') || name.includes('legal')) majorTag = 'law';
+  else if (name.includes('environment') || name.includes('ecology') || name.includes('forestry') || name.includes('sustainability')) majorTag = 'environment';
+  else if (name.includes('law') || name.includes('legal') || name.includes('justice') || name.includes('criminology')) majorTag = 'law';
+  else if (name.includes('math') || name.includes('statistic') || name.includes('actuarial') || name.includes('data science')) majorTag = 'math';
+  else if (name.includes('kinesiology') || name.includes('exercise') || name.includes('sport management')) majorTag = 'health';
+  else if (name.includes('film') || name.includes('journalism') || name.includes('media') || name.includes('communication')) majorTag = 'communications';
+  else if (name.includes('music') || name.includes('musicology')) majorTag = 'arts';
+  else if (name.includes('education') || name.includes('teaching')) majorTag = 'social';
   // Sort: matched-major first, then universal, then others
   return [...EC_LIBRARY].sort((a, b) => {
     const aMatch = a.majors.includes(majorTag) || a.majors.includes('any');
@@ -1864,8 +1918,7 @@ function getECsForProgram(prog, pd) {
     if (aMatch && !bMatch) return -1;
     if (!aMatch && bMatch) return 1;
     // Within group, high impact first
-    const impOrder = { high:0, med:1, any:2 };
-    return (impOrder[a.impact]||2) - (impOrder[b.impact]||2);
+    return b.impact - a.impact;
   });
 }
 
@@ -1875,7 +1928,7 @@ function buildECGuide(prog, pd) {
   const f = ecFilters;
   const visible = allECs.filter(ec => {
     if (f.type !== 'all' && ec.type !== f.type) return false;
-    if (f.impact !== 'all' && ec.impact !== f.impact) return false;
+    if (f.impact !== 'all' && ec.impact < parseInt(f.impact)) return false;
     if (f.cost !== 'all' && ec.cost !== f.cost) return false;
     if (f.remote !== 'all') {
       if (f.remote === 'remote' && !ec.remote) return false;
@@ -1885,7 +1938,7 @@ function buildECGuide(prog, pd) {
   });
 
   const typeFilterOpts = [['all','All Types'],...Object.entries(EC_TYPES).map(([k,v]) => [k, v.label])];
-  const impactOpts = [['all','Any Impact'],['high','High Impact'],['med','Recommended'],['any','Any Profile']];
+  const impactOpts = [['all','All Impact Levels'],['9','⭐ Outstanding (9–10)'],['7','🔥 High Impact (7–8)'],['5','✅ Solid Choice (5–6)'],['3','📋 Any Profile (3–4)'],['1','All (1+)']];
   const costOpts   = [['all','Any Cost'],['free','Free'],['low','Low (<$100)'],['mid','Medium ($100–500)'],['high','High (>$500)']];
   const remoteOpts = [['all','In-Person & Remote'],['remote','Remote OK'],['onsite','In-Person Only']];
 
@@ -1910,27 +1963,37 @@ function buildECGuide(prog, pd) {
   ).join('');
 
   // EC cards
+  const topPicks = getMajorTopPicks(prog);
+  const selectedECsNow = getSelectedECsFromStorage();
   const ecCardHtml = visible.length === 0
     ? `<div style="text-align:center;padding:32px;color:var(--grey);">No activities match your filters. <a href="#" onclick="ecResetFilters();return false;">Reset filters</a></div>`
     : visible.map((ec, idx) => {
         const typeInfo = EC_TYPES[ec.type] || { label:ec.type, color:'#888' };
-        const impBadge = ec.impact==='high' ? '<span class="ec-badge high">High Impact</span>'
-                       : ec.impact==='med'  ? '<span class="ec-badge med">Recommended</span>'
-                       : '<span class="ec-badge any">Any Profile</span>';
+        const sc=ec.impact;
+        const impBadge = sc>=9?`<span class="ec-badge s9">⭐ Outstanding ${sc}/10</span>`
+                       : sc>=7?`<span class="ec-badge s7">🔥 High Impact ${sc}/10</span>`
+                       : sc>=5?`<span class="ec-badge s5">✅ Solid ${sc}/10</span>`
+                       : `<span class="ec-badge s3">📋 Starter ${sc}/10</span>`;
+        const isTopPick = topPicks.includes(ec.title);
+        const topPickBadge = isTopPick ? `<span class="ec-badge top-pick">⭐ Top Pick</span>` : '';
         const costLabel = {free:'Free',low:'Low Cost',mid:'Mid Cost',high:'High Cost'}[ec.cost]||ec.cost;
-        return `<div class="ec-card-v2" id="eccard-${idx}">
-          <div class="ec-card-header" onclick="ecToggleCard(${idx})">
+        const isSelected = selectedECsNow.includes(ec.title);
+        const escTitle = ec.title.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        return `<div class="ec-card-v2" id="eccard-${idx}" style="${isTopPick?'border-color:#f7aab8;':''}">
+          <div class="ec-card-header" onclick="ecToggleCard(${idx})" style="${isTopPick?'background:#fde8ec18;':''}">
             <span class="ec-card-icon">${ec.icon}</span>
             <div class="ec-card-info">
               <div class="ec-card-title">${ec.title}</div>
               <div class="ec-card-meta">
                 <span class="ec-type-pill" style="background:${typeInfo.color}20;color:${typeInfo.color};border:1px solid ${typeInfo.color}40;">${typeInfo.label}</span>
                 ${impBadge}
+                ${topPickBadge}
                 <span class="ec-meta-tag">⏱ ${ec.hoursPerWeek}h/wk</span>
                 <span class="ec-meta-tag">${ec.remote ? '💻 Remote OK' : '📍 In-Person'}</span>
                 <span class="ec-meta-tag">💰 ${costLabel}</span>
               </div>
             </div>
+            <button class="ec-select-btn${isSelected?' in-list':''}" id="ecsel-${idx}" onclick="event.stopPropagation();toggleECSelection('${escTitle}',${idx})">${isSelected?'✓ In My List':'+ Add to My List'}</button>
             <span class="ec-chevron">▸</span>
           </div>
           <div class="ec-card-body" id="eccard-body-${idx}" hidden>
@@ -1949,17 +2012,32 @@ function buildECGuide(prog, pd) {
         </div>`;
       }).join('');
 
+  const myActHtml = buildMyActivitiesSection(prog);
+  const topPicksList = getMajorTopPicks(prog).slice(0,5);
+  const topPickBannerHtml = (prog && topPicksList.length) ? `
+    <div class="ec-top-pick-banner">
+      <h4>⭐ Top Picks for ${prog.programName}${prog.uniName ? ' at ' + prog.uniName : ''}</h4>
+      <ul>${topPicksList.map(t=>`<li>${t}</li>`).join('')}</ul>
+      <p style="font-size:.75rem;color:var(--grey);margin:6px 0 0;">These activities are especially well-regarded by admissions for your specific program.</p>
+    </div>` : '';
+
   return `
     <div class="ec-guide">
-      <div style="margin-bottom:16px;">
+      <div style="margin-bottom:14px;">
         <h3 style="margin-bottom:4px;">Extracurricular Activity Guide</h3>
         <p style="font-size:.84rem;color:var(--grey);">
-          ${allECs.filter(e=>e.majors.includes('engineering')||e.majors.includes('cs')||e.majors.includes('health')||e.majors.includes('business')||e.majors.includes('any')).length > 0 ? `<strong>${visible.length}</strong> of <strong>${allECs.length}</strong> activities shown — filtered for <strong>${prog ? prog.programName : 'your program'}</strong>. ` : ''}
+          <strong>${visible.length}</strong> of <strong>${allECs.length}</strong> activities shown — sorted by relevance to <strong>${prog ? prog.programName : 'your program'}</strong>.
           Quality and depth beat quantity. One meaningful commitment beats 10 surface-level activities.
         </p>
       </div>
 
+      ${topPickBannerHtml}
+
+      <!-- Your Activities Section -->
+      ${myActHtml}
+
       <!-- Filters -->
+      <div style="font-weight:700;font-size:.82rem;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">📚 Browse All 87 Activities</div>
       <div class="ec-filters">
         ${makeSelect('type', typeFilterOpts, f.type)}
         ${makeSelect('impact', impactOpts, f.impact)}
@@ -2017,6 +2095,265 @@ function ecSetFilter(key, val) {
 function ecResetFilters() {
   ecFilters = { type:'all', impact:'all', cost:'all', remote:'all' };
   ecSetFilter('type', 'all');
+}
+
+// ── Major-specific top picks ──────────────────────────────────
+function getMajorTopPicks(prog) {
+  if (!prog) return [];
+  const n = prog.programName.toLowerCase();
+  const u = (prog.uniName || '').toLowerCase();
+  const picks = [];
+  if (n.includes('computer') || n.includes('software') || n.includes('computing')) {
+    picks.push('Canadian Computing Competition (CCC)','GitHub Portfolio / Personal Projects',
+      'Hack the North / School Hackathon','Machine Learning / AI Project',
+      'Open Source Contribution','Cybersecurity / CTF Competitions (picoCTF)',
+      'Freelance Software Development (Paid Clients)');
+    if (n.includes('engineer') || u.includes('waterloo') || u.includes('mcmaster'))
+      picks.push('FIRST Robotics Competition (FRC) or VEX','Independent Engineering Design Project (CAD + Prototype)');
+  } else if (n.includes('engineer') || n.includes('mechatronic') || n.includes('robotics')) {
+    picks.push('FIRST Robotics Competition (FRC) or VEX','Canadian Computing Competition (CCC)',
+      'Engineering Physics / Physics Olympiad (CAP, IPhO)','Euclid / AMC / Cayley Math Contests',
+      'Solar Car or Formula SAE (High School Division)','Rocketry (High Power / Model Rocket Design)',
+      'Independent Engineering Design Project (CAD + Prototype)','Underwater ROV / AUV Build (MATE Robotics)');
+    if (u.includes('waterloo')) picks.push('Machine Learning / AI Project','GitHub Portfolio / Personal Projects');
+    if (u.includes('mcmaster') || u.includes('mcm')) picks.push('Science Fair (Canada-Wide or Sanofi)');
+  } else if (n.includes('medicine') || n.includes('medical') || n.includes('nursing') || n.includes('health sci') || n.includes('pre-med')) {
+    picks.push('Hospital / Clinical Volunteering','Hospital / Clinical Research Observation',
+      'Mental Health Crisis Line / Advocacy','Sustained Community Volunteering (1+ year)',
+      'Disability / Accessibility Support Volunteering','Seniors / Elder Care Companion Volunteering',
+      'Biology / Chemistry Olympiad (IBO prep, UCC Biology Bowl)','University Research Lab Volunteer');
+  } else if (n.includes('kinesiology') || n.includes('health science') || n.includes('physical education') || n.includes('exercise')) {
+    picks.push('Varsity Team Sport (School)','Lifeguard / Swim Instructor / Coach',
+      'Hospital / Clinical Volunteering','Team Captain or Head Coach',
+      'Disability / Accessibility Support Volunteering','Seniors / Elder Care Companion Volunteering');
+  } else if (n.includes('business') || n.includes('commerce') || n.includes('marketing') || n.includes('finance') || n.includes('accounting') || n.includes('entrepreneurship')) {
+    picks.push('DECA / Business Case Competitions','Entrepreneurship / Business Plan Competition',
+      'Starting a Small Business or Side Hustle','Social Enterprise or Non-Profit Initiative',
+      'Club Founder or Revitalizer','Student Council (Executive Role)',
+      'Municipal / Federal Riding Youth Council');
+    if (u.includes('ivey') || u.includes('rotman') || u.includes('schulich') || u.includes('queens'))
+      picks.push('University Research Lab Volunteer','Freelance Photography / Design / Writing');
+  } else if (n.includes('law') || n.includes('legal') || n.includes('justice') || n.includes('criminology')) {
+    picks.push('Moot Court / Mock Trial Competition','Debate (OSDL / Model UN / Parliamentary)',
+      'Model United Nations (Chair or Secretary-General)','Municipal / Federal Riding Youth Council',
+      'Peer Mediation / Conflict Resolution','Equity & Inclusion Advocacy / GSA');
+  } else if (n.includes('psychology') || n.includes('social work') || n.includes('social science') || n.includes('sociology')) {
+    picks.push('Mental Health Crisis Line / Advocacy','Sustained Community Volunteering (1+ year)',
+      'Disability / Accessibility Support Volunteering','Seniors / Elder Care Companion Volunteering',
+      'University Research Lab Volunteer','Youth Mentoring / Tutoring Program');
+  } else if (n.includes('biology') || n.includes('chemistry') || n.includes('biochemistry') || n.includes('science')) {
+    picks.push('Science Fair (Canada-Wide or Sanofi)','Biology / Chemistry Olympiad (IBO prep, UCC Biology Bowl)',
+      'University Research Lab Volunteer','Independent Environmental/Science Project',
+      'Bioinformatics / Genomics Self-Study Project','Hospital / Clinical Research Observation');
+  } else if (n.includes('physics') || n.includes('astrophysics') || n.includes('astronomy')) {
+    picks.push('Engineering Physics / Physics Olympiad (CAP, IPhO)','Science Fair (Canada-Wide or Sanofi)',
+      'Euclid / AMC / Cayley Math Contests','Astronomy / Astrophotography Club (Active Member or Founder)',
+      'Rocketry (High Power / Model Rocket Design)','University Research Lab Volunteer');
+  } else if (n.includes('math') || n.includes('statistic') || n.includes('actuarial') || n.includes('data science')) {
+    picks.push('Euclid / AMC / Cayley Math Contests','Canadian Computing Competition (CCC)',
+      'Math Circle or Advanced Math Study','Engineering Physics / Physics Olympiad (CAP, IPhO)',
+      'Data Analysis / Statistics Independent Study','Machine Learning / AI Project');
+  } else if (n.includes('art') || n.includes('design') || n.includes('architecture') || n.includes('fine art') || n.includes('graphic')) {
+    picks.push('Visual Art / Graphic Design Portfolio','Commissioned / Exhibited Artwork',
+      'Filmmaking / Video Production','Club Founder or Revitalizer',
+      'Independent Engineering Design Project (CAD + Prototype)');
+  } else if (n.includes('music') || n.includes('musicology')) {
+    picks.push('Music (Band, Orchestra, Choir — Advanced Level)','Original Music Composition / Production (SoundCloud / Spotify)',
+      'Theatre / Drama (Lead or Director)','Club Founder or Revitalizer');
+  } else if (n.includes('film') || n.includes('media') || n.includes('journalism') || n.includes('communication')) {
+    picks.push('Filmmaking / Video Production','School Publication Editor (Newspaper / Yearbook / Magazine)',
+      'School Radio / Podcast Host or Producer','Social Media Content Creator (Niche / Educational)',
+      'Theatre / Drama (Lead or Director)');
+  } else if (n.includes('environment') || n.includes('ecology') || n.includes('forestry') || n.includes('sustainability')) {
+    picks.push('Environmental / Climate Advocacy','Water / Environmental Quality Advocacy',
+      'Science Fair (Canada-Wide or Sanofi)','Independent Environmental/Science Project',
+      'University Research Lab Volunteer','Social Enterprise or Non-Profit Initiative');
+  } else if (n.includes('education') || n.includes('teaching')) {
+    picks.push('Youth Mentoring / Tutoring Program','Peer Tutoring Program (Organizer)',
+      'Club Founder or Revitalizer','Equity & Inclusion Advocacy / GSA',
+      'Academic Competition Coaching or Teaching');
+  }
+  return picks;
+}
+
+// ── Selected ECs from library ─────────────────────────────────
+function getSelectedECsFromStorage() {
+  try { return JSON.parse(localStorage.getItem('selectedECs') || '[]'); } catch(e) { return []; }
+}
+function toggleECSelection(title, cardIdx) {
+  const sel = getSelectedECsFromStorage();
+  const i = sel.indexOf(title);
+  if (i >= 0) sel.splice(i, 1);
+  else sel.push(title);
+  localStorage.setItem('selectedECs', JSON.stringify(sel));
+  const btn = document.getElementById(`ecsel-${cardIdx}`);
+  if (btn) { btn.textContent = sel.includes(title) ? '✓ In My List' : '+ Add to My List'; btn.classList.toggle('in-list', sel.includes(title)); }
+  const mySection = document.getElementById('myActivitiesSection');
+  if (mySection) {
+    const prog = savedPrograms.find(p=>p.id===activeProgramId);
+    const pd = prog ? getProgramData(prog.uniId, prog.programSlug) : null;
+    mySection.outerHTML = buildMyActivitiesSection(prog);
+  }
+}
+
+// ── User-added ECs ────────────────────────────────────────────
+function getUserECsFromStorage() {
+  try { return JSON.parse(localStorage.getItem('userECs') || '[]'); } catch(e) { return []; }
+}
+function showAddECForm() {
+  document.getElementById('addECFormWrap').hidden = false;
+  document.getElementById('addECFormWrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+function cancelAddEC() {
+  document.getElementById('addECFormWrap').hidden = true;
+  document.getElementById('addECRating').hidden = true;
+  document.getElementById('ecAddName').value='';
+  document.getElementById('ecAddDesc').value='';
+  document.getElementById('ecAddHours').value='';
+}
+function scoreECWithAI(name, desc, hours, years) {
+  let score = 4;
+  const text = (name + ' ' + (desc || '')).toLowerCase();
+  if (/founded|started|created|established|launched|initiated|built/.test(text)) score += 2;
+  if (/president|chair|director|captain|lead|head of|organized|managed|ran/.test(text)) score += 1;
+  if (/national|international|provincial/.test(text)) score += 2;
+  if (/olympiad|championship|competition|contest|tournament|hackathon/.test(text)) score += 1;
+  if (/won|award|prize|medal|first place|second place|finalist|scholarship/.test(text)) score += 2;
+  if (/research|published|patent|invention|thesis|paper/.test(text)) score += 1;
+  if (/university|lab|professor|research lab/.test(text)) score += 1;
+  if (/\$\d+|\d+ people|\d+ students|\d+ clients|thousands|hundreds/.test(text)) score += 1;
+  if (/hospital|clinic|patient|healthcare|crisis line/.test(text)) score += 1;
+  if (parseFloat(years) >= 2) score += 1;
+  if (parseFloat(hours) >= 8) score += 1;
+  if ((desc||"").trim().length < 30) score -= 1;
+  if ((desc||"").trim().length < 10) score -= 2;
+  return Math.min(10, Math.max(1, score));
+}
+function getECAIFeedback(score, name, desc) {
+  const text = (name + ' ' + (desc || '')).toLowerCase();
+  const tips = [];
+  if (score >= 9) return "This is an outstanding extracurricular — it will be a major differentiator in your application.";
+  if (score >= 7) return "Strong activity. It will stand out to admissions reviewers.";
+  const base = score >= 5 ? "Solid activity. To strengthen it further:" : "Good start — here's how to make this more impactful:";
+  if (!(/founded|started|president|captain|lead|organized/.test(text))) tips.push("Take on a leadership role (organizer, president, captain) — even a small team counts.");
+  if (!(/national|provincial|competition|award|won/.test(text))) tips.push("Enter a relevant competition or seek recognition to show achievement.");
+  if ((desc||"").trim().length < 80) tips.push("Add more detail in your AIF: your exact role, team size, specific actions, and measurable outcomes.");
+  if (!(/\d/.test(desc||""))) tips.push("Use numbers: people helped, hours contributed, money raised, or members recruited.");
+  if (tips.length === 0) tips.push("Keep documenting your specific contributions — concrete details matter most in your AIF.");
+  return base + " " + tips.join(" ");
+}
+function rateAndAddEC() {
+  const name = (document.getElementById('ecAddName').value||"").trim();
+  const desc = (document.getElementById('ecAddDesc').value||"").trim();
+  const hours = parseFloat(document.getElementById('ecAddHours').value) || 3;
+  const years = parseFloat(document.getElementById('ecAddYears').value) || 1;
+  if (!name) { document.getElementById('ecAddName').focus(); return; }
+  const score = scoreECWithAI(name, desc, hours, years);
+  const feedback = getECAIFeedback(score, name, desc);
+  const sc = score;
+  const badgeCls = sc>=9?'s9':sc>=7?'s7':sc>=5?'s5':'s3';
+  const ratingDiv = document.getElementById('addECRating');
+  ratingDiv.hidden = false;
+  ratingDiv.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <span class="ec-badge ${badgeCls}" style="font-size:.8rem;padding:4px 12px;">${sc>=9?'⭐ Outstanding':sc>=7?'🔥 High Impact':sc>=5?'✅ Solid':'📋 Starter'} ${sc}/10</span>
+      <strong style="font-size:.88rem;color:var(--navy);">${name}</strong>
+    </div>
+    <p class="feedback" style="font-size:.80rem;color:var(--navy);line-height:1.55;margin:0 0 10px;">${feedback}</p>
+    <button class="btn btn-red btn-sm" onclick="saveUserEC()">Save to My Activities</button>
+    <button class="btn btn-outline btn-sm" style="margin-left:8px;" onclick="cancelAddEC()">Cancel</button>`;
+}
+function saveUserEC() {
+  const name = (document.getElementById('ecAddName').value||"").trim();
+  const desc = (document.getElementById('ecAddDesc').value||"").trim();
+  const hours = parseFloat(document.getElementById('ecAddHours').value) || 3;
+  const years = parseFloat(document.getElementById('ecAddYears').value) || 1;
+  const score = scoreECWithAI(name, desc, hours, years);
+  const userECs = getUserECsFromStorage();
+  userECs.push({ name, desc, hoursPerWeek: hours, yearsInvolved: years, score, addedAt: Date.now() });
+  localStorage.setItem('userECs', JSON.stringify(userECs));
+  cancelAddEC();
+  const mySection = document.getElementById('myActivitiesSection');
+  if (mySection) {
+    const prog = savedPrograms.find(p=>p.id===activeProgramId);
+    mySection.outerHTML = buildMyActivitiesSection(prog);
+  }
+}
+function deleteUserEC(idx) {
+  const userECs = getUserECsFromStorage();
+  userECs.splice(idx, 1);
+  localStorage.setItem('userECs', JSON.stringify(userECs));
+  const mySection = document.getElementById('myActivitiesSection');
+  if (mySection) {
+    const prog = savedPrograms.find(p=>p.id===activeProgramId);
+    mySection.outerHTML = buildMyActivitiesSection(prog);
+  }
+}
+function removeSelectedEC(title) {
+  const sel = getSelectedECsFromStorage();
+  const i = sel.indexOf(title);
+  if (i >= 0) { sel.splice(i, 1); localStorage.setItem('selectedECs', JSON.stringify(sel)); }
+  const mySection = document.getElementById('myActivitiesSection');
+  if (mySection) {
+    const prog = savedPrograms.find(p=>p.id===activeProgramId);
+    mySection.outerHTML = buildMyActivitiesSection(prog);
+  }
+  // Also update the card button if visible
+  const allBtns = document.querySelectorAll('.ec-select-btn.in-list');
+  allBtns.forEach(btn => { if (btn.textContent.includes('✓')) { /* re-render would fix, skip for perf */ } });
+  // Re-render full EC section
+  const prog = savedPrograms.find(p=>p.id===activeProgramId);
+  if (prog) { const pd = getProgramData(prog.uniId, prog.programSlug); ecSetFilter('type',ecFilters.type); }
+}
+function buildMyActivitiesSection(prog) {
+  const sel = getSelectedECsFromStorage();
+  const userECs = getUserECsFromStorage();
+  const badgeOf = (sc) => { const cls=sc>=9?'s9':sc>=7?'s7':sc>=5?'s5':'s3'; const lbl=sc>=9?'Outstanding':sc>=7?'High Impact':sc>=5?'Solid':'Starter'; return `<span class="ec-badge ${cls}">${lbl} ${sc}/10</span>`; };
+  const selItems = sel.length ? sel.map(t => {
+    const ec = EC_LIBRARY.find(e=>e.title===t);
+    if (!ec) return '';
+    const sc = ec.impact;
+    return `<div class="my-ec-item"><div class="my-ec-item-top"><span style="font-size:1rem;margin-right:4px;">${ec.icon}</span><span class="my-ec-item-name">${t}</span>${badgeOf(sc)}<button class="my-ec-del" onclick="removeSelectedEC('${t.replace(/'/g,"\\'")}')">✕</button></div><div class="my-ec-item-desc">⏱ ${ec.hoursPerWeek}h/wk · ${ec.remote?'Remote OK':'In-Person'} · ${ec.type}</div></div>`;
+  }).join('') : '';
+  const userItems = userECs.length ? userECs.map((e,i) =>
+    `<div class="my-ec-item"><div class="my-ec-item-top"><span style="font-size:1rem;margin-right:4px;">✏️</span><span class="my-ec-item-name">${e.name}</span>${badgeOf(e.score)}<button class="my-ec-del" onclick="deleteUserEC(${i})">✕</button></div>${e.desc?`<div class="my-ec-item-desc">${e.desc.slice(0,100)}${e.desc.length>100?'…':''}</div>`:''}` +
+    `<div class="my-ec-item-desc" style="margin-top:3px;">⏱ ${e.hoursPerWeek}h/wk · ${e.yearsInvolved >= 2 ? e.yearsInvolved + ' years' : '~1 year'}</div></div>`
+  ).join('') : '';
+  const hasAny = sel.length > 0 || userECs.length > 0;
+  return `<div id="myActivitiesSection" class="my-ec-section">
+    <div class="my-ec-header">
+      <div class="my-ec-title">📋 My Activities (${sel.length + userECs.length})</div>
+      <button class="btn btn-outline btn-sm" onclick="showAddECForm()" style="font-size:.78rem;">+ Add Your Own</button>
+    </div>
+    ${!hasAny ? '<p class="my-ec-empty">No activities added yet. Click any activity below and tap <strong>"+ Add to My List"</strong> — or add your own above.</p>' : ''}
+    ${selItems}${userItems}
+    <div id="addECFormWrap" hidden>
+      <div class="add-ec-form">
+        <h5>✏️ Add Your Own Activity</h5>
+        <div class="add-ec-row">
+          <label>Activity Name *</label>
+          <input type="text" id="ecAddName" placeholder="e.g. Robotics Club, Hospital Volunteering, App Development…">
+        </div>
+        <div class="add-ec-row">
+          <label>Describe your role, what you did, and any outcomes (be specific)</label>
+          <textarea id="ecAddDesc" rows="3" placeholder="e.g. Led a team of 5 to build a Mars rover prototype for regional competition, placing 2nd. Wrote all autonomous navigation code in Python. Managed our $800 parts budget."></textarea>
+        </div>
+        <div class="add-ec-row-2col">
+          <div class="add-ec-row" style="margin:0;">
+            <label>Hours per week</label>
+            <input type="number" id="ecAddHours" min="1" max="40" placeholder="3">
+          </div>
+          <div class="add-ec-row" style="margin:0;">
+            <label>Time commitment</label>
+            <select id="ecAddYears"><option value="0.5">Less than 1 year</option><option value="1" selected>About 1 year</option><option value="2">About 2 years</option><option value="3">3+ years</option></select>
+          </div>
+        </div>
+        <button class="btn btn-red btn-sm" onclick="rateAndAddEC()">🤖 Get AI Rating →</button>
+        <button class="btn btn-outline btn-sm" style="margin-left:8px;" onclick="cancelAddEC()">Cancel</button>
+        <div id="addECRating" hidden style="margin-top:12px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:12px 14px;"></div>
+      </div>
+    </div>
+  </div>`;
 }
 
 function ecToggleCard(idx) {
@@ -3120,7 +3457,10 @@ function sendChat() {
   setTimeout(() => {
     let resp;
     try {
-      resp = bank.responses[idx % bank.responses.length](ctx.prog ? ctx : { prog: { programName:'this program', uniName:'this university' }, pd: null });
+      const callCtx = ctx.prog
+        ? { ...ctx.prog, prog: ctx.prog, pd: ctx.pd }
+        : { programName: 'this program', uniName: 'this university', prog: { programName: 'this program', uniName: 'this university' }, pd: null };
+      resp = bank.responses[idx % bank.responses.length](callCtx);
     } catch(e) {
       resp = "Great question! I don't have the exact answer, but I recommend checking the university's admissions page or reaching out to their future students office directly.";
     }
