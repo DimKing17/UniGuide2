@@ -463,33 +463,43 @@
           <div class="quiz-section-title">Section 1 — Academic Strengths</div>
           <div class="quiz-q">1. How strong are you in math?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('math','strong')">I excel — strongest subject</div>
-            <div class="quiz-opt" onclick="q('math','ok')">I'm decent</div>
-            <div class="quiz-opt" onclick="q('math','weak')">Not my strength</div>
+            <div class="quiz-opt" onclick="q('math','vstrong')">I excel — math is my top subject</div>
+            <div class="quiz-opt" onclick="q('math','strong')">Strong — definitely one of my better subjects</div>
+            <div class="quiz-opt" onclick="q('math','ok')">Average — I manage fine</div>
+            <div class="quiz-opt" onclick="q('math','weak')">Weak — it's not really my strength</div>
+            <div class="quiz-opt" onclick="q('math','vweak')">Very weak — math is my hardest subject</div>
           </div>
           <div class="quiz-q mt-24">2. Do you enjoy writing, debating, or analysing texts?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('writing','yes')">Yes — I love it</div>
-            <div class="quiz-opt" onclick="q('writing','some')">Sometimes</div>
-            <div class="quiz-opt" onclick="q('writing','no')">Not really</div>
+            <div class="quiz-opt" onclick="q('writing','vyes')">Love it — one of my biggest strengths</div>
+            <div class="quiz-opt" onclick="q('writing','yes')">Yes — I enjoy it when the topic interests me</div>
+            <div class="quiz-opt" onclick="q('writing','some')">Sometimes — depends on the topic</div>
+            <div class="quiz-opt" onclick="q('writing','no')">Not really — I'd rather not write essays</div>
+            <div class="quiz-opt" onclick="q('writing','vno')">Strongly dislike — I much prefer numbers or visuals</div>
           </div>
           <div class="quiz-q mt-24">3. Science labs and experiments?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('labs','love')">Love them — want more</div>
-            <div class="quiz-opt" onclick="q('labs','neutral')">Fine either way</div>
-            <div class="quiz-opt" onclick="q('labs','dislike')">I'd rather not</div>
+            <div class="quiz-opt" onclick="q('labs','vlove')">Love them — hands-on science is my favourite</div>
+            <div class="quiz-opt" onclick="q('labs','love')">Usually enjoy them — they make learning more concrete</div>
+            <div class="quiz-opt" onclick="q('labs','neutral')">Fine either way — labs are OK</div>
+            <div class="quiz-opt" onclick="q('labs','dislike')">Not my thing — I find them tedious</div>
+            <div class="quiz-opt" onclick="q('labs','vdislike')">I'd much rather not — strongly prefer classroom or theory</div>
           </div>
           <div class="quiz-q mt-24">4. Do you enjoy building, designing, or fixing things?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('build','yes')">Yes — very much</div>
-            <div class="quiz-opt" onclick="q('build','some')">Sometimes</div>
-            <div class="quiz-opt" onclick="q('build','no')">Not particularly</div>
+            <div class="quiz-opt" onclick="q('build','vyes')">Yes — I'm always making or fixing things</div>
+            <div class="quiz-opt" onclick="q('build','yes')">Often — I enjoy hands-on projects</div>
+            <div class="quiz-opt" onclick="q('build','some')">Sometimes — depends on what it is</div>
+            <div class="quiz-opt" onclick="q('build','rarely')">Rarely — not really a major interest</div>
+            <div class="quiz-opt" onclick="q('build','no')">Not at all — I prefer ideas and concepts</div>
           </div>
           <div class="quiz-q mt-24">5. Working with and helping people directly?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('people','yes')">Yes — very people-oriented</div>
-            <div class="quiz-opt" onclick="q('people','some')">In certain contexts</div>
-            <div class="quiz-opt" onclick="q('people','no')">Prefer ideas or systems</div>
+            <div class="quiz-opt" onclick="q('people','vyes')">Yes — it's my main motivation in life</div>
+            <div class="quiz-opt" onclick="q('people','yes')">Often — I genuinely enjoy connecting with people</div>
+            <div class="quiz-opt" onclick="q('people','some')">Sometimes — in the right situations</div>
+            <div class="quiz-opt" onclick="q('people','solo')">Prefer small groups or one-on-one only</div>
+            <div class="quiz-opt" onclick="q('people','no')">No — I prefer to work with ideas, data, or systems</div>
           </div>
         </div>
 
@@ -497,28 +507,35 @@
           <div class="quiz-section-title">Section 2 — Work Style</div>
           <div class="quiz-q">6. Hands-on work vs. theoretical thinking?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('style','hands')">Hands-on — I like doing</div>
-            <div class="quiz-opt" onclick="q('style','theory')">Theoretical — I like thinking</div>
-            <div class="quiz-opt" onclick="q('style','both')">A mix of both</div>
+            <div class="quiz-opt" onclick="q('style','vhands')">Very hands-on — I need to be building or doing</div>
+            <div class="quiz-opt" onclick="q('style','hands')">Mostly hands-on — I prefer practical over theoretical</div>
+            <div class="quiz-opt" onclick="q('style','both')">A mix of both — I like applying theory</div>
+            <div class="quiz-opt" onclick="q('style','theory')">Mostly theoretical — I prefer analyzing and reasoning</div>
+            <div class="quiz-opt" onclick="q('style','vtheory')">Very theoretical — I love abstract concepts and research</div>
           </div>
           <div class="quiz-q mt-24">7. Team collaboration vs. independent work?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('team','team')">Mostly in teams</div>
-            <div class="quiz-opt" onclick="q('team','solo')">Mostly alone</div>
-            <div class="quiz-opt" onclick="q('team','both')">Both equally</div>
+            <div class="quiz-opt" onclick="q('team','vteam')">Love teams — I thrive on collaboration and group energy</div>
+            <div class="quiz-opt" onclick="q('team','team')">Mostly in teams — I prefer group work</div>
+            <div class="quiz-opt" onclick="q('team','both')">Both equally — it depends on the task</div>
+            <div class="quiz-opt" onclick="q('team','solo')">Mostly alone — I prefer independent work</div>
+            <div class="quiz-opt" onclick="q('team','vsolo')">Strongly solo — I'm most productive working on my own</div>
           </div>
           <div class="quiz-q mt-24">8. Ideal work environment?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('env','indoor')">Office / Lab / Classroom</div>
-            <div class="quiz-opt" onclick="q('env','outdoor')">Outdoors / Field / Community</div>
-            <div class="quiz-opt" onclick="q('env','hospital')">Hospital / Clinic / Care</div>
-            <div class="quiz-opt" onclick="q('env','anywhere')">Flexible / Remote</div>
+            <div class="quiz-opt" onclick="q('env','indoor')">Office / Lab / Classroom — structured, indoor setting</div>
+            <div class="quiz-opt" onclick="q('env','outdoor')">Outdoors / Field / Community — working outside or in communities</div>
+            <div class="quiz-opt" onclick="q('env','hospital')">Hospital / Clinic / Care — health and wellness setting</div>
+            <div class="quiz-opt" onclick="q('env','studio')">Studio / Workshop / Creative space — making and designing</div>
+            <div class="quiz-opt" onclick="q('env','anywhere')">Flexible / Remote — work from anywhere, digital-first</div>
           </div>
           <div class="quiz-q mt-24">9. Career risk tolerance?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('risk','stable')">Stable — job security</div>
-            <div class="quiz-opt" onclick="q('risk','reward')">High risk, high reward</div>
-            <div class="quiz-opt" onclick="q('risk','balance')">Balanced — secure but with growth</div>
+            <div class="quiz-opt" onclick="q('risk','vstable')">Very stable — I want guaranteed job security above all</div>
+            <div class="quiz-opt" onclick="q('risk','stable')">Stable — good security with some growth potential</div>
+            <div class="quiz-opt" onclick="q('risk','balance')">Balanced — moderate security with room for advancement</div>
+            <div class="quiz-opt" onclick="q('risk','reward')">Higher risk, higher reward — I'm comfortable with uncertainty</div>
+            <div class="quiz-opt" onclick="q('risk','vreward')">High risk, high reward — I'm an entrepreneur or innovator</div>
           </div>
         </div>
 
@@ -526,13 +543,15 @@
           <div class="quiz-section-title">Section 3 — Priorities &amp; Values</div>
           <div class="quiz-q">10. How important is earning a high salary?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('salary','high')">Very important</div>
-            <div class="quiz-opt" onclick="q('salary','mid')">Somewhat — I want comfort</div>
-            <div class="quiz-opt" onclick="q('salary','low')">Not a priority — passion first</div>
+            <div class="quiz-opt" onclick="q('salary','vhigh')">Very important — salary is one of my top priorities</div>
+            <div class="quiz-opt" onclick="q('salary','high')">Important — I want to be comfortably paid</div>
+            <div class="quiz-opt" onclick="q('salary','mid')">Somewhat — nice to have but not the main thing</div>
+            <div class="quiz-opt" onclick="q('salary','low')">Not a priority — passion and purpose come first</div>
+            <div class="quiz-opt" onclick="q('salary','vlow')">Irrelevant — I'd take any salary for work I love</div>
           </div>
           <div class="quiz-q mt-24">11. What matters most in your future career?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('value','impact')">Making a difference</div>
+            <div class="quiz-opt" onclick="q('value','impact')">Making a difference in the world</div>
             <div class="quiz-opt" onclick="q('value','create')">Creating or building things</div>
             <div class="quiz-opt" onclick="q('value','prestige')">Prestige and recognition</div>
             <div class="quiz-opt" onclick="q('value','freedom')">Flexibility and autonomy</div>
@@ -540,9 +559,11 @@
           </div>
           <div class="quiz-q mt-24">12. Work-life balance?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="q('wlb','critical')">Critical — non-negotiable</div>
-            <div class="quiz-opt" onclick="q('wlb','moderate')">Moderate — some balance</div>
-            <div class="quiz-opt" onclick="q('wlb','low')">Not a priority — I'll work hard</div>
+            <div class="quiz-opt" onclick="q('wlb','critical')">Critical — non-negotiable, I won't sacrifice personal time</div>
+            <div class="quiz-opt" onclick="q('wlb','important')">Very important — I want strong balance</div>
+            <div class="quiz-opt" onclick="q('wlb','moderate')">Moderate — some balance is fine</div>
+            <div class="quiz-opt" onclick="q('wlb','flexible')">Flexible — I'll work hard but need some personal time</div>
+            <div class="quiz-opt" onclick="q('wlb','low')">Not a priority — I'm willing to put in long hours to succeed</div>
           </div>
         </div>
 
@@ -686,99 +707,129 @@
           <div class="quiz-section-title">Section 1 — Career &amp; Academics</div>
           <div class="quiz-q">1. How much do you prioritize having co-op / paid work terms in your program?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqCoop','high')">Very important — I want real work experience built in</div>
-            <div class="quiz-opt" onclick="uq('uqCoop','medium')">Somewhat — nice to have but not essential</div>
-            <div class="quiz-opt" onclick="uq('uqCoop','low')">Not a priority for me</div>
+            <div class="quiz-opt" onclick="uq('uqCoop','essential')">Essential — I won't apply without a strong co-op program</div>
+            <div class="quiz-opt" onclick="uq('uqCoop','high')">Very important — it's a major factor in my choice</div>
+            <div class="quiz-opt" onclick="uq('uqCoop','medium')">Somewhat — nice to have but not a dealbreaker</div>
+            <div class="quiz-opt" onclick="uq('uqCoop','minor')">Minor — would be a small bonus</div>
+            <div class="quiz-opt" onclick="uq('uqCoop','low')">Not a priority for me at all</div>
           </div>
           <div class="quiz-q mt-24">2. How important is the university's research reputation and output?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqResearch','very')">Very important — I want access to cutting-edge research</div>
+            <div class="quiz-opt" onclick="uq('uqResearch','essential')">Essential — I want to work in research labs and pursue grad school</div>
+            <div class="quiz-opt" onclick="uq('uqResearch','very')">Very important — access to cutting-edge research matters</div>
             <div class="quiz-opt" onclick="uq('uqResearch','somewhat')">Somewhat — good to have</div>
+            <div class="quiz-opt" onclick="uq('uqResearch','minor')">Minor factor — I prefer applied over research</div>
             <div class="quiz-opt" onclick="uq('uqResearch','low')">Not a priority</div>
           </div>
           <div class="quiz-q mt-24">3. How important are strong industry connections and career placement services?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqIndustry','very')">Critical — I want a direct pipeline to employers</div>
+            <div class="quiz-opt" onclick="uq('uqIndustry','critical')">Critical — I want a direct pipeline to employers</div>
+            <div class="quiz-opt" onclick="uq('uqIndustry','very')">Very important — career services are a major factor</div>
             <div class="quiz-opt" onclick="uq('uqIndustry','somewhat')">Helpful but not a dealbreaker</div>
-            <div class="quiz-opt" onclick="uq('uqIndustry','low')">Not a major factor</div>
+            <div class="quiz-opt" onclick="uq('uqIndustry','minor')">Minor consideration</div>
+            <div class="quiz-opt" onclick="uq('uqIndustry','low')">Not important to me</div>
           </div>
           <div class="quiz-q mt-24">4. Do you prefer small class sizes, or are large lecture halls OK?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqClassSize','small')">Small classes — I want to know my professors personally</div>
-            <div class="quiz-opt" onclick="uq('uqClassSize','medium')">A mix is fine</div>
-            <div class="quiz-opt" onclick="uq('uqClassSize','large')">Large lectures are fine — more students = more networking</div>
+            <div class="quiz-opt" onclick="uq('uqClassSize','vsmall')">Very small — I need to know my professors by name</div>
+            <div class="quiz-opt" onclick="uq('uqClassSize','small')">Small — I prefer small classes with good professor access</div>
+            <div class="quiz-opt" onclick="uq('uqClassSize','medium')">A mix is fine — some large lectures are OK</div>
+            <div class="quiz-opt" onclick="uq('uqClassSize','large')">Large is fine — I'm self-directed and prefer independence</div>
+            <div class="quiz-opt" onclick="uq('uqClassSize','vlarge')">Large preferred — more networking, bigger community, more energy</div>
           </div>
           <div class="quiz-q mt-24">5. Are you interested in international exchange or study-abroad programs?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqExchange','yes')">Yes — definitely want that option</div>
-            <div class="quiz-opt" onclick="uq('uqExchange','maybe')">Maybe, if it works out</div>
-            <div class="quiz-opt" onclick="uq('uqExchange','no')">Not really interested</div>
+            <div class="quiz-opt" onclick="uq('uqExchange','vyes')">Definitely — it's one of my top priorities in choosing a school</div>
+            <div class="quiz-opt" onclick="uq('uqExchange','yes')">Yes — I'd love to go abroad if the option is there</div>
+            <div class="quiz-opt" onclick="uq('uqExchange','maybe')">Maybe — if it works out well</div>
+            <div class="quiz-opt" onclick="uq('uqExchange','unlikely')">Probably not — I'm focused on my program</div>
+            <div class="quiz-opt" onclick="uq('uqExchange','no')">Not at all interested</div>
           </div>
         </div>
         <div class="quiz-card">
           <div class="quiz-section-title">Section 2 — Campus &amp; Social Life</div>
           <div class="quiz-q">6. What kind of campus environment do you prefer?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqEnv','urban')">Urban — right in the heart of a city</div>
-            <div class="quiz-opt" onclick="uq('uqEnv','nature')">Nature / suburban — trees, green space, a classic campus feel</div>
+            <div class="quiz-opt" onclick="uq('uqEnv','urban')">Urban — right in the heart of a major city (transit, nightlife, opportunities)</div>
+            <div class="quiz-opt" onclick="uq('uqEnv','urbanadj')">Urban-adjacent — city nearby, but campus has some green space</div>
+            <div class="quiz-opt" onclick="uq('uqEnv','campus')">Classic campus — suburban or university-town feel, greenery and tradition</div>
+            <div class="quiz-opt" onclick="uq('uqEnv','nature')">Nature / scenic — forests, mountains, or water nearby</div>
             <div class="quiz-opt" onclick="uq('uqEnv','either')">No strong preference</div>
           </div>
           <div class="quiz-q mt-24">7. What city size fits your lifestyle?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqCitySize','big')">Big city (500k+ people) — lots to do, transit, opportunities</div>
-            <div class="quiz-opt" onclick="uq('uqCitySize','mid')">Mid-size city — manageable, still has good amenities</div>
-            <div class="quiz-opt" onclick="uq('uqCitySize','small')">Small town — tight-knit, quieter, lower cost of living</div>
+            <div class="quiz-opt" onclick="uq('uqCitySize','verybig')">Major city (500k+) — Toronto, Vancouver, Montréal, Calgary</div>
+            <div class="quiz-opt" onclick="uq('uqCitySize','big')">Large city (200k–500k) — Ottawa, Halifax, Winnipeg, Hamilton</div>
+            <div class="quiz-opt" onclick="uq('uqCitySize','mid')">Mid-size city (50k–200k) — Kingston, London, Saskatoon, Victoria</div>
+            <div class="quiz-opt" onclick="uq('uqCitySize','small')">Small city / university town (under 50k)</div>
+            <div class="quiz-opt" onclick="uq('uqCitySize','vsmall')">Small town (under 10k) — very tight-knit, everyone knows each other</div>
           </div>
           <div class="quiz-q mt-24">8. How important is a vibrant social scene, clubs, and campus activities?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqSocial','very')">Very important — it's a huge part of the experience</div>
-            <div class="quiz-opt" onclick="uq('uqSocial','somewhat')">Nice, but not top priority</div>
-            <div class="quiz-opt" onclick="uq('uqSocial','low')">Not a major factor for me</div>
+            <div class="quiz-opt" onclick="uq('uqSocial','critical')">Critical — social life is a huge reason I'm choosing a school</div>
+            <div class="quiz-opt" onclick="uq('uqSocial','very')">Very important — it's a big part of the university experience</div>
+            <div class="quiz-opt" onclick="uq('uqSocial','somewhat')">Nice, but academics come first</div>
+            <div class="quiz-opt" onclick="uq('uqSocial','minor')">Minor factor for me</div>
+            <div class="quiz-opt" onclick="uq('uqSocial','low')">Not important — I'm focused purely on academics</div>
           </div>
           <div class="quiz-q mt-24">9. How important is a strong varsity sports and athletics culture?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqSports','very')">Very — I love sports culture or want to compete</div>
-            <div class="quiz-opt" onclick="uq('uqSports','somewhat')">Nice to have</div>
-            <div class="quiz-opt" onclick="uq('uqSports','low')">Not important to me</div>
+            <div class="quiz-opt" onclick="uq('uqSports','vvery')">Essential — I'm an athlete or I live for sports culture</div>
+            <div class="quiz-opt" onclick="uq('uqSports','very')">Very important — I want to attend games and support my school</div>
+            <div class="quiz-opt" onclick="uq('uqSports','somewhat')">Nice to have — minor factor</div>
+            <div class="quiz-opt" onclick="uq('uqSports','minor')">Not really a consideration</div>
+            <div class="quiz-opt" onclick="uq('uqSports','low')">Irrelevant — I don't follow sports</div>
           </div>
           <div class="quiz-q mt-24">10. Do you plan to live in residence on campus (at least first year)?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqResidence','yes')">Yes — I want the on-campus living experience</div>
-            <div class="quiz-opt" onclick="uq('uqResidence','maybe')">Maybe — I'll see what's available</div>
-            <div class="quiz-opt" onclick="uq('uqResidence','no')">No — I plan to commute or live off-campus</div>
+            <div class="quiz-opt" onclick="uq('uqResidence','definitely')">Definitely — I want the full on-campus residence experience</div>
+            <div class="quiz-opt" onclick="uq('uqResidence','yes')">Yes, at least for first year — then I'll see</div>
+            <div class="quiz-opt" onclick="uq('uqResidence','maybe')">Maybe — I'll decide based on availability and cost</div>
+            <div class="quiz-opt" onclick="uq('uqResidence','unlikely')">Probably not — I'll likely live off-campus</div>
+            <div class="quiz-opt" onclick="uq('uqResidence','no')">No — I'm commuting or staying at home</div>
           </div>
         </div>
         <div class="quiz-card">
           <div class="quiz-section-title">Section 3 — Priorities &amp; Logistics</div>
           <div class="quiz-q">11. How important is the university's overall prestige and national ranking?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqPrestige','very')">Very important — I want a top-tier institution</div>
-            <div class="quiz-opt" onclick="uq('uqPrestige','somewhat')">Somewhat — I'd prefer a well-regarded school</div>
-            <div class="quiz-opt" onclick="uq('uqPrestige','low')">Not a major factor — fit and program matter more</div>
+            <div class="quiz-opt" onclick="uq('uqPrestige','essential')">Essential — I specifically want a top-ranked school</div>
+            <div class="quiz-opt" onclick="uq('uqPrestige','very')">Very important — I want a well-recognized institution</div>
+            <div class="quiz-opt" onclick="uq('uqPrestige','somewhat')">Somewhat — reputation matters but isn't everything</div>
+            <div class="quiz-opt" onclick="uq('uqPrestige','minor')">Minor factor — program and fit matter more than rankings</div>
+            <div class="quiz-opt" onclick="uq('uqPrestige','low')">Not important — I care about personal fit, not rankings</div>
           </div>
           <div class="quiz-q mt-24">12. How much does tuition cost / affordability affect your choice?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqBudget','critical')">Critical — I need the most affordable option</div>
+            <div class="quiz-opt" onclick="uq('uqBudget','critical')">Critical — I need the most affordable option available</div>
+            <div class="quiz-opt" onclick="uq('uqBudget','very')">Very important — cost is a major factor in my decision</div>
             <div class="quiz-opt" onclick="uq('uqBudget','somewhat')">Important — I'd prefer lower cost but have some flexibility</div>
-            <div class="quiz-opt" onclick="uq('uqBudget','low')">Not a major factor — quality comes first</div>
+            <div class="quiz-opt" onclick="uq('uqBudget','minor')">Minor factor — quality matters more than cost</div>
+            <div class="quiz-opt" onclick="uq('uqBudget','low')">Not a factor — I'll go to the right school regardless of cost</div>
           </div>
           <div class="quiz-q mt-24">13. Are you open to studying in Quebec (potentially French-language environment)?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqFrench','yes')">Yes — I'm interested in Quebec universities</div>
+            <div class="quiz-opt" onclick="uq('uqFrench','definitely')">Definitely — I specifically want to study in Quebec</div>
+            <div class="quiz-opt" onclick="uq('uqFrench','yes')">Yes — Quebec is a real and interesting option for me</div>
             <div class="quiz-opt" onclick="uq('uqFrench','either')">Open to it — doesn't strongly affect my choice</div>
+            <div class="quiz-opt" onclick="uq('uqFrench','slightlyno')">Slight preference for outside Quebec</div>
             <div class="quiz-opt" onclick="uq('uqFrench','no')">I'd prefer to study outside Quebec</div>
           </div>
           <div class="quiz-q mt-24">14. How important is a large and active alumni network to you?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqAlumni','very')">Very — I want a powerful alumni network for career connections</div>
+            <div class="quiz-opt" onclick="uq('uqAlumni','vvery')">Very important — I want a powerful alumni network for connections</div>
+            <div class="quiz-opt" onclick="uq('uqAlumni','very')">Important — alumni connections are a valuable asset</div>
             <div class="quiz-opt" onclick="uq('uqAlumni','somewhat')">Somewhat helpful</div>
-            <div class="quiz-opt" onclick="uq('uqAlumni','low')">Not a priority</div>
+            <div class="quiz-opt" onclick="uq('uqAlumni','minor')">Minor consideration</div>
+            <div class="quiz-opt" onclick="uq('uqAlumni','low')">Not important to me</div>
           </div>
           <div class="quiz-q mt-24">15. Do you prefer a larger university with more programs and clubs, or a smaller, more intimate campus?</div>
           <div class="quiz-options">
-            <div class="quiz-opt" onclick="uq('uqCampusSize','large')">Larger — more variety, bigger community, more resources</div>
-            <div class="quiz-opt" onclick="uq('uqCampusSize','medium')">In between — balanced</div>
-            <div class="quiz-opt" onclick="uq('uqCampusSize','small')">Smaller — more personal, easier to stand out</div>
+            <div class="quiz-opt" onclick="uq('uqCampusSize','vlarge')">Large university — maximum variety, clubs, resources, and scale</div>
+            <div class="quiz-opt" onclick="uq('uqCampusSize','large')">Medium-large — good size with lots going on</div>
+            <div class="quiz-opt" onclick="uq('uqCampusSize','medium')">Balanced medium — not too big or too small</div>
+            <div class="quiz-opt" onclick="uq('uqCampusSize','smallmed')">Small-medium — personal atmosphere, still some variety</div>
+            <div class="quiz-opt" onclick="uq('uqCampusSize','small')">Small — I want to be known on campus and stand out</div>
           </div>
         </div>
         <div style="text-align:center;margin-top:8px;">
@@ -1122,42 +1173,42 @@ const QUIZ_RESULTS=[
    why:"Strong logical thinking, comfort with math, and interest in building systems — CS is an ideal fit.",
    careers:"Software Developer, AI Engineer, Data Scientist, UX Designer",
    courses:"MHF4U, MCV4U, ICS4U, ENG4U",comp:"Very Competitive — 90%+ at top schools",salary:"$75,000–$120,000+",
-   triggers:a=>(a.math==='strong'||a.math==='ok')&&a.style!=='people'},
+   triggers:a=>(a.math==='vstrong'||a.math==='strong'||a.math==='ok')&&(a.style!=='theory'&&a.style!=='vtheory')},
   {title:"Engineering (Mechanical / Electrical / Chemical)",icon:"⚙️",
    why:"You enjoy hands-on problem-solving, are strong in math and physics, and like building things.",
    careers:"Engineer, Project Manager, Robotics Specialist, Researcher",
    courses:"MHF4U, MCV4U, SPH4U (required), SCH4U, ENG4U",comp:"Very Competitive — 85–94%",salary:"$70,000–$110,000+",
-   triggers:a=>a.math==='strong'&&(a.build==='yes'||a.labs==='love')&&a.style!=='theory'},
+   triggers:a=>(a.math==='vstrong'||a.math==='strong')&&(a.build==='vyes'||a.build==='yes'||a.labs==='vlove'||a.labs==='love')&&(a.style!=='theory'&&a.style!=='vtheory')},
   {title:"Health Sciences / Pre-Medicine",icon:"🏥",
    why:"Your interest in helping people, biology, and health points strongly toward health sciences.",
    careers:"Physician, Nurse Practitioner, Health Administrator, Pharmacist",
    courses:"SBI4U, SCH4U, ENG4U, MHF4U",comp:"Extremely Competitive — 90%+ often required",salary:"$80,000–$300,000+",
-   triggers:a=>a.people==='yes'&&(a.env==='hospital'||a.value==='helping')},
+   triggers:a=>(a.people==='vyes'||a.people==='yes')&&(a.env==='hospital'||a.value==='helping')},
   {title:"Business / Commerce",icon:"💼",
    why:"You value leadership, high earning potential, and a dynamic environment.",
    careers:"Manager, Consultant, Financial Analyst, Marketing Director",
    courses:"ENG4U, MHF4U, Economics (CIA4U)",comp:"Competitive — 80–90%",salary:"$55,000–$120,000+",
-   triggers:a=>a.salary==='high'&&a.team==='team'},
+   triggers:a=>(a.salary==='vhigh'||a.salary==='high')&&(a.team==='vteam'||a.team==='team'||a.team==='both')},
   {title:"Psychology / Social Sciences",icon:"🧠",
    why:"Curious about human behaviour, love writing, and want to understand why people think as they do.",
    careers:"Psychologist, Counsellor, HR Specialist, Researcher",
    courses:"ENG4U, HSB4U, SBI4U optional",comp:"Moderate — 75–85%",salary:"$50,000–$90,000",
-   triggers:a=>a.writing==='yes'&&a.people==='yes'&&a.value==='helping'},
+   triggers:a=>(a.writing==='vyes'||a.writing==='yes')&&(a.people==='vyes'||a.people==='yes')&&(a.value==='helping'||a.value==='impact')},
   {title:"Arts, Media & Communication",icon:"🎨",
    why:"Your creative side, love of expression, and communication skills align with arts and media.",
    careers:"Journalist, Designer, Filmmaker, PR Specialist, Creative Director",
    courses:"ENG4U, AVI4M or AWL4M, Media Arts",comp:"Moderate — varies by program",salary:"$45,000–$90,000",
-   triggers:a=>a.writing==='yes'&&(a.value==='create'||a.value==='freedom')},
+   triggers:a=>(a.writing==='vyes'||a.writing==='yes')&&(a.value==='create'||a.value==='freedom'||a.env==='studio')},
   {title:"Science (Biology / Chemistry / Physics)",icon:"🔬",
    why:"You love labs, enjoy science deeply, and think analytically — opens doors to research and medicine.",
    careers:"Researcher, Pharmacist, Environmental Scientist, Biologist",
    courses:"SBI4U, SCH4U, SPH4U, MHF4U",comp:"Competitive — 80–90%",salary:"$55,000–$100,000",
-   triggers:a=>a.labs==='love'&&a.math==='strong'},
+   triggers:a=>(a.labs==='vlove'||a.labs==='love')&&(a.math==='vstrong'||a.math==='strong')},
   {title:"Education / Teaching",icon:"📚",
    why:"Your desire to help and communicate makes teaching a natural and rewarding fit.",
    careers:"Teacher, Educational Administrator, Curriculum Designer",
    courses:"ENG4U, plus any subject you want to teach",comp:"Moderate — 75–85%",salary:"$50,000–$95,000",
-   triggers:a=>a.people==='yes'&&a.value==='helping'&&a.risk==='stable'},
+   triggers:a=>(a.people==='vyes'||a.people==='yes')&&a.value==='helping'&&(a.risk==='vstable'||a.risk==='stable')},
 ];
 
 function showResults(){
@@ -1379,57 +1430,97 @@ function calcUniQuizBonus(uni){
   const midCity=vibe.match(/mid-size|suburban|mid size/);
   const smallTown=vibe.match(/small town|small city|rural/);
   const isNaturey=vibe.match(/forest|park|lake|river|mountain|coastal|nature|scenic|trail|wilderness/);
+  const c=answers;
 
-  if(answers.uqCoop==='high') pts+=uni.coop?3:0;
-  else if(answers.uqCoop==='medium') pts+=uni.coop?2:1;
-  else if(answers.uqCoop==='low') pts+=uni.coop?0:3;
+  // Co-op (essential/high/medium/minor/low)
+  if(c.uqCoop==='essential') pts+=uni.coop?4:0;
+  else if(c.uqCoop==='high') pts+=uni.coop?3:0;
+  else if(c.uqCoop==='medium') pts+=uni.coop?2:1;
+  else if(c.uqCoop==='minor') pts+=uni.coop?1:2;
+  else if(c.uqCoop==='low') pts+=uni.coop?0:3;
 
-  if(answers.uqEnv==='urban') pts+=bigCity?2:midCity?1:0;
-  else if(answers.uqEnv==='nature') pts+=(isNaturey&&!bigCity)?2:midCity?1:0;
-  else if(answers.uqEnv==='either') pts+=1;
+  // Campus environment (urban/urbanadj/campus/nature/either)
+  if(c.uqEnv==='urban') pts+=bigCity?3:midCity?1:0;
+  else if(c.uqEnv==='urbanadj') pts+=(bigCity||midCity)?2:1;
+  else if(c.uqEnv==='campus') pts+=(!bigCity)?2:1;
+  else if(c.uqEnv==='nature') pts+=(isNaturey&&!bigCity)?3:midCity?1:0;
+  else if(c.uqEnv==='either') pts+=1;
 
-  if(answers.uqPrestige==='very') pts+=rank<=3?4:rank<=7?3:rank<=15?1:0;
-  else if(answers.uqPrestige==='somewhat') pts+=rank<=7?3:rank<=20?2:1;
-  else if(answers.uqPrestige==='low') pts+=2;
+  // Prestige (essential/very/somewhat/minor/low)
+  if(c.uqPrestige==='essential') pts+=rank<=3?5:rank<=7?4:rank<=15?2:rank<=25?1:0;
+  else if(c.uqPrestige==='very') pts+=rank<=3?4:rank<=7?3:rank<=15?1:0;
+  else if(c.uqPrestige==='somewhat') pts+=rank<=7?3:rank<=20?2:1;
+  else if(c.uqPrestige==='minor') pts+=rank<=15?1:0;
+  else if(c.uqPrestige==='low') pts+=2;
 
-  if(answers.uqCitySize==='big') pts+=bigCity?3:midCity?1:0;
-  else if(answers.uqCitySize==='mid') pts+=midCity?3:1;
-  else if(answers.uqCitySize==='small') pts+=smallTown?3:midCity?1:0;
+  // City size (verybig/big/mid/small/vsmall)
+  if(c.uqCitySize==='verybig') pts+=bigCity?4:midCity?1:0;
+  else if(c.uqCitySize==='big') pts+=bigCity?3:midCity?1:0;
+  else if(c.uqCitySize==='mid') pts+=midCity?3:1;
+  else if(c.uqCitySize==='small') pts+=smallTown?3:midCity?1:0;
+  else if(c.uqCitySize==='vsmall') pts+=smallTown?4:midCity?1:0;
   else pts+=1;
 
-  if(answers.uqFrench==='yes') pts+=isQuebec?1:0;
-  else if(answers.uqFrench==='no') pts+=!isQuebec?1:0;
-  else pts+=1;
+  // French/Quebec (definitely/yes/either/slightlyno/no)
+  if(c.uqFrench==='definitely') pts+=isQuebec?2:0;
+  else if(c.uqFrench==='yes') pts+=isQuebec?1:0;
+  else if(c.uqFrench==='either') pts+=1;
+  else if(c.uqFrench==='slightlyno') pts+=!isQuebec?1:0;
+  else if(c.uqFrench==='no') pts+=!isQuebec?2:0;
 
-  if(answers.uqBudget==='critical') pts+=tuition<6000?4:tuition<8000?2:0;
-  else if(answers.uqBudget==='somewhat') pts+=tuition<8000?3:tuition<11000?2:1;
-  else if(answers.uqBudget==='low') pts+=2;
+  // Budget (critical/very/somewhat/minor/low)
+  if(c.uqBudget==='critical') pts+=tuition<6000?4:tuition<8000?2:0;
+  else if(c.uqBudget==='very') pts+=tuition<6000?3:tuition<8000?2:tuition<11000?1:0;
+  else if(c.uqBudget==='somewhat') pts+=tuition<8000?3:tuition<11000?2:1;
+  else if(c.uqBudget==='minor') pts+=1;
+  else if(c.uqBudget==='low') pts+=2;
 
+  // Class size (vsmall/small/medium/large/vlarge)
   const bigUni=rank<=10;
   const smallUni=rank>30;
-  if(answers.uqClassSize==='small') pts+=smallUni?2:!bigUni?1:0;
-  else if(answers.uqClassSize==='large') pts+=bigUni?2:!smallUni?1:0;
-  else pts+=1;
+  if(c.uqClassSize==='vsmall') pts+=smallUni?3:!bigUni?1:0;
+  else if(c.uqClassSize==='small') pts+=smallUni?2:!bigUni?1:0;
+  else if(c.uqClassSize==='medium') pts+=1;
+  else if(c.uqClassSize==='large') pts+=bigUni?2:!smallUni?1:0;
+  else if(c.uqClassSize==='vlarge') pts+=bigUni?3:!smallUni?1:0;
 
-  if(answers.uqResearch==='very') pts+=rank<=5?3:rank<=10?2:rank<=20?1:0;
-  else if(answers.uqResearch==='somewhat') pts+=rank<=15?2:1;
-  else if(answers.uqResearch==='low') pts+=1;
+  // Research (essential/very/somewhat/minor/low)
+  if(c.uqResearch==='essential') pts+=rank<=3?4:rank<=7?3:rank<=15?2:rank<=25?1:0;
+  else if(c.uqResearch==='very') pts+=rank<=5?3:rank<=10?2:rank<=20?1:0;
+  else if(c.uqResearch==='somewhat') pts+=rank<=15?2:1;
+  else if(c.uqResearch==='minor') pts+=1;
+  else if(c.uqResearch==='low') pts+=1;
 
-  if(answers.uqSports==='very') pts+=vibe.match(/sport|athletic|varsity/)?1:0;
+  // Sports (vvery/very/somewhat/minor/low)
+  if(c.uqSports==='vvery') pts+=vibe.match(/sport|athletic|varsity/)?2:0;
+  else if(c.uqSports==='very') pts+=vibe.match(/sport|athletic|varsity/)?1:0;
 
-  if(answers.uqSocial==='very') pts+=vibe.match(/social|vibrant|scene|active|community/)?1:0;
+  // Social (critical/very/somewhat/minor/low)
+  if(c.uqSocial==='critical') pts+=vibe.match(/social|vibrant|scene|active|community/)?2:0;
+  else if(c.uqSocial==='very') pts+=vibe.match(/social|vibrant|scene|active|community/)?1:0;
 
-  if(answers.uqIndustry==='very') pts+=uni.coop?2:rank<=10?1:0;
-  else if(answers.uqIndustry==='somewhat') pts+=uni.coop?1:0;
+  // Industry (critical/very/somewhat/minor/low)
+  if(c.uqIndustry==='critical') pts+=uni.coop?3:rank<=10?1:0;
+  else if(c.uqIndustry==='very') pts+=uni.coop?2:rank<=10?1:0;
+  else if(c.uqIndustry==='somewhat') pts+=uni.coop?1:0;
 
-  if(answers.uqExchange==='yes') pts+=!!uni.worldRank&&rank<=15?1:0;
+  // Exchange (vyes/yes/maybe/unlikely/no)
+  if(c.uqExchange==='vyes') pts+=uni.worldRank&&rank<=10?2:uni.worldRank&&rank<=20?1:0;
+  else if(c.uqExchange==='yes') pts+=!!uni.worldRank&&rank<=15?1:0;
 
-  if(answers.uqResidence==='yes') pts+=uni.residence?1:0;
+  // Residence (definitely/yes/maybe/unlikely/no)
+  if(c.uqResidence==='definitely') pts+=uni.residence?2:0;
+  else if(c.uqResidence==='yes') pts+=uni.residence?1:0;
 
-  if(answers.uqAlumni==='very') pts+=rank<=15?1:0;
+  // Alumni (vvery/very/somewhat/minor/low)
+  if(c.uqAlumni==='vvery') pts+=rank<=10?2:rank<=20?1:0;
+  else if(c.uqAlumni==='very') pts+=rank<=15?1:0;
 
-  if(answers.uqCampusSize==='large') pts+=bigUni?1:0;
-  else if(answers.uqCampusSize==='small') pts+=smallUni?1:0;
+  // Campus scale (vlarge/large/medium/smallmed/small)
+  if(c.uqCampusSize==='vlarge') pts+=bigUni?2:0;
+  else if(c.uqCampusSize==='large') pts+=bigUni?1:0;
+  else if(c.uqCampusSize==='smallmed') pts+=!bigUni?1:0;
+  else if(c.uqCampusSize==='small') pts+=smallUni?2:!bigUni?1:0;
 
   return Math.min(pts, 30);
 }
