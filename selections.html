@@ -596,7 +596,8 @@
           </div>
         </div>
 
-        <div style="text-align:center;margin-top:8px;">
+        <div style="text-align:center;margin-top:8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-lg" onclick="clearMajorQuiz()" style="font-size:.9rem;">✕ Clear All</button>
           <button class="btn btn-red btn-lg" onclick="showResults()">Get My Recommended Majors →</button>
         </div>
       </div>
@@ -839,7 +840,8 @@
             <div class="quiz-opt" onclick="uq('uqCampusSize','small')">Small — I want to be known on campus and stand out</div>
           </div>
         </div>
-        <div style="text-align:center;margin-top:8px;">
+        <div style="text-align:center;margin-top:8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-lg" onclick="clearUniQuiz()" style="font-size:.9rem;">✕ Clear All</button>
           <button class="btn btn-red btn-lg" onclick="applyUniQuiz()">Apply Answers &amp; Update Fit Scores →</button>
         </div>
       </div>
@@ -1263,6 +1265,25 @@ function retakeMajorQuiz() {
   // Reset all quiz selections
   qs.querySelectorAll('.quiz-opt.selected').forEach(o => o.classList.remove('selected'));
   qs.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function clearMajorQuiz() {
+  // Deselect all quiz options in the major quiz
+  const qs = document.getElementById('quizSection');
+  if (!qs) return;
+  qs.querySelectorAll('.quiz-opt.selected').forEach(o => o.classList.remove('selected'));
+  qs.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+  quizAnswers = {};
+  showToast('Quiz cleared — all selections reset.');
+}
+
+function clearUniQuiz() {
+  // Deselect all quiz options in the university quiz
+  const qs = document.getElementById('uniQuizSection');
+  if (!qs) return;
+  qs.querySelectorAll('.quiz-opt.selected').forEach(o => o.classList.remove('selected'));
+  uqAnswers = {};
+  showToast('University quiz cleared.');
 }
 
 // ════════════════════════════════════════════════════════

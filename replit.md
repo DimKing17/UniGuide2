@@ -15,7 +15,8 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 | `scholarships.html` | Scholarship / Funding finder (100+ scholarships, "Apply →" links) |
 | `essays.html` | Essay writing guidance |
 | `tracker.html` | Application tracker |
-| `data.js` | All shared data: MAJORS (370+ programs, Law + Trades added), UNIVERSITIES (60 schools), PROGRAM_DATA (100+ entries), SCHOLARSHIPS |
+| `data.js` | All shared data: MAJORS (354 programs across 15 categories), UNIVERSITIES (100 schools), PROGRAM_DATA, SCHOLARSHIPS |
+| `browsing.html` | Two-pane browse page — Majors tab (354 majors, 15 categories) + Universities tab (100 unis). Contains INDIVIDUAL_MAJOR_DATA (339 unique major entries) and UNI_SUPPLEMENT (enriched university profiles). |
 | `auth.js` | Auth layer + ugLoad/ugSave helpers (localStorage + Firebase fallback) |
 | `style.css` | Global design system |
 
