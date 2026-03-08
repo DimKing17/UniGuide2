@@ -478,6 +478,7 @@
 <nav class="nav">
   <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
   <div class="nav-links">
+    <a href="browsing.html">Browse</a>
     <a href="selections.html">Selections</a>
     <a href="saved.html" class="active">My List</a>
     <a href="scholarships.html">Funding</a>
@@ -810,7 +811,7 @@ function buildGrade11Section(progId, pd) {
 // ── Build the Grade 12 subject picker section ──────────────────
 function buildGrade12Section(progId, pd) {
   const state    = getCLState(progId);
-  const gr11Set  = new Set(JSON.parse(state['gr11_selected'] || '[]').map(c => c.name));
+  const gr11Set  = new Set(JSON.parse(state['gr11_selected'] || '[]').map(c => c.code));
   const optional = JSON.parse(state['gr12_selected'] || '[]');
   const reqCodes = pd ? (pd.requiredCourses || []) : [];
   const reqMarks = getReqMarks(progId);

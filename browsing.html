@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Browse Majors & Universities — UniGuide 🍁</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── Browse Page Layout ── */
+    html, body { height:100%; margin:0; }
+    .browse-page {
+      display:flex; flex-direction:column;
+      height:calc(100vh - 52px);
+      overflow:hidden;
+    }
+    /* Top bar: tab switcher + search */
+    .browse-topbar {
+      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+      padding:10px 20px; border-bottom:1.5px solid var(--border);
+      background:#fff; flex-shrink:0;
+    }
+    .browse-tab-switcher { display:flex; gap:4px; }
+    .browse-tab-btn {
+      font-size:.86rem; font-weight:800; padding:7px 20px; border-radius:50px;
+      border:1.5px solid var(--border); background:var(--light); color:var(--grey);
+      cursor:pointer; font-family:inherit; transition:all .15s;
+    }
+    .browse-tab-btn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .browse-tab-btn:hover:not(.active) { border-color:var(--navy); color:var(--navy); }
+    .browse-search {
+      flex:1; min-width:180px; max-width:320px; padding:7px 13px;
+      border:1.5px solid var(--border); border-radius:50px; font-size:.85rem;
+      font-family:inherit; outline:none;
+    }
+    .browse-search:focus { border-color:var(--red); }
+    /* Filter bar */
+    .browse-filters {
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+      padding:8px 20px; background:var(--light); border-bottom:1px solid var(--border);
+      flex-shrink:0;
+    }
+    .bf-label { font-size:.72rem; font-weight:800; color:var(--grey); text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; }
+    .bf-sel {
+      font-size:.78rem; padding:5px 10px; border-radius:8px; border:1.5px solid var(--border);
+      background:#fff; color:var(--navy); cursor:pointer; font-family:inherit;
+      width:auto; min-width:0; flex-shrink:0;
+    }
+    .bf-sel:focus { outline:2px solid var(--red); border-color:var(--red); }
+    .bf-reset {
+      font-size:.75rem; font-weight:700; padding:5px 12px; border-radius:8px;
+      border:1.5px solid var(--red); background:var(--red); color:#fff; cursor:pointer;
+    }
+    /* Main content body */
+    .browse-body {
+      display:flex; flex:1; overflow:hidden; min-height:0;
+    }
+    /* Left list panel */
+    .browse-list-panel {
+      width:295px; min-width:200px; border-right:1.5px solid var(--border);
+      overflow-y:auto; flex-shrink:0; background:#fff;
+    }
+    /* List items */
+    .bl-cat-header {
+      display:flex; align-items:center; gap:8px; padding:10px 14px;
+      font-weight:800; font-size:.82rem; color:var(--navy);
+      cursor:pointer; background:var(--light); border-bottom:1px solid var(--border);
+      user-select:none;
+    }
+    .bl-cat-header:hover { background:#e0e7f0; }
+    .bl-cat-header.active { background:#dbe8f8; border-left:3px solid var(--red); }
+    .bl-cat-count { font-size:.68rem; color:var(--grey); margin-left:auto; font-weight:600; }
+    .bl-cat-chevron { font-size:.72rem; color:var(--grey); transition:transform .15s; }
+    .bl-cat-chevron.open { transform:rotate(90deg); }
+    .bl-major-list { background:#fff; }
+    .bl-major-item {
+      display:block; padding:7px 14px 7px 30px; font-size:.81rem; color:var(--navy);
+      cursor:pointer; border-bottom:1px solid #f0f3f8; transition:background .1s;
+    }
+    .bl-major-item:hover { background:#f0f5ff; }
+    .bl-major-item.active { background:#e8edf5; font-weight:700; border-left:3px solid var(--red); color:var(--red); }
+    .bl-uni-item {
+      display:flex; align-items:center; gap:10px;
+      padding:10px 14px; cursor:pointer; border-bottom:1px solid var(--border);
+      transition:background .1s;
+    }
+    .bl-uni-item:hover { background:var(--light); }
+    .bl-uni-item.active { background:#e8edf5; border-left:3px solid var(--red); }
+    .bl-uni-rank { font-size:.65rem; font-weight:800; color:var(--grey); min-width:22px; }
+    .bl-uni-info { flex:1; min-width:0; }
+    .bl-uni-name { font-size:.82rem; font-weight:700; color:var(--navy); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .bl-uni-loc { font-size:.70rem; color:var(--grey); }
+    /* Right detail panel */
+    .browse-detail-panel {
+      flex:1; overflow-y:auto; padding:0;
+    }
+    .bd-empty {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      height:100%; color:var(--grey); text-align:center; padding:40px;
+    }
+    .bd-empty-icon { font-size:3rem; margin-bottom:14px; }
+    /* Major detail */
+    .bd-major-hero {
+      background:linear-gradient(135deg,var(--navy) 0%,#1a3a6c 100%);
+      color:#fff; padding:28px 32px; position:relative;
+    }
+    .bd-major-icon { font-size:2.2rem; margin-bottom:8px; }
+    .bd-major-name { font-size:1.5rem; font-weight:900; margin:0 0 4px; }
+    .bd-major-headline { font-size:.92rem; color:rgba(255,255,255,.75); margin:0; }
+    .bd-major-cat { font-size:.74rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+    /* Metric pills */
+    .bd-metrics { display:flex; flex-wrap:wrap; gap:10px; padding:20px 28px; border-bottom:1px solid var(--border); }
+    .bd-metric {
+      display:flex; flex-direction:column; align-items:center; background:var(--light);
+      border:1px solid var(--border); border-radius:10px; padding:10px 16px; min-width:90px;
+    }
+    .bd-metric-val { font-size:1.1rem; font-weight:900; color:var(--navy); }
+    .bd-metric-label { font-size:.68rem; color:var(--grey); font-weight:600; text-align:center; margin-top:2px; }
+    /* Stars rating */
+    .bd-stars { color:var(--red); font-size:.8rem; letter-spacing:1px; }
+    /* Detail sections */
+    .bd-sections { padding:20px 28px; display:flex; flex-direction:column; gap:20px; }
+    .bd-section { }
+    .bd-section-title { font-size:.74rem; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--red); margin-bottom:10px; }
+    .bd-section-text { font-size:.86rem; color:var(--navy); line-height:1.7; margin:0; }
+    .bd-list { margin:0; padding-left:18px; font-size:.85rem; color:var(--navy); line-height:1.8; }
+    .bd-tags { display:flex; flex-wrap:wrap; gap:7px; }
+    .bd-tag {
+      font-size:.75rem; font-weight:700; padding:4px 11px; border-radius:50px;
+      background:#e8edf5; color:var(--navy); border:1px solid var(--border);
+    }
+    .bd-tag.red { background:#fde8ec; color:var(--red); border-color:#f7aab8; }
+    .bd-tag.green { background:#dcfce7; color:#166534; border-color:#86efac; }
+    .bd-tag.yellow { background:#fef3c7; color:#92400e; border-color:#fcd34d; }
+    /* Salary bar */
+    .salary-bar { display:flex; gap:0; border-radius:8px; overflow:hidden; margin:8px 0; }
+    .salary-seg { padding:8px 14px; font-size:.79rem; font-weight:700; flex:1; text-align:center; }
+    .salary-seg.entry { background:#e8edf5; color:var(--navy); }
+    .salary-seg.mid   { background:#c5d0e0; color:var(--navy); }
+    .salary-seg.senior{ background:var(--navy); color:#fff; }
+    .salary-label { font-size:.66rem; font-weight:600; margin-bottom:2px; }
+    /* University detail */
+    .bd-uni-hero {
+      background:linear-gradient(135deg,var(--navy) 0%,#1a3a6c 100%);
+      color:#fff; padding:24px 28px;
+    }
+    .bd-uni-name { font-size:1.4rem; font-weight:900; margin:0 0 4px; }
+    .bd-uni-loc { font-size:.9rem; color:rgba(255,255,255,.75); margin:0 0 10px; }
+    .bd-uni-badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .bd-uni-badge { font-size:.72rem; font-weight:800; padding:4px 12px; border-radius:50px; background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.25); }
+    .bd-uni-stats { display:flex; flex-wrap:wrap; gap:10px; padding:16px 28px; border-bottom:1px solid var(--border); background:var(--light); }
+    .bd-uni-stat { background:#fff; border:1px solid var(--border); border-radius:8px; padding:8px 14px; min-width:80px; }
+    .bd-uni-stat-val { font-size:.95rem; font-weight:900; color:var(--navy); }
+    .bd-uni-stat-lbl { font-size:.65rem; color:var(--grey); font-weight:600; }
+    /* Sports lists */
+    .bd-sport-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:560px){ .bd-sport-grid { grid-template-columns:1fr; } }
+    .bd-sport-box { background:var(--light); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+    .bd-sport-title { font-size:.75rem; font-weight:800; color:var(--navy); margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px; }
+    .bd-sport-list { font-size:.78rem; color:var(--navy); line-height:1.8; margin:0; padding-left:16px; }
+    /* Programs grid */
+    .bd-programs-grid { display:flex; flex-wrap:wrap; gap:6px; }
+    .bd-program-tag {
+      font-size:.74rem; padding:3px 10px; border-radius:50px;
+      background:var(--light); border:1px solid var(--border); color:var(--navy);
+    }
+    /* Pros/cons */
+    .bd-pros-cons { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:560px){ .bd-pros-cons { grid-template-columns:1fr; } }
+    .bd-pro { background:#dcfce7; border:1px solid #86efac; border-radius:8px; padding:12px 14px; }
+    .bd-con { background:#fee2e2; border:1px solid #fca5a5; border-radius:8px; padding:12px 14px; }
+    .bd-pc-title { font-size:.74rem; font-weight:800; margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px; }
+    .bd-pro .bd-pc-title { color:#166534; }
+    .bd-con .bd-pc-title { color:#991b1b; }
+    .bd-pc-list { margin:0; padding-left:16px; font-size:.80rem; line-height:1.8; }
+    .bd-pro .bd-pc-list { color:#166534; }
+    .bd-con .bd-pc-list { color:#991b1b; }
+    /* Responsive */
+    @media(max-width:700px){
+      .browse-list-panel { width:100%; border-right:none; border-bottom:1.5px solid var(--border); max-height:220px; }
+      .browse-body { flex-direction:column; }
+    }
+    /* Misc */
+    .bd-divider { border:none; border-top:1px solid var(--border); margin:0; }
+    .no-results-msg { padding:32px; text-align:center; color:var(--grey); font-size:.88rem; }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
+  <div class="nav-links">
+    <a href="browsing.html" class="active">Browse</a>
+    <a href="selections.html">Selections</a>
+    <a href="saved.html">My List</a>
+    <a href="scholarships.html">Funding</a>
+    <a href="essays.html">Essays</a>
+    <a href="tracker.html">Tracker</a>
+    <span id="nav-logged-out" class="nav-auth"><a href="#" class="nav-btn-outline" onclick="ugOpenAuth('login');return false;">Log In</a></span>
+    <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><a href="profile.html" class="nav-profile-link">Profile</a><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
+    <a href="selections.html" class="nav-btn">Start YOUR plan</a>
+  </div>
+</nav>
+
+<div class="browse-page">
+  <!-- Top bar -->
+  <div class="browse-topbar">
+    <div class="browse-tab-switcher">
+      <button class="browse-tab-btn active" id="tabBtnMajors" onclick="switchBrowseTab('majors')">📚 Majors</button>
+      <button class="browse-tab-btn" id="tabBtnUnis" onclick="switchBrowseTab('unis')">🏛️ Universities</button>
+    </div>
+    <input type="search" class="browse-search" id="browseSearch" placeholder="Search…" oninput="handleBrowseSearch(this.value)"/>
+    <span id="browseResultCount" style="font-size:.78rem;color:var(--grey);"></span>
+  </div>
+
+  <!-- MAJORS TAB -->
+  <div id="bt-majors" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+    <div class="browse-filters" id="majorFilters">
+      <span class="bf-label">Filter:</span>
+      <select class="bf-sel" id="mfCat" onchange="applyMajorFilters()">
+        <option value="">All Categories</option>
+        <option>Engineering</option><option>Computer Science & IT</option>
+        <option>Health Sciences</option><option>Business</option>
+        <option>Arts & Humanities</option><option>Social Sciences</option>
+        <option>Science</option><option>Education</option>
+        <option>Law & Legal Studies</option><option>Trades & Applied Technology</option>
+        <option>Agriculture & Environment</option><option>Architecture & Design</option>
+        <option>Social Work & Community</option><option>Kinesiology & Sport</option>
+        <option>Media & Communication</option>
+      </select>
+      <select class="bf-sel" id="mfMath" onchange="applyMajorFilters()">
+        <option value="">Math Intensity: Any</option>
+        <option value="1">Low (1–2)</option>
+        <option value="3">Medium (3)</option>
+        <option value="4">High (4–5)</option>
+      </select>
+      <select class="bf-sel" id="mfCreativity" onchange="applyMajorFilters()">
+        <option value="">Creativity: Any</option>
+        <option value="low">Low (1–2)</option>
+        <option value="medium">Medium (3)</option>
+        <option value="high">High (4–5)</option>
+      </select>
+      <select class="bf-sel" id="mfSalary" onchange="applyMajorFilters()">
+        <option value="">Avg Salary: Any</option>
+        <option value="40">$40k+</option>
+        <option value="60">$60k+</option>
+        <option value="80">$80k+</option>
+        <option value="100">$100k+</option>
+      </select>
+      <select class="bf-sel" id="mfOutlook" onchange="applyMajorFilters()">
+        <option value="">Job Outlook: Any</option>
+        <option value="Excellent">Excellent</option>
+        <option value="Good">Good</option>
+        <option value="Moderate">Moderate</option>
+      </select>
+      <button class="bf-reset" onclick="resetMajorFilters()" style="display:none;" id="mfResetBtn">✕ Reset</button>
+    </div>
+    <div class="browse-body">
+      <div class="browse-list-panel" id="majorListPanel"></div>
+      <div class="browse-detail-panel" id="majorDetailPanel">
+        <div class="bd-empty">
+          <div class="bd-empty-icon">📚</div>
+          <h3 style="color:var(--navy);margin-bottom:8px;">Select a major to explore</h3>
+          <p style="font-size:.87rem;">Browse 354 majors across 15 categories. Click any major in the list to see detailed career info, salary data, and top Canadian schools.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIVERSITIES TAB -->
+  <div id="bt-unis" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+    <div class="browse-filters" id="uniFilters">
+      <span class="bf-label">Filter:</span>
+      <select class="bf-sel" id="ufProvince" onchange="applyUniFilters()">
+        <option value="">All Provinces</option>
+        <option>Ontario</option><option>British Columbia</option><option>Quebec</option>
+        <option>Alberta</option><option>Manitoba</option><option>Saskatchewan</option>
+        <option>Nova Scotia</option><option>New Brunswick</option>
+        <option>Newfoundland and Labrador</option><option>Prince Edward Island</option>
+        <option>Northwest Territories</option><option>Yukon</option>
+      </select>
+      <select class="bf-sel" id="ufSize" onchange="applyUniFilters()">
+        <option value="">Any Size</option>
+        <option value="small">Small (&lt;8,000)</option>
+        <option value="medium">Medium (8–25k)</option>
+        <option value="large">Large (25–50k)</option>
+        <option value="xlarge">Very Large (50k+)</option>
+      </select>
+      <select class="bf-sel" id="ufLang" onchange="applyUniFilters()">
+        <option value="">Any Language</option>
+        <option value="en">English</option>
+        <option value="fr">French</option>
+        <option value="bi">Bilingual</option>
+      </select>
+      <select class="bf-sel" id="ufCoop" onchange="applyUniFilters()">
+        <option value="">Co-op: Any</option>
+        <option value="yes">Co-op Available</option>
+      </select>
+      <select class="bf-sel" id="ufResearch" onchange="applyUniFilters()">
+        <option value="">Type: Any</option>
+        <option value="yes">Research-Intensive (U15)</option>
+        <option value="no">Primarily Undergraduate</option>
+      </select>
+      <button class="bf-reset" onclick="resetUniFilters()" style="display:none;" id="ufResetBtn">✕ Reset</button>
+    </div>
+    <div class="browse-body" id="unisBrowseBody">
+      <div class="browse-list-panel" id="uniListPanel"></div>
+      <div class="browse-detail-panel" id="uniDetailPanel">
+        <div class="bd-empty">
+          <div class="bd-empty-icon">🏛️</div>
+          <h3 style="color:var(--navy);margin-bottom:8px;">Select a university to explore</h3>
+          <p style="font-size:.87rem;">Browse all 100 Canadian universities. Click any institution to see campus life, sports, programs, admission stats, and more.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script>
+
+// ══════════════════════════════════════════════════════════════
+//  MAJOR DETAIL DATA — 15 categories
+// ══════════════════════════════════════════════════════════════
+const MAJOR_DATA = {
+
+"Engineering": {
+  icon:"⚙️", headline:"Design systems, solve real problems, build the future.",
+  description:"Engineering bridges math, physics, and creative problem-solving to design structures, machines, software, and systems that improve life. It's among the most technically demanding undergraduate programs — and one of the best-paid. Canadian engineering is globally respected, and the P.Eng designation opens doors across the world.",
+  mathIntensity:5, creativity:3, difficulty:5, teamwork:4, workLifeBalance:3,
+  salaryEntry:65000, salaryMid:95000, salarySenior:140000,
+  jobOutlook:"Excellent", jobOutlookNote:"Engineers are in demand across every industry. Civil and electrical engineers face near-permanent shortages in Canada. Software-adjacent roles continue explosive growth.",
+  jobs:["Mechanical Engineer","Civil Engineer","Electrical Engineer","Software Engineer","Chemical Engineer","Biomedical Engineer","Aerospace Engineer","Mining Engineer","Environmental Engineer","Structural Engineer","Systems Engineer","Product Engineer"],
+  workSettings:["Office & Design Studio","Construction Site","Manufacturing Plant","Research Lab","Field / Outdoors","Remote (software/systems roles)"],
+  degreeTypes:["BEng","BASc","BSc (Engineering)","MEng","MASc","PhD","P.Eng (Professional License)"],
+  yearsToComplete:"4 years standard; 5 years with co-op (Waterloo model). Graduate school adds 1–4 years.",
+  topSchoolsCA:["Waterloo (World Top 50 Engineering)","Toronto (Engineering Science)","UBC (multiple disciplines)","McGill (world-ranked)","McMaster (Engineering & Society)","Queen's (Applied Science)","Alberta (petroleum, civil, electrical)"],
+  skills:["Calculus & Linear Algebra","Physics & Thermodynamics","CAD / SolidWorks / AutoCAD","Programming (MATLAB, Python, C++)","Systems Analysis","Project Management","Technical Writing","Data Analysis"],
+  idealFor:["Strong math / physics foundation","Enjoy building and designing things","Like structured problem-solving","Want strong job security and salary"],
+  notIdealFor:["Dislikes heavy math","Prefers open-ended creative work","Seeks primarily people-focused career"],
+  pros:["Highest average starting salary of any undergrad","Accredited programs open global doors","Every industry needs engineers","P.Eng designation provides legal status and authority"],
+  cons:["Extremely demanding coursework (especially Year 1–2)","Heavy math and physics prerequisites","Less creative freedom than arts or design programs","Long hours in many sectors (construction, oil & gas)"],
+  misconceptions:["Engineers work alone — False. Most engineering is team-based across disciplines.","It's just math — False. Communication, ethics, and project management are heavily tested.","Only for robots/machines — False. Biomedical, environmental, and software engineers shape healthcare, climate, and tech."],
+  relatedMajors:["Computer Science","Physics","Architecture","Materials Science","Applied Math"],
+  gradPathNote:"MEng for specialization or management track; MBA for senior leadership; PhD for research or academia.",
+  requiresGrad:false,
+},
+
+"Computer Science & IT": {
+  icon:"💻", headline:"Build software, understand algorithms, shape the digital world.",
+  description:"Computer Science studies the theory and practice of computation — algorithms, data structures, artificial intelligence, databases, networking, and software engineering. It's the fastest-growing field in the world right now, and Canadian CS graduates are recruited globally by companies like Google, Amazon, Apple, and growing Canadian tech firms. The program is math-heavy and logic-intensive, but the career flexibility is unmatched.",
+  mathIntensity:4, creativity:4, difficulty:4, teamwork:3, workLifeBalance:3,
+  salaryEntry:72000, salaryMid:105000, salarySenior:165000,
+  jobOutlook:"Excellent", jobOutlookNote:"Software jobs are growing faster than any other profession. AI, cloud computing, and cybersecurity are creating entirely new sub-fields. Remote work makes geography irrelevant for many CS roles.",
+  jobs:["Software Developer","Data Scientist","Machine Learning Engineer","DevOps / Cloud Engineer","Product Manager","Cybersecurity Analyst","Database Administrator","Mobile Developer","AI/ML Researcher","Frontend / Backend Engineer","Game Developer","QA Engineer"],
+  workSettings:["Office","Fully Remote","Tech Company Campus","Startup","Research Lab","Government / Public Sector"],
+  degreeTypes:["BSc (Computer Science)","BCS","BSc (Software Engineering)","BMath+CS","MSc","MEng","PhD","MBA (tech track)"],
+  yearsToComplete:"4 years standard; 5 with co-op. Waterloo's co-op CS is a 5-year program with 6 work terms.",
+  topSchoolsCA:["Waterloo (world top-tier, #1 co-op placement)","Toronto (AI/ML research powerhouse)","UBC (strong tech connections to Vancouver)","McGill (Montreal AI hub)","Western","SFU (Vancouver tech scene)","Carleton","Ottawa"],
+  skills:["Programming (Python, Java, C++, JavaScript)","Algorithms & Data Structures","Machine Learning / AI","Database Systems (SQL, NoSQL)","Operating Systems","Web Development","Software Engineering & Testing","Cloud Platforms (AWS, Azure, GCP)"],
+  idealFor:["Analytical thinkers who enjoy puzzles","Enjoy building software products","Want high salary and remote flexibility","Interested in AI, data, or systems"],
+  notIdealFor:["Dislikes math and logic","Prefers primarily hands-on physical work","Seeks client-facing / highly social role without technical depth"],
+  pros:["Highest starting salary after engineering","Fully remote jobs widely available","Enormous demand globally","Huge breadth — go into finance, healthcare, entertainment, AI, security"],
+  cons:["Requires strong math (discrete math, calculus, statistics)","Fast-moving field requires constant learning","Competition is intense at top companies","Imposter syndrome common in early years"],
+  misconceptions:["CS = coding bootcamp — False. University CS is deeply theoretical: proofs, complexity, algorithms.","Only for introverts — False. Product managers, UX engineers, and tech leads are highly social roles.","AI will replace CS jobs — Unlikely. AI creates more demand for engineers who can build and manage it."],
+  relatedMajors:["Software Engineering","Mathematics","Data Science","Electrical Engineering","Cognitive Science"],
+  gradPathNote:"MSc for research or specialization. MBA for management track. Many top CS roles require only a bachelor's.",
+  requiresGrad:false,
+},
+
+"Health Sciences": {
+  icon:"🏥", headline:"Improve lives — from bedside to public policy.",
+  description:"Health Sciences is one of the broadest categories in Canadian higher education — spanning nursing, pre-medicine, kinesiology, pharmacy, public health, medical lab science, and more. Some paths (nursing, pharmacy, physiotherapy) lead directly to practice after undergrad or a single professional degree. Others (medicine, dentistry) require a separate graduate-level entry (MD, DMD) after an undergrad. The field demands compassion, scientific rigor, and strong communication.",
+  mathIntensity:3, creativity:2, difficulty:4, teamwork:4, workLifeBalance:3,
+  salaryEntry:55000, salaryMid:85000, salarySenior:135000,
+  jobOutlook:"Excellent", jobOutlookNote:"Canada faces critical healthcare worker shortages — nursing, pharmacy, physiotherapy, and occupational therapy are in particularly high demand. Aging population drives long-term growth across all health professions.",
+  jobs:["Registered Nurse","Pharmacist","Physiotherapist","Occupational Therapist","Medical Lab Technologist","Physician (requires MD)","Public Health Officer","Dietitian","Respiratory Therapist","Paramedic","Midwife","Health Administrator"],
+  workSettings:["Hospital","Clinic / Private Practice","Community Health Centre","Research Lab","Government / Public Health","Long-Term Care Facility","Remote / Telehealth"],
+  degreeTypes:["BScN (Nursing)","BHSc","BPharm → PharmD","BSc (Kinesiology)","BSc (OT/PT) → MSc required for practice","MD (4 years after undergrad)","BScN + graduate","MPH (Master of Public Health)"],
+  yearsToComplete:"4 years for most undergrad health programs. Nursing: 4 years BScN. Pharmacy: PharmD is 4 years post-undergrad. Medicine: 3–4 years MD after undergrad (+ 2–5 year residency).",
+  topSchoolsCA:["McMaster (BHSc — lottery-competitive; and MD program)","Toronto (all health disciplines, world-class research)","UBC (Medicine, Nursing, Pharmacy)","McGill (Medicine, Nursing)","Queens (Health Sciences)","Western (Medical School, Nursing)","Dalhousie (Medicine, Pharmacy)"],
+  skills:["Biology & Chemistry","Patient Communication","Clinical Assessment","Evidence-Based Practice","Pharmacology (pharmacy/nursing)","Statistics & Research Methods","Ethics in Healthcare","Electronic Health Records"],
+  idealFor:["Genuinely want to help people directly","Strong biology and chemistry background","Comfortable with high-stakes situations","Patient, empathetic, detail-oriented"],
+  notIdealFor:["Looking for a creative/expressive career","Uncomfortable with human suffering or clinical environments","Dislikes science or memorization-heavy courses"],
+  pros:["Job security is essentially guaranteed in most health fields","Meaningful, direct human impact","Diverse career paths (clinical, research, policy, tech)","Strong union protections for many roles (especially nursing)"],
+  cons:["Medicine requires 8–12 years total education (undergrad + MD + residency)","Nursing programs are extremely competitive (some programs accept <10% of applicants)","Emotional burden — compassion fatigue is real","Shift work, nights, and weekends for clinical roles"],
+  misconceptions:["Health Sci = pre-med — Not necessarily. Most health science grads enter non-physician careers.","Nursing is only for women — False. The profession is actively recruiting men.","You need perfect grades for all health programs — Varies. Nursing requires strong grades; not all health programs are competitive."],
+  relatedMajors:["Biology","Biochemistry","Psychology","Kinesiology","Neuroscience"],
+  gradPathNote:"Many roles require professional degrees: MD, PharmD, MSc (OT/PT). Nursing can practice with BSc. Public health often adds MPH.",
+  requiresGrad:false,
+},
+
+"Business": {
+  icon:"💼", headline:"Lead organizations, manage markets, build companies.",
+  description:"Business and Commerce programs teach accounting, finance, marketing, operations, human resources, entrepreneurship, and strategy. Canadian business schools vary enormously — from elite programs like Ivey (Western) and Rotman (U of T) with strong case-study methods, to broad BComm programs at most universities. Business is the most common undergraduate degree in Canada, which means competition for top roles is intense — internships, co-op, and networking matter enormously.",
+  mathIntensity:3, creativity:3, difficulty:3, teamwork:4, workLifeBalance:3,
+  salaryEntry:52000, salaryMid:82000, salarySenior:125000,
+  jobOutlook:"Good", jobOutlookNote:"Business skills are transferable across every industry. Finance, consulting, and tech are the highest-paying entry points. General management roles are competitive but widely available.",
+  jobs:["Financial Analyst","Marketing Manager","Accountant / CPA","Management Consultant","Investment Banker","Operations Manager","Entrepreneur","Human Resources Manager","Supply Chain Analyst","Business Development Manager","Product Manager","Risk Analyst"],
+  workSettings:["Corporate Office","Investment Bank / Bay Street","Consulting Firm","Startup","Government","Nonprofit","Retail / E-commerce"],
+  degreeTypes:["BComm","BBA","BBM","BCom","MBA (graduate)","CPA (professional designation)","CFA (finance designation)"],
+  yearsToComplete:"4 years undergrad (some business schools require 2 years pre-commerce before admitting to the program — e.g., Ivey 2+2 model). MBA adds 1–2 years.",
+  topSchoolsCA:["Ivey (Western — #1 MBA Canada, strong undergrad HBA)","Rotman (Toronto — finance and MBA powerhouse)","Schulich (York — global business, #1 international focus)","Desautels (McGill — elite BComm)","Sauder (UBC — West Coast business)","Queen's Smith School of Business","HEC Montréal (French)","Brock (Co-op BBA)"],
+  skills:["Financial Modeling","Data Analysis (Excel, Tableau, SQL)","Marketing Strategy","Operations Research","Leadership & Communication","Negotiation","Accounting (GAAP, IFRS)","Entrepreneurship"],
+  idealFor:["Enjoy leadership, networking, and persuasion","Interested in markets, money, or startups","Want flexible career paths across many industries","Like strategy and problem-solving in organizational contexts"],
+  notIdealFor:["Dislikes networking and social dynamics","Prefers technical depth over generalist breadth","Looking for creative expression"],
+  pros:["Applicable in virtually every industry","Strong earning potential in finance and consulting","Entrepreneurship path is very accessible","Many co-op and internship opportunities"],
+  cons:["Most common degree in Canada — you must differentiate yourself","Top roles (IB, consulting) are extremely competitive","MBA almost required for senior management at top firms","Generic BComm programs can lead to unfocused job searches"],
+  misconceptions:["Business is easy — Grade inflation varies by school; finance and accounting courses are quite hard.","You need business to start a company — False. Many entrepreneurs have engineering, science, or arts backgrounds.","It's just networking — Quantitative skills are increasingly essential (finance, data analytics)."],
+  relatedMajors:["Economics","Computer Science (tech focus)","Political Science","Mathematics (finance track)","Psychology (HR/marketing)"],
+  gradPathNote:"MBA for senior management. CPA for accounting. CFA for finance. Law degree for corporate law. Many business grads pursue graduate school in other fields.",
+  requiresGrad:false,
+},
+
+"Arts & Humanities": {
+  icon:"🎨", headline:"Understand culture, history, language, and the human experience.",
+  description:"Arts and Humanities encompasses English literature, history, philosophy, linguistics, cultural studies, classical studies, and more. Despite a reputation for being 'impractical,' humanities graduates develop highly transferable skills — critical reading, persuasive writing, ethical reasoning, and research — that are valued in law, policy, journalism, education, and management. The key is intentionality: students who actively build experience through internships, research, and writing succeed across many fields.",
+  mathIntensity:1, creativity:5, difficulty:3, teamwork:2, workLifeBalance:4,
+  salaryEntry:42000, salaryMid:62000, salarySenior:88000,
+  jobOutlook:"Moderate", jobOutlookNote:"Outcomes depend heavily on what you do beyond your degree. Many humanities graduates pursue graduate school (law, education, library science, public policy) or leverage their skills in communications, marketing, or the public sector.",
+  jobs:["Writer / Editor","Journalist","Policy Analyst","Secondary School Teacher","Librarian","Museum Curator","Communications Officer","Copywriter","Research Assistant","Lawyer (after JD)","Public Relations Specialist","Professor (after PhD)"],
+  workSettings:["University / College","Government","Media / Publishing","NGO / Nonprofit","Law Firm (after JD)","Museums & Archives","Corporate Communications"],
+  degreeTypes:["BA (Honours)","BA (Combined)","BFA (Fine Arts)","MA","PhD","JD (Law — after undergrad)","BEd (after undergrad)"],
+  yearsToComplete:"4 years undergrad (Honours). MA adds 1–2 years. PhD adds 4–6 years. Law requires 3 additional years (JD).",
+  topSchoolsCA:["Toronto (English, History, Philosophy — all top-ranked)","McGill (History, Philosophy, Linguistics)","UBC (Creative Writing, English, Asian Studies)","Queen's (History, Drama)","Western (Media Studies, Philosophy)","McMaster (Cultural Studies)","Waterloo (English, Philosophy combined programs)"],
+  skills:["Critical Reading & Analysis","Persuasive Writing","Research (Primary & Secondary Sources)","Argumentation","Cultural Competency","Oral Presentation","Editing & Proofreading","Historical & Contextual Thinking"],
+  idealFor:["Strong readers and writers","Curious about culture, history, and ideas","Want to pursue law, education, or public policy","Value a broad liberal arts foundation"],
+  notIdealFor:["Want a direct technical career path","Focused primarily on high starting salary","Dislike reading dense texts or writing long essays"],
+  pros:["Develops writing and critical thinking at a high level","Enormous flexibility in career path","Strong preparation for law school","Can be combined with professional degrees"],
+  cons:["Lower average starting salary than technical programs","Less structured career path — requires more self-direction","Graduate school often necessary for academic careers","Perceived by some employers as 'soft'"],
+  misconceptions:["Humanities = unemployed — False. The career path requires more work, but outcomes are strong for intentional students.","It's just reading and writing — Some programs include statistical analysis, digital humanities, and advanced research methods.","Only for academics — Major employers in consulting (McKinsey hires many humanities grads), policy, and law actively seek humanities graduates."],
+  relatedMajors:["Social Sciences","Education","Media & Communication","Law & Legal Studies","Architecture (art history)"],
+  gradPathNote:"Law school (JD) — 3 years. Teaching certification (BEd) — 1 year after undergrad. MA/PhD for academia — 2–6+ years.",
+  requiresGrad:false,
+},
+
+"Social Sciences": {
+  icon:"🌍", headline:"Study human behavior, society, and the forces that shape them.",
+  description:"The social sciences — psychology, sociology, political science, anthropology, economics, geography, and more — examine how people think, behave, and organize themselves. They combine rigorous empirical research with theoretical frameworks. Psychology is the most popular, with two distinct paths: clinical (requires graduate school) and research/industrial-organizational (sometimes accessible at the bachelor's level). Political science leads to law, policy, diplomacy, and journalism.",
+  mathIntensity:2, creativity:3, difficulty:3, teamwork:3, workLifeBalance:4,
+  salaryEntry:45000, salaryMid:68000, salarySenior:95000,
+  jobOutlook:"Good", jobOutlookNote:"Economics, psychology (I-O), and political science graduates are in demand in business, government, and NGOs. Clinical psychology requires a PhD — the field is highly competitive at graduate level.",
+  jobs:["Research Analyst","Social Worker (MSW required)","Psychologist (PhD required)","Policy Advisor","Economist","Market Research Analyst","Community Program Manager","HR Specialist","Political Analyst","Urban Planner (MPlan)","Professor (PhD)","Diplomat"],
+  workSettings:["Government","NGO / Nonprofit","University","Corporate Research","Healthcare","Law & Policy","Media & Journalism","International Organizations (UN, World Bank)"],
+  degreeTypes:["BA (Psychology, Sociology, Political Science, etc.)","BSc (Psychology, Economics)","MA","MSc","PhD","MSW (Social Work — separate)","MPP (Public Policy)"],
+  yearsToComplete:"4 years undergrad. Most clinical/professional paths require graduate education (2–6+ years).",
+  topSchoolsCA:["Toronto (Political Economy, Criminology, Sociology)","UBC (Psychology, Anthropology)","McGill (Political Science, Economics)","Waterloo (Psychology — research-oriented)","Calgary (International Relations)","Queen's (Political Studies)","Ottawa (Political Science, International Development)"],
+  skills:["Research Methods & Statistics (SPSS, R)","Literature Review Writing","Survey Design","Quantitative & Qualitative Analysis","Critical Thinking","Grant Writing","Interviewing Techniques","Data Visualization"],
+  idealFor:["Fascinated by why people think and behave as they do","Want to influence policy or support communities","Comfortable with both numbers and writing","Interested in interdisciplinary research"],
+  notIdealFor:["Want a direct career without graduate school","Dislikes research methodology and statistics","Looking for highly technical engineering-style work"],
+  pros:["Broad applicability in research, policy, education, business","Strong foundation for law school","Many programs combine well with other disciplines","Growing demand for behavioral insights in business and tech"],
+  cons:["Clinical psychology and academic careers require PhDs — long, competitive path","Entry-level roles often require graduate credentials","Lower starting salaries compared to technical fields","Broad degree — requires targeted career planning"],
+  misconceptions:["Psychology = becoming a therapist — Most psychology graduates do not become therapists (that requires a PhD or master's).","Social sciences are soft — Modern programs are heavily quantitative, using statistical software and experimental methods.","Political science leads only to politics — Most graduates enter policy, law, public admin, journalism, or international affairs."],
+  relatedMajors:["Arts & Humanities","Economics","Social Work","Education","Law & Legal Studies"],
+  gradPathNote:"MSW for clinical social work, PhD for research/clinical psychology, MPP/MPA for policy, MA/MSc for most research careers.",
+  requiresGrad:false,
+},
+
+"Science": {
+  icon:"🔬", headline:"Discover how the natural world works, from atoms to ecosystems.",
+  description:"Science degrees — biology, chemistry, physics, biochemistry, mathematics, statistics, earth sciences, and neuroscience — provide the foundation for careers in research, healthcare, engineering, technology, and environmental management. They're intellectually demanding and math-intensive. Many science graduates pursue professional graduate programs (medicine, pharmacy, dentistry, law) or research graduate degrees (MSc, PhD). Science provides some of the most flexible pre-professional foundations of any undergraduate degree.",
+  mathIntensity:5, creativity:3, difficulty:4, teamwork:3, workLifeBalance:3,
+  salaryEntry:52000, salaryMid:78000, salarySenior:115000,
+  jobOutlook:"Good", jobOutlookNote:"Pure science graduates often require graduate education for competitive salaries. However, biology, chemistry, and physics undergrads are highly valued as a pre-professional foundation for medicine, law, and engineering. Data scientists with strong math/stats backgrounds are in extremely high demand.",
+  jobs:["Research Scientist","Lab Technologist","Environmental Consultant","Data Scientist","Pharmacologist","High School Science Teacher","Geologist","Actuary (Math/Stats)","Forensic Scientist","Science Communicator","Patent Agent","Medical Researcher"],
+  workSettings:["University Research Lab","Government Lab","Pharmaceutical / Biotech Company","Environmental Consulting Firm","Hospital (clinical research)","Secondary School","Field Research (geology, ecology)"],
+  degreeTypes:["BSc","BSc (Honours)","BMath","BStats","MSc","PhD","MD (medicine — after BSc)","PharmD (after BSc)"],
+  yearsToComplete:"4 years undergrad (Honours strongly recommended for graduate school). MSc 2 years. PhD 4–6 years.",
+  topSchoolsCA:["Toronto (Biochemistry, Physics, Mathematics — world-ranked)","UBC (Biology, Chemistry, Environmental Science)","McGill (Biology, Neuroscience)","Waterloo (Math, Physics — unmatched math program)","McMaster (Biochemistry, Life Sciences)","Western (Biology, Chemistry)","Queen's (Life Sciences, Chemistry)"],
+  skills:["Laboratory Techniques (PCR, spectroscopy, microscopy)","Data Analysis (R, Python, MATLAB)","Scientific Writing","Statistics","Experimental Design","Calculus & Differential Equations","Literature Review","Critical Analysis"],
+  idealFor:["Intellectually curious with strong math/science background","Want to pursue medicine, dentistry, pharmacy, or graduate research","Enjoy lab work and scientific thinking","Interested in environmental or life sciences"],
+  notIdealFor:["Wants fast entry to workforce without graduate school","Dislikes lab work or heavy math","Looking for a creative or people-intensive career"],
+  pros:["Excellent foundation for medicine, pharmacy, dentistry, law","Strong analytical skills applicable in tech, finance, consulting","Access to world-class research at Canadian universities","Flexible — biology grads enter biotech, healthcare, education, policy"],
+  cons:["Graduate school is often necessary for competitive salaries","Lab work requires precision and patience","Lower direct career earnings than engineering without grad school","Academic job market (professorships) is extremely competitive"],
+  misconceptions:["Science = you'll work in a lab forever — Many science graduates end up in policy, data science, business, or healthcare management.","Math isn't important for biology — Modern biology is quantitative (bioinformatics, biostatistics, systems biology).","You need a PhD to succeed — Many roles in industry, education, and policy value a BSc with work experience."],
+  relatedMajors:["Engineering","Health Sciences","Computer Science","Education (science specialization)","Environmental Studies"],
+  gradPathNote:"MSc/PhD for research. MD, PharmD, DVM for professional health practice. Data science roles often hire BSc + bootcamp.",
+  requiresGrad:false,
+},
+
+"Education": {
+  icon:"📚", headline:"Shape the next generation — teach, mentor, and build futures.",
+  description:"Education programs prepare students to teach in elementary, secondary, or post-secondary settings. In most Canadian provinces, teacher certification requires completing an undergraduate degree in another subject first, then a Bachelor of Education (BEd) — typically a 1–2 year graduate-level program. Some universities offer combined programs (e.g., 5-year concurrent BEd). Education also leads to educational psychology, school administration, curriculum development, and adult education roles.",
+  mathIntensity:2, creativity:4, difficulty:3, teamwork:3, workLifeBalance:4,
+  salaryEntry:48000, salaryMid:73000, salarySenior:98000,
+  jobOutlook:"Good", jobOutlookNote:"Ontario, BC, and Alberta face persistent teacher shortages in STEM subjects, special education, and French immersion. Job security and pension benefits are strong for permanent teachers. Substitute teaching is extremely common for new graduates.",
+  jobs:["Elementary School Teacher","Secondary School Teacher","Educational Assistant","School Principal / Vice-Principal","Educational Psychologist (PhD)","Curriculum Developer","Special Education Teacher","ESL / EAL Teacher","College / University Instructor","Corporate Trainer","Instructional Designer","Adult Educator"],
+  workSettings:["Elementary/Secondary School","College / University","Tutoring Centre","Corporate Training Department","Educational Publishers","Government / Ministry","Nonprofit (literacy, community education)"],
+  degreeTypes:["BEd (after any undergrad)","Concurrent BEd (combined with subject major)","MEd","PhD (Educational Psychology)","OCT (Ontario College of Teachers — required for Ontario certification)"],
+  yearsToComplete:"Undergrad in subject area (4 years) + BEd (1–2 years) = 5–6 years total. Concurrent programs can be done in 5 years.",
+  topSchoolsCA:["OISE/Toronto (arguably the best education faculty in Canada)","UBC (Education — strong in Indigenous education)","Western (BEd concurrent programs)","Queen's (teacher education)","McGill (Education — research and practice)","Alberta (Education research)","UNBC (for Northern/rural teaching contexts)"],
+  skills:["Lesson Planning & Curriculum Design","Classroom Management","Assessment & Evaluation","Differentiated Instruction","Inclusive Education (Special Needs)","Communication & Public Speaking","Child/Adolescent Psychology","Technology in the Classroom"],
+  idealFor:["Patient, energetic, and enjoy working with young people","Passionate about a subject and want to share that passion","Value meaningful work over high salary","Want job security, pension, and summer schedule"],
+  notIdealFor:["Looking for high starting salary","Dislikes working with large groups","Wants a primarily independent / technical career"],
+  pros:["Strong job security and excellent benefits / pension","Summers largely free (though involves prep/PD)","Deeply meaningful work","Diverse specializations (special ed, EAL, STEM, arts)"],
+  cons:["Lower salary than comparable degree fields","Certification process (BEd + OCT) adds time and cost","Many provinces have teacher hiring freezes or long wait lists","Emotional demands of classroom management and student needs"],
+  misconceptions:["Teaching is easy — Effective teaching is one of the most cognitively demanding jobs, requiring constant adaptation.","Low pay forever — Experienced teachers earn $85,000–$105,000+ in Ontario with pension and full benefits.","It's just summers off — Most teachers work well beyond contracted hours on planning, marking, and professional development."],
+  relatedMajors:["Psychology","Social Work","Kinesiology (PE teaching)","Arts & Humanities","Social Sciences"],
+  gradPathNote:"MEd for administration, curriculum, or specialization. PhD for research/academia. Educational Psychology PhD for clinical roles.",
+  requiresGrad:false,
+},
+
+"Law & Legal Studies": {
+  icon:"⚖️", headline:"Understand justice, argue effectively, and navigate the legal system.",
+  description:"Law in Canada operates differently than most assume: the Juris Doctor (JD) is a professional graduate degree, not an undergraduate program. You cannot directly enter law school from high school — you complete a bachelor's degree first (any subject), then apply to law school. Undergraduate programs in Legal Studies, Criminology, and Justice Studies are valuable pre-law foundations and lead to careers in government, policy, policing, courts, and advocacy without requiring a law degree. The JD takes 3 years post-undergrad.",
+  mathIntensity:1, creativity:3, difficulty:4, teamwork:3, workLifeBalance:3,
+  salaryEntry:65000, salaryMid:110000, salarySenior:200000,
+  jobOutlook:"Good", jobOutlookNote:"Lawyers are always in demand, though the legal job market varies by specialization. Corporate/commercial law pays very well. Criminal defense and public interest law pay modestly. Criminology and justice studies graduates enter policing, corrections, courts, and policy.",
+  jobs:["Lawyer (JD required)","Legal Assistant / Law Clerk","Paralegal","Policy Analyst","Police Officer","Correctional Officer","Court Reporter","Mediator / Arbitrator","Victim Services Worker","Border Services Officer","Legal Aid Worker","Law Professor (LLM/JD)"],
+  workSettings:["Law Firm","Government (DOJ, Attorney General)","Corporate Legal Department","Court System","Police Services","Corrections","Nonprofit / Legal Aid"],
+  degreeTypes:["BA (Legal Studies / Criminology / Justice Studies)","JD (3 years post-undergrad — required for practice)","LLM (graduate — for specialization)","LLD / PhD in Law"],
+  yearsToComplete:"BA: 4 years. JD: 3 years after any undergraduate degree. LLM: 1 year after JD. Total for practicing lawyer: minimum 7 years.",
+  topSchoolsCA:["Osgoode Hall (York — top national law school)","Toronto (Faculty of Law)","McGill (dual-degree civil + common law)","UBC (Allard School)","Queen's","Ottawa (bilingual common/civil law)","Dalhousie (Schulich School of Law)"],
+  skills:["Legal Research (Westlaw, Quicklaw)","Contract Drafting","Oral Argument & Advocacy","Case Analysis","Critical Reading","Professional Writing","Ethics & Professional Responsibility","Negotiation"],
+  idealFor:["Strong writers and debaters","Interested in justice, rights, policy, and society","Detail-oriented and persistent researchers","Want to serve in a professional advocacy role"],
+  notIdealFor:["Dislikes reading dense text or writing lengthy documents","Wants a technical / creative career","Seeks fast entry to workforce without graduate school"],
+  pros:["High earning potential (corporate, Bay Street law)","Enormous range of specializations","Law training is extremely transferable to policy, politics, business","Respected professional credential"],
+  cons:["7+ years of education before practicing","Law school is very expensive ($25,000–$30,000/year)","Long, unpredictable hours at many firms (especially Bay Street)","Law school admission is highly competitive (LSAT + GPA)"],
+  misconceptions:["Any undergrad is fine for law school — Partially true, but LSAT score and GPA are what matter most.","Criminology = becoming a police officer — Criminology graduates work in research, policy, courts, corrections, and social services, not just policing.","JD is a bachelor's degree — No. In Canada the JD is a professional graduate degree."],
+  relatedMajors:["Political Science","Philosophy","History","Arts & Humanities","Social Sciences"],
+  gradPathNote:"JD is required for legal practice. LLM for specialization. Note: the NCA process allows foreign law grads to practice in Canada.",
+  requiresGrad:true,
+},
+
+"Trades & Applied Technology": {
+  icon:"🔧", headline:"Master hands-on skills — build, repair, and create physical systems.",
+  description:"Trades and applied technology programs — including electrical, plumbing, welding, carpentry, HVAC, automotive, and heavy equipment operation — are offered primarily through colleges and technical institutes rather than universities. They're among the fastest paths to high-paying, secure employment in Canada. The skilled trades face a severe and growing labour shortage. Electricians, plumbers, and industrial mechanics regularly earn $80,000–$120,000+ and often become business owners. The apprenticeship model (work + study) means students earn while they learn.",
+  mathIntensity:3, creativity:3, difficulty:3, teamwork:3, workLifeBalance:4,
+  salaryEntry:55000, salaryMid:82000, salarySenior:115000,
+  jobOutlook:"Excellent", jobOutlookNote:"Trades face the most severe labour shortage of any sector in Canada. Infrastructure spending, housing construction, and industrial growth are driving demand for decades. A Red Seal certification allows tradespeople to work anywhere in Canada.",
+  jobs:["Electrician","Plumber","Carpenter","Welder","HVAC Technician","Automotive Technician","Heavy Equipment Operator","Industrial Mechanic / Millwright","Ironworker","Instrumentation Technologist","Sheet Metal Worker","Construction Manager"],
+  workSettings:["Construction Sites","Residential / Commercial Renovation","Manufacturing Plants","Utilities (power, water, gas)","Auto Dealership","Mining / Oil & Gas Sites","Schools / Institutions"],
+  degreeTypes:["Certificate (Trade program, 1–2 years)","Diploma","Apprenticeship (4 years, earn while learning)","Red Seal (Interprovincial Standard)","BTech (some trades programs at universities like BCIT)"],
+  yearsToComplete:"1–2 years for trade certificate. 4-year apprenticeship (earn ~$25-45/hr while completing). Journeyperson certification is the career credential.",
+  topSchoolsCA:["BCIT (British Columbia Institute of Technology)","NAIT (Northern Alberta Institute of Technology)","SAIT (Southern Alberta Institute of Technology)","Humber College","George Brown College","Red River College (Winnipeg)","NSCC (Nova Scotia Community College)"],
+  skills:["Electrical Theory & Systems","Blueprint Reading","Welding & Fabrication","HVAC Systems","Plumbing Codes","Safety (WHMIS, fall protection)","Measurement & Layout","Troubleshooting & Diagnostics"],
+  idealFor:["Enjoy working with hands and tools","Want a direct, fast path to employment","Comfortable in physical, outdoor, or industrial environments","Want to potentially own a business"],
+  notIdealFor:["Prefers primarily desk/computer work","Wants a primarily academic or theoretical career path","Uncomfortable with physical labour"],
+  pros:["Among the best labour market returns per year of education","Red Seal = work anywhere in Canada","Enormous respect and shortage means negotiating power","Strong path to self-employment and business ownership"],
+  cons:["Physical demands increase with age","Some trades (outdoor construction) are weather-dependent","Journeyperson exams require significant study"],
+  misconceptions:["Trades are a backup plan — Top electricians and plumbers earn more than most university graduates.","Trades don't require skill or intelligence — Red Seal exams are difficult. Electricians study physics, code, and systems.","Trades don't allow entrepreneurship — Most trades businesses are small businesses owned by journeypersons."],
+  relatedMajors:["Engineering (management path)","Architecture & Design (construction management)","Environmental Science (environmental compliance in industry)"],
+  gradPathNote:"Engineering Technology diploma (BCIT, NAIT) for advanced/supervisory roles. Business for trades business ownership.",
+  requiresGrad:false,
+},
+
+"Agriculture & Environment": {
+  icon:"🌱", headline:"Feed the world, protect ecosystems, and navigate the climate transition.",
+  description:"Agriculture, environmental science, forestry, food science, and resource management programs address two of the defining challenges of our era: sustainable food production and environmental conservation. This field blends fieldwork with lab science, policy, and technology. Climate change has dramatically increased the urgency and job prospects for graduates in this area. Precision agriculture, carbon accounting, environmental consulting, and food systems design are all rapidly growing.",
+  mathIntensity:3, creativity:2, difficulty:3, teamwork:3, workLifeBalance:4,
+  salaryEntry:46000, salaryMid:68000, salarySenior:95000,
+  jobOutlook:"Good", jobOutlookNote:"Climate change, food security, and resource management create growing demand for environmental professionals. Environmental assessment and consulting are growth areas. Precision agriculture and agri-tech are creating tech-adjacent jobs in this field.",
+  jobs:["Environmental Consultant","Agronomist","Forester","Environmental Assessment Officer","Food Scientist","Soil Scientist","Conservation Officer","Water Resource Engineer","Agricultural Manager","Crop Research Scientist","Ecologist","Sustainability Analyst"],
+  workSettings:["Field (farms, forests, parks)","Environmental Consulting Firm","Government (Environment Canada, parks)","Agri-food Companies","Research Stations","Indigenous Land Management Offices","International Development Organizations"],
+  degreeTypes:["BSc (Agriculture)","BSc (Environmental Science)","BScF (Forestry)","BSc (Food Science)","BSc (Natural Resource Management)","MSc","PhD","P.Ag (Professional Agrologist — certification)"],
+  yearsToComplete:"4 years undergrad. Professional designations (P.Ag, P.For) require licensure exams post-degree.",
+  topSchoolsCA:["UBC (Forestry — world #1; Land and Food Systems)","Guelph (Agricultural Science — top in Canada)","Alberta (Agricultural, Food & Nutritional Science)","Dalhousie (Environmental Science, Agriculture)","Saskatchewan (Agriculture — Prairie focus)","McGill (Plant Science, Food Science, Environment)","Lakehead (Environmental Studies, Forestry)"],
+  skills:["Soil Science","GIS & Remote Sensing","Environmental Impact Assessment","Crop Management","Laboratory Analysis (soil, water, food)","Statistical Analysis","Policy & Environmental Law","Indigenous Land Relations"],
+  idealFor:["Passionate about nature, food systems, or the environment","Want outdoor fieldwork combined with science","Interested in sustainability, conservation, or climate solutions","Value a career with tangible environmental impact"],
+  notIdealFor:["Prefers urban office environment exclusively","Dislikes hands-on lab or fieldwork","Looking for very high starting salary without graduate education"],
+  pros:["Field work and outdoor careers available","Growing relevance due to climate change","Strong at universities in Saskatchewan, Manitoba, Alberta, and BC","Pathway to federal government careers (Environment Canada, Parks Canada)"],
+  cons:["Lower average salary than engineering or CS","Many entry-level roles are rural or remote","Graduate school often needed for research or senior roles","Some subfields (pure ecology) are highly competitive for jobs"],
+  misconceptions:["Agriculture = farming — Modern agriculture includes genomics, drones, precision tech, food safety, and sustainability.","Environment degrees don't lead to jobs — Environmental consulting is a large and growing industry.","You must work rurally — Many environmental roles are in cities (consulting, policy, regulatory)."],
+  relatedMajors:["Science (Biology, Chemistry)","Engineering (Environmental Engineering)","Social Sciences (Environmental Policy)","Kinesiology (Outdoor Education)"],
+  gradPathNote:"MSc/PhD for research. P.Ag or P.For for professional practice. MPP for environmental policy.",
+  requiresGrad:false,
+},
+
+"Architecture & Design": {
+  icon:"🏛️", headline:"Shape the built environment — where art, engineering, and function meet.",
+  description:"Architecture programs are among the longest and most intense undergraduate programs in Canada — typically 5 years for a professional Bachelor of Architecture. Students develop skills in design, structural principles, digital modelling, building systems, and architectural history. Graphic design, industrial design, and interior design are shorter programs (3–4 years) with strong applied career paths. Architecture licensure (Architect, MRAIC) requires professional experience and exams after the degree.",
+  mathIntensity:3, creativity:5, difficulty:4, teamwork:3, workLifeBalance:3,
+  salaryEntry:50000, salaryMid:75000, salarySenior:110000,
+  jobOutlook:"Good", jobOutlookNote:"Architecture firms are rebounding after post-2008 contraction. Sustainable design, urban intensification, and Indigenous architecture are growth areas. Graphic and UX/UI design are in high demand in tech.",
+  jobs:["Architect","Interior Designer","Graphic Designer","UX/UI Designer","Urban Planner","Landscape Architect","Industrial Designer","Visual Designer","Set Designer","CAD Technician","Sustainability Consultant (building systems)","Product Designer"],
+  workSettings:["Architecture Firm","Design Studio","Construction / Development Company","Tech Company (UX/UI)","Film & Media (set design)","Government (urban planning)","Academic (teaching/research)"],
+  degreeTypes:["BArch (5 years — professional degree)","BEnvD (pre-professional, 4 years)","BDes (Graphic/Industrial Design)","MArch (after pre-professional or non-arch undergrad)","Landscape Architecture (BLA/MLA)"],
+  yearsToComplete:"Architecture: 5 years professional BArch or 4 years pre-professional + 2 years MArch. Design: 4 years. Licensed architect requires years of intern architect experience + exams.",
+  topSchoolsCA:["Toronto (Daniels Faculty — top nationally)","UBC (Architecture)","McGill (Architecture)","Carleton (Architecture — strong Ottawa connections)","Dalhousie (Architecture)","Ryerson/TMU (Architectural Science)","Waterloo (Architecture — unique design-build co-op model)"],
+  skills:["AutoCAD / Revit / Rhino","3D Modelling & Rendering","Structural Systems","Building Codes","Design Theory","Urban History","Sustainable Design (LEED)","Sketching & Physical Models","Graphic Design (Adobe Creative Suite)"],
+  idealFor:["Highly creative with strong spatial/visual thinking","Enjoy both art and technical problem-solving","Interested in cities, buildings, and the built environment","Patient with long studios and iterative critique"],
+  notIdealFor:["Wants a fast, high-salary path","Uncomfortable with public critique of your work","Prefers quantitative over visual/spatial thinking"],
+  pros:["Highly creative and fulfilling work","Architecture is both art and science","Wide range of career applications (design, tech, construction, film)","Sustainable architecture is a rapidly growing field"],
+  cons:["One of the longest undergrad programs (5 years for BArch)","Hours are extreme (studio culture — all-nighters are common)","Licensure requires years post-degree","Starting salaries lower than workload suggests"],
+  misconceptions:["Architects make lots of money quickly — Architecture ranks among the lowest-paid professions per year of education. Senior architects earn well; junior architects work long hours for modest pay.","It's only drawing — Modern architecture involves parametric modelling, building systems, structural engineering, and environmental analysis.","Interior design = decorating — Interior design involves code compliance, space planning, lighting, and building systems."],
+  relatedMajors:["Fine Arts","Engineering","Urban Planning","Computer Science (digital design/UX)"],
+  gradPathNote:"MArch for non-arch undergrads. MLA (Landscape Architecture). MPlan for urban planning. Many senior architects have both BArch and specialized graduate credentials.",
+  requiresGrad:false,
+},
+
+"Social Work & Community": {
+  icon:"🤝", headline:"Advocate for the vulnerable and build stronger communities.",
+  description:"Social work programs prepare graduates to support individuals and communities experiencing poverty, mental illness, addiction, family crisis, housing instability, and systemic discrimination. The Bachelor of Social Work (BSW) enables entry-level positions; the Master of Social Work (MSW) is required for clinical/registered practice in most provinces. Social workers hold a unique combination of compassion, advocacy skills, and evidence-based practice. The emotional toll is real — self-care and supervision are built into the profession.",
+  mathIntensity:1, creativity:3, difficulty:3, teamwork:4, workLifeBalance:2,
+  salaryEntry:43000, salaryMid:62000, salarySenior:82000,
+  jobOutlook:"Good", jobOutlookNote:"Social workers are in consistent demand across healthcare, child welfare, corrections, and community agencies. RSW (Registered Social Worker) designation is required for clinical practice in most provinces.",
+  jobs:["Child Protection Worker","Clinical Social Worker (MSW)","Community Program Coordinator","Hospital Social Worker","Addictions Counsellor","Mental Health Case Manager","Youth Worker","Indigenous Family Support Worker","Settlement Worker (newcomers)","Correctional Services Social Worker"],
+  workSettings:["Children's Aid Society / Child Welfare","Hospital","Community Mental Health Agency","Government (provincial)","School Social Work","Corrections / Probation","Refugee / Newcomer Services","Nonprofit / NGO"],
+  degreeTypes:["BSW (Bachelor of Social Work)","MSW (Master of Social Work — required for clinical RSW)","RSW (Registered Social Worker — provincial license)","PhD (for research/academia)"],
+  yearsToComplete:"BSW: 4 years. MSW: 2 years after BSW (or 2-3 years after a different bachelor's). RSW registration requires completing supervised hours post-degree.",
+  topSchoolsCA:["Toronto (Factor-Inwentash Faculty of Social Work — largest in Canada)","UBC (School of Social Work)","McGill (School of Social Work)","McMaster (Social Work)","Carleton (Social Work)","Manitoba (Social Work)","Dalhousie (Social Work)"],
+  skills:["Motivational Interviewing","Case Management","Crisis Intervention","Cultural Competency / Anti-Oppression Practice","Report Writing","Community Organizing","Group Facilitation","Trauma-Informed Care","Child Protection Protocols"],
+  idealFor:["Deep commitment to social justice","Comfortable working with people in crisis","Resilient and able to maintain boundaries","Want to make tangible community-level change"],
+  notIdealFor:["Emotionally depleted by high-stress situations","Wants high salary as primary motivation","Uncomfortable with bureaucratic systems and documentation"],
+  pros:["Profoundly meaningful work","Strong job security (persistent shortage of social workers)","Wide range of settings and populations to work with","Path to clinical practice with MSW"],
+  cons:["Among the lowest-paid professional degrees relative to education required","Emotional burnout is a serious risk","Heavy caseloads common in government positions","MSW increasingly required for clinical/RSW practice"],
+  misconceptions:["Social workers just take children away — The primary goal of social work is family preservation and community support, not removal.","It's just caring about people — Social work is a regulated profession with complex evidence-based practice methods.","Low skill required — Social workers navigate complex legal frameworks, multi-system coordination, and clinical assessment."],
+  relatedMajors:["Psychology","Sociology","Health Sciences","Education","Indigenous Studies"],
+  gradPathNote:"MSW required for clinical registered practice (RSW) in most provinces. PhD for research/academia.",
+  requiresGrad:false,
+},
+
+"Kinesiology & Sport": {
+  icon:"🏃", headline:"Study human movement, performance, and physical health.",
+  description:"Kinesiology (also called Human Kinetics or Exercise Science) is the scientific study of human movement — combining biomechanics, physiology, anatomy, psychology, and sport science. It's a common pre-professional pathway for physiotherapy, occupational therapy, athletic therapy, medicine, and chiropractic. It also leads directly to coaching, fitness management, teaching PE, and sport administration. Students combining kinesiology with a strong GPA have strong pathways to health professions schools.",
+  mathIntensity:2, creativity:2, difficulty:3, teamwork:3, workLifeBalance:4,
+  salaryEntry:45000, salaryMid:65000, salarySenior:92000,
+  jobOutlook:"Good", jobOutlookNote:"Physiotherapy and occupational therapy are in very high demand in Canada. Athletic therapy, strength and conditioning, and sports medicine are growing. Career outcomes depend heavily on graduate education.",
+  jobs:["Physiotherapist (MPT required)","Occupational Therapist (MOT required)","Athletic Therapist (CAT — certification required)","Strength & Conditioning Coach","Kinesiologist (RKin)","Personal Trainer / Fitness Director","Chiropractor (after DC degree)","Sports Administrator","Physical Education Teacher","Rehabilitation Assistant","Human Performance Researcher"],
+  workSettings:["Hospital (rehabilitation)","Private Physiotherapy Clinic","Fitness Centre / Gym","Sports Team (professional or amateur)","University Athletic Department","Schools (PE teaching — BEd required)","Sports Medicine Clinic","Research Lab"],
+  degreeTypes:["BSc (Kinesiology/Human Kinetics)","BKin","BHK","MPT (Master of Physiotherapy — after BSc)","MOT (Master of OT — after BSc)","DC (Doctor of Chiropractic — separate program)","BEd (for PE teaching)"],
+  yearsToComplete:"4 years BSc. MPT/MOT: 2–2.5 years graduate after BSc. For PT/OT, total is 6–7 years.",
+  topSchoolsCA:["UBC (Human Kinetics — gateway to PT/OT programs)","Toronto (Kinesiology — strong research)","Western (Kinesiology)","Queen's (Kinesiology)","Calgary (Kinesiology)","Alberta (Kinesiology)","McMaster (Kinesiology — gateway to McMaster Health)"],
+  skills:["Anatomy & Physiology","Biomechanics & Movement Analysis","Exercise Programming","Fitness Assessment","Rehabilitation Protocols","Sports Nutrition","Research Methods","First Aid / CPR / Emergency Response"],
+  idealFor:["Passionate about sport, fitness, or human health","Interested in physiotherapy or athletic therapy careers","Want to work with athletes or active populations","Physically active and interested in movement science"],
+  notIdealFor:["Dislikes biology or anatomy","Wants a primarily computer/desk-based career","Not interested in graduate school for clinical roles"],
+  pros:["Multiple professional graduate school pathways (PT, OT, Med)","Meaningful healthcare work","Growing demand for physiotherapy","Applied, practical program with fieldwork"],
+  cons:["Most clinical paths require graduate school","PT and OT programs are very competitive (GPA 3.7+ typical)","Lower salary than engineering without graduate education","Non-clinical kinesiology roles pay modestly"],
+  misconceptions:["Kinesiology = gym teacher — Most kin grads pursue clinical healthcare, research, or coaching, not teaching.","Just for athletes — Kinesiology applies to elderly rehabilitation, workplace ergonomics, and chronic disease management.","Easy science degree — Physiology, biochemistry, and biomechanics courses are genuinely challenging."],
+  relatedMajors:["Health Sciences","Biology","Psychology (sport psychology)","Education (PE)","Nursing"],
+  gradPathNote:"MPT or MOT for PT/OT. BEd for PE teaching. CAT(C) for athletic therapy. DC for chiropractic.",
+  requiresGrad:false,
+},
+
+"Media & Communication": {
+  icon:"📡", headline:"Tell stories, shape narratives, and communicate across platforms.",
+  description:"Media and Communication programs include journalism, broadcasting, public relations, digital media, film, and advertising. The field has been transformed by digital media, social platforms, and the collapse of traditional media business models. Journalism programs that emphasize data literacy, video production, and digital storytelling provide the strongest outcomes. PR and communications remain strong career paths. Film and media arts programs at specialized schools (OCAD U, Emily Carr) offer hands-on creative training.",
+  mathIntensity:1, creativity:5, difficulty:2, teamwork:3, workLifeBalance:3,
+  salaryEntry:42000, salaryMid:65000, salarySenior:95000,
+  jobOutlook:"Moderate", jobOutlookNote:"Traditional journalism faces ongoing disruption. Digital media, UX writing, content marketing, and corporate communications are growth areas. Strong portfolio + technical skills (video, data, social) are essential.",
+  jobs:["Journalist / Reporter","Broadcast Producer","Public Relations Specialist","Communications Officer","Social Media Manager","Content Creator","UX Writer","Copywriter","Documentary Filmmaker","Video Editor","Brand Strategist","Communications Director"],
+  workSettings:["News Organization","Broadcasting Network","PR / Communications Agency","Corporate Communications Department","Government / Political Office","Nonprofit","Tech Company (UX writing, content)","Freelance"],
+  degreeTypes:["BA (Journalism, Communication, Media Studies)","BJ (Bachelor of Journalism)","BCom (Communications)","BFA (Film, Media Arts)","MA (Journalism, Strategic Communications)"],
+  yearsToComplete:"4 years for most programs. Some journalism schools have 2-year post-diploma programs.",
+  topSchoolsCA:["Ryerson/TMU (Journalism — #1 in Canada, strong broadcast)","Carleton (Journalism — Ottawa/political connections)","UBC (Journalism)","Concordia (Communications, Film Studies)","OCAD U (Media Arts)","King's College Halifax (Journalism — investigative focus)","Humber College (Broadcasting)"],
+  skills:["Reporting & Interviewing","Video Production & Editing","Digital Photography","Data Journalism (Python, Excel, Datawrapper)","Social Media Strategy","Copywriting & Editing","Broadcast Presentation","AP Style / Canadian Press Style"],
+  idealFor:["Strong writers with curiosity about everything","Comfortable on camera or microphone","Want to work in digital, media, or communications","Passionate about storytelling and public discourse"],
+  notIdealFor:["Dislikes writing or public communication","Wants high salary from day one","Prefers structured, technical work"],
+  pros:["Extremely varied and creative work","Strong transferable communication skills","Many specializations (data journalism, broadcast, PR, digital)","Growing demand for digital content creators"],
+  cons:["Traditional media sector is contracting","Starting salaries are among the lowest for degree holders","Freelance is common — income instability early in career","Portfolio matters more than GPA"],
+  misconceptions:["Journalism is dying — Legacy media is shrinking, but digital journalism, content, UX writing, and data storytelling are growing.","Only for extroverts — Data journalists, editors, and documentary researchers work in less public-facing roles.","Any degree will do for PR — PR firms increasingly require specialized communications degrees with campaigns and strategy training."],
+  relatedMajors:["Arts & Humanities (English)","Political Science (political communications)","Business (marketing track)","Computer Science (digital media)","Film & Fine Arts"],
+  gradPathNote:"MA in Journalism or Strategic Communications for senior editorial/communications roles. Some data journalism roles value CS or stats skills.",
+  requiresGrad:false,
+},
+
+};
+
+// ══════════════════════════════════════════════════════════════
+//  UNIVERSITY SUPPLEMENTAL DATA
+// ══════════════════════════════════════════════════════════════
+const UNI_SUPPLEMENT = {
+uoft:{ founded:1827, studentPop:"97,000+", campuses:["St. George (Downtown Toronto — main)","Scarborough (UTSC)","Mississauga (UTM)"], mensSports:["Football (Varsity Blues)","Basketball","Hockey","Soccer","Swimming & Diving","Track & Field","Cross Country","Rugby","Tennis","Volleyball","Badminton","Fencing","Rowing","Wrestling","Squash","Golf"], womensSports:["Basketball","Hockey","Soccer","Volleyball","Swimming & Diving","Track & Field","Cross Country","Rugby","Tennis","Rowing","Field Hockey","Fencing","Squash","Golf","Lacrosse"], famousAlumni:["Lester B. Pearson (PM, Nobel Peace Prize)","Frederick Banting (co-discovered insulin)","Marshall McLuhan (media theorist)","Margaret Atwood (novelist, The Handmaid's Tale)","Roberta Bondar (first Canadian woman in space)","Adrienne Clarkson (Governor General)","Conrad Black (publisher)","Mike Harris (Premier of Ontario)"], housingNote:"First-year residence guaranteed. Multiple colleges with unique cultures (Trinity, Victoria, University, etc.). On-campus housing lottery for upper years." },
+ubc:{ founded:1908, studentPop:"68,000+", campuses:["Vancouver (Point Grey — main, 400ha)","Okanagan (Kelowna)"], mensSports:["Football (Thunderbirds)","Basketball","Hockey","Soccer","Volleyball","Swimming","Track & Field","Cross Country","Golf","Rowing","Rugby","Wrestling","Badminton"], womensSports:["Basketball","Hockey","Soccer","Volleyball","Swimming","Track & Field","Cross Country","Golf","Rowing","Rugby","Field Hockey","Softball"], famousAlumni:["Kim Campbell (1st female PM)","Michael Smith (Nobel Chemistry 1993)","Elin Hilderbrand (author)","Lara St. John (violinist)","Steve Nash (NBA MVP — attended UVic, played at Santa Clara)","Robert Mundell (Nobel Economics)"], housingNote:"First-year residence guaranteed if applied by January 15. Over 20 residences on the Point Grey campus. Extensive student housing on-campus." },
+mcgill:{ founded:1821, studentPop:"40,000+", campuses:["Downtown Montreal (main — Mount Royal backdrop)","Macdonald Campus (Ste-Anne-de-Bellevue, agricultural/environment)"], mensSports:["Football (Redbirds)","Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Rowing","Rugby","Tennis","Fencing","Wrestling","Volleyball","Squash"], womensSports:["Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Rowing","Rugby","Tennis","Fencing","Wrestling","Volleyball","Squash","Field Hockey"], famousAlumni:["William Shatner (Captain Kirk, actor)","Stephen Leacock (humorist, author)","John Baird (politician)","Justin Trudeau (BA Literature 1994)","John McCrae (wrote 'In Flanders Fields')","Leonard Cohen (briefly attended)"], housingNote:"First-year housing available (not guaranteed — apply early). McGill Residences include McConnell, Douglas Hall, Gardner Hall. Strong off-campus apartment culture in Montreal." },
+waterloo:{ founded:1957, studentPop:"42,000+", campuses:["Waterloo (main)","Cambridge (Stratford campus for digital media)"], mensSports:["Football (Warriors)","Basketball","Hockey","Soccer","Volleyball","Swimming","Track & Field","Cross Country","Badminton","Curling","Tennis","Wrestling","Golf","Rowing"], womensSports:["Basketball","Hockey","Soccer","Volleyball","Swimming","Track & Field","Cross Country","Badminton","Curling","Tennis","Wrestling","Field Hockey","Golf","Rowing"], famousAlumni:["Mike Lazaridis (BlackBerry co-founder)","Jim Balsillie (BlackBerry co-founder)","Geoffrey Hinton (AI pioneer — attended and taught; Nobel Physics 2024)","Stewart Butterfield (Flickr, Slack founder)","Dave Caputo (Telos Systems)"], housingNote:"First-year residence guaranteed. Co-op students often rent off-campus during work terms. Strong off-campus rental market in Waterloo region." },
+mcmaster:{ founded:1887, studentPop:"37,000+", campuses:["Hamilton (main — research-intensive)"], mensSports:["Football (Marauders)","Basketball","Soccer","Hockey","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Curling","Rugby","Tennis"], womensSports:["Basketball","Soccer","Hockey","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Curling","Rugby","Field Hockey","Tennis"], famousAlumni:["Roberta Bondar (astronaut — studied at McMaster)","Conrad Black (publisher/writer)","Anna Porter (publisher)","William Sherwood Fox (literary scholar)"], housingNote:"First-year residence guaranteed for students entering directly from high school. McMaster offers apartment-style and traditional residence options." },
+queens:{ founded:1841, studentPop:"27,000+", campuses:["Kingston (main)","Bader International Study Centre (Herstmonceux Castle, UK)"], mensSports:["Football (Gaels)","Basketball","Soccer","Hockey","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Rugby","Golf","Tennis"], womensSports:["Basketball","Soccer","Hockey","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Rugby","Field Hockey","Golf","Tennis"], famousAlumni:["Isabel Bassett (politician)","Gordon Gould (laser inventor — studied here)","Peter Lougheed (Premier of Alberta)","David Dodge (Bank of Canada Governor)","Donald Gordon (CN Rail president)"], housingNote:"First-year residence guaranteed. Strong res culture — many students describe it as a defining part of the Queen's experience. Upper-year students live off-campus in the surrounding student ghetto." },
+western:{ founded:1878, studentPop:"34,000+", campuses:["London (main — Middlesex College, Ivey, etc.)","Affiliated: King's, Huron, Brescia Colleges (all in London)"], mensSports:["Football (Mustangs)","Basketball","Soccer","Hockey","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Fencing","Golf","Tennis","Wrestling","Rugby","Curling"], womensSports:["Basketball","Soccer","Hockey","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Fencing","Field Hockey","Golf","Tennis","Wrestling","Rugby","Curling"], famousAlumni:["Justin Trudeau (studied at McGill, not Western — often confused)","Jim Prentice (Alberta Premier)","Guy Lombardo (musician, childhood in London, ON)","Arthur Carty (NRC president)"], housingNote:"First-year students primarily housed in the Village at Western or off-campus in the Richmond Street area. Not all first-years receive residence. Apply early." },
+alberta:{ founded:1908, studentPop:"42,000+", campuses:["Edmonton (North Campus — main)","Augustana Campus (Camrose)","Campus Saint-Jean (French-language campus, Edmonton)"], mensSports:["Football (Golden Bears)","Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Wrestling","Golf","Curling"], womensSports:["Basketball (Pandas)","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Wrestling","Golf","Curling","Field Hockey"], famousAlumni:["Peter Lougheed (Alberta Premier — actually Queen's Law then returned home)","Grant MacEwan (politician, educator)","Wendy McDonald (entrepreneur)","Henry Marshall Tory (UofA founder)"], housingNote:"First-year residence available, not guaranteed. Apply early. Strong off-campus student community in HUB Mall and surrounding area." },
+calgary:{ founded:1966, studentPop:"35,000+", campuses:["Calgary (main, northwest)"], mensSports:["Football (Dinos)","Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Wrestling","Curling","Golf"], womensSports:["Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Wrestling","Curling","Field Hockey","Golf"], famousAlumni:["Greg McLean (politician)","Various oil and gas executives","Naheed Nenshi (Mayor of Calgary — Harvard Kennedy, not UCalgary)"], housingNote:"On-campus residences available. Most students commute or live in the northwest Calgary area. Residence not guaranteed." },
+uottawa:{ founded:1848, studentPop:"50,000+", campuses:["Ottawa (main — between Byward Market and Rideau Canal)"], mensSports:["Football (Gee-Gees)","Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Golf","Rugby","Tennis","Badminton"], womensSports:["Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Golf","Rugby","Tennis","Badminton","Field Hockey"], famousAlumni:["Scott Pelley (CBS journalist — actually Texas, not Ottawa)","Various federal politicians and public servants","Jean Charest (PM candidate — Law degree here)"], housingNote:"First-year residence available. Bilingual campus (English/French) with strong campus social life. Ottawa provides federal government internship access." },
+sfu:{ founded:1965, studentPop:"35,000+", campuses:["Burnaby (main — atop Burnaby Mountain)","Surrey City Centre","Vancouver (downtown)"], mensSports:["Soccer (Clan)","Basketball","Cross Country","Track & Field","Golf","Swimming","Wrestling","Wrestling"], womensSports:["Soccer","Basketball","Cross Country","Track & Field","Golf","Swimming","Wrestling"], famousAlumni:["Eckhard Tolle (spiritual author — studied philosophy)","Kim Cattrall (actress — studied here briefly)","Mark Suster (VC)"], housingNote:"Limited on-campus housing. Burnaby Mountain campus is commuter-focused. Surrey and Vancouver campuses attract urban commuter students. Apply very early for residence." },
+dalhousie:{ founded:1818, studentPop:"22,000+", campuses:["Halifax (Studley and Carleton campuses)","Truro (Faculty of Agriculture — as Dal's merger with NSAC)"], mensSports:["Basketball (Tigers)","Hockey","Soccer","Cross Country","Swimming","Track & Field","Volleyball","Rugby"], womensSports:["Basketball","Hockey","Soccer","Cross Country","Swimming","Track & Field","Volleyball","Rugby"], famousAlumni:["Donald Marshall Jr. (wrongful conviction case changed Canadian law)","George Roper (politician)","Various Atlantic Canadian professionals"], housingNote:"First-year housing available in the Gerard Hall and LeMarchant Place residences. Halifax has strong off-campus rental market near universities." },
+york:{ founded:1959, studentPop:"55,000+", campuses:["Keele (Glendon bilingual campus — York, Toronto)","Glendon (bilingual — midtown Toronto)"], mensSports:["Football (Lions)","Basketball","Hockey","Soccer","Volleyball","Swimming","Track & Field","Cross Country","Rugby","Tennis","Rowing"], womensSports:["Basketball","Hockey","Soccer","Volleyball","Swimming","Track & Field","Cross Country","Rugby","Tennis","Rowing","Field Hockey"], famousAlumni:["Kirk Johnson (lawyer)","Various Canadian media figures","Peter Mackay (politician — Dalhousie, not York)"], housingNote:"On-campus residences available at both Keele and Glendon. Most York students commute. Keele subway connection opened 2023." },
+umontreal:{ founded:1878, studentPop:"67,000+", campuses:["Montreal (main — Mount Royal)","Laval campus"], mensSports:["Football (Carabins)","Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Golf"], womensSports:["Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Golf"], famousAlumni:["Various Quebec scientists and politicians","Jean Drapeau (Montreal Mayor — actually briefly enrolled)"], housingNote:"French-language instruction. Limited on-campus housing — most students commute or rent in the Plateau Mont-Royal and Côte-des-Neiges neighbourhoods." },
+ulaval:{ founded:1663, studentPop:"43,000+", campuses:["Québec City (main campus)"], mensSports:["Football (Rouge et Or — multiple U SPORTS championships)","Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Golf","Rugby"], womensSports:["Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Rowing","Golf","Rugby","Field Hockey"], famousAlumni:["Various Quebec politicians and professionals"], housingNote:"On-campus housing available. French-language instruction. Quebéc City offers exceptional quality of life." },
+unb:{ founded:1785, studentPop:"10,000+", campuses:["Fredericton (main)","Saint John (UNBSJ)"], mensSports:["Basketball (Reds)","Hockey","Soccer","Cross Country","Track & Field","Swimming"], womensSports:["Basketball","Hockey","Soccer","Cross Country","Track & Field","Swimming"], famousAlumni:["Elizabeth May (Green Party leader — studied law here)","Various New Brunswick politicians"], housingNote:"First-year residence guaranteed. UNB Fredericton has strong campus community." },
+mun:{ founded:1925, studentPop:"19,000+", campuses:["St. John's (main)","Grenfell Campus (Corner Brook)"], mensSports:["Basketball (Sea-Hawks)","Hockey","Soccer","Cross Country","Track & Field","Swimming","Volleyball"], womensSports:["Basketball","Hockey","Soccer","Cross Country","Track & Field","Swimming","Volleyball"], famousAlumni:["Various Newfoundland professionals and politicians","Rex Murphy (journalist/commentator — attended)"], housingNote:"On-campus residences available. St. John's has a strong and unique student culture." },
+umanitoba:{ founded:1877, studentPop:"31,000+", campuses:["Fort Garry (main)","Bannatyne (health sciences)"], mensSports:["Football (Bisons)","Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Curling"], womensSports:["Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Volleyball","Curling","Field Hockey"], famousAlumni:["Biz Stone (Twitter co-founder attended here briefly — actually he went elsewhere)","Izzy Asper (CanWest founder, Law grad)","Duff Roblin (Manitoba Premier)"], housingNote:"On-campus residences available at both campuses. Fort Garry is a large research campus in suburban Winnipeg." },
+usask:{ founded:1907, studentPop:"26,000+", campuses:["Saskatoon (main — on the South Saskatchewan River)"], mensSports:["Football (Huskies)","Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Wrestling","Curling","Volleyball"], womensSports:["Basketball","Hockey","Soccer","Swimming","Track & Field","Cross Country","Wrestling","Curling","Volleyball","Field Hockey"], famousAlumni:["Joni Mitchell (attended — actually Joni Mitchell attended in Saskatoon then moved on)","Sylvia Fedoruk (physicist, Lieutenant Governor)","John Diefenbaker (PM — received honorary degree; he studied at U of T)"], housingNote:"First-year residence available. Strong campus community on the riverbank." },
+concordia:{ founded:1974, studentPop:"50,000+", campuses:["Sir George Williams (downtown Montreal — SGW campus)","Loyola (Loyola neighbourhood — suburban campus)"], mensSports:["Basketball (Stingers)","Hockey","Soccer","Volleyball","Football","Swimming","Cross Country","Track & Field","Rowing","Golf","Tennis"], womensSports:["Basketball","Hockey","Soccer","Volleyball","Swimming","Cross Country","Track & Field","Rowing","Golf","Tennis"], famousAlumni:["Leonard Cohen (studied at McGill, not Concordia)","Norm Kelly (Toronto politician)","Various Montreal cultural figures"], housingNote:"Limited on-campus housing. Montreal's vibrant student rental market (Mile End, Plateau) is very affordable by Canadian standards." },
+};
+
+
+// ══════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════
+let browseTab = 'majors';
+let activeMajorKey = null; // category key
+let activeMajorName = null; // specific major name
+let activeUniId = null;
+let majorFiltersState = { cat:'', math:'', creativity:'', salary:'', outlook:'' };
+let uniFiltersState = { province:'', size:'', lang:'', coop:'', research:'' };
+let majorSearchQuery = '';
+let uniSearchQuery = '';
+
+// U15 research-intensive universities
+const U15 = new Set(['uoft','ubc','mcgill','alberta','mcmaster','queens','waterloo','western','calgary','uottawa','sfu','umontreal','dalhousie','umanitoba','usask']);
+
+// ══════════════════════════════════════════════════════════════
+//  TAB SWITCHING
+// ══════════════════════════════════════════════════════════════
+function switchBrowseTab(tab) {
+  browseTab = tab;
+  document.getElementById('bt-majors').style.display = tab === 'majors' ? 'flex' : 'none';
+  document.getElementById('bt-unis').style.display = tab === 'unis' ? 'flex' : 'none';
+  document.getElementById('tabBtnMajors').classList.toggle('active', tab === 'majors');
+  document.getElementById('tabBtnUnis').classList.toggle('active', tab === 'unis');
+  document.getElementById('browseSearch').placeholder = tab === 'majors' ? 'Search majors…' : 'Search universities…';
+  if (tab === 'majors') renderMajorList();
+  else renderUniList();
+}
+
+function handleBrowseSearch(val) {
+  if (browseTab === 'majors') { majorSearchQuery = val.toLowerCase(); renderMajorList(); }
+  else { uniSearchQuery = val.toLowerCase(); renderUniList(); }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  STARS HELPER
+// ══════════════════════════════════════════════════════════════
+function stars(n, max=5) {
+  return Array.from({length:max}, (_,i) => `<span style="color:${i<n?'var(--red)':'#ddd'}">★</span>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  MAJOR RENDERING
+// ══════════════════════════════════════════════════════════════
+function getMajorCategories() {
+  return typeof MAJORS !== 'undefined' ? Object.keys(MAJORS) : Object.keys(MAJOR_DATA);
+}
+
+function applyMajorFilters() {
+  const cat = document.getElementById('mfCat').value;
+  const math = document.getElementById('mfMath').value;
+  const creat = document.getElementById('mfCreativity').value;
+  const sal = document.getElementById('mfSalary').value;
+  const out = document.getElementById('mfOutlook').value;
+  majorFiltersState = { cat, math, creativity:creat, salary:sal, outlook:out };
+  const hasFilter = cat || math || creat || sal || out;
+  document.getElementById('mfResetBtn').style.display = hasFilter ? '' : 'none';
+  renderMajorList();
+}
+
+function resetMajorFilters() {
+  ['mfCat','mfMath','mfCreativity','mfSalary','mfOutlook'].forEach(id => document.getElementById(id).value = '');
+  majorFiltersState = { cat:'', math:'', creativity:'', salary:'', outlook:'' };
+  document.getElementById('mfResetBtn').style.display = 'none';
+  renderMajorList();
+}
+
+function categoryMatchesFilters(cat, data) {
+  if (!data) return true;
+  const f = majorFiltersState;
+  if (f.cat && cat !== f.cat) return false;
+  if (f.math) {
+    const lvl = parseInt(f.math);
+    if (f.math === '1' && data.mathIntensity > 2) return false;
+    if (f.math === '3' && data.mathIntensity !== 3) return false;
+    if (f.math === '4' && data.mathIntensity < 4) return false;
+  }
+  if (f.creativity) {
+    if (f.creativity === 'low' && data.creativity > 2) return false;
+    if (f.creativity === 'medium' && data.creativity !== 3) return false;
+    if (f.creativity === 'high' && data.creativity < 4) return false;
+  }
+  if (f.salary && data.salaryMid < parseInt(f.salary) * 1000) return false;
+  if (f.outlook && data.jobOutlook !== f.outlook) return false;
+  return true;
+}
+
+function renderMajorList() {
+  const panel = document.getElementById('majorListPanel');
+  const allCats = getMajorCategories();
+  const q = majorSearchQuery;
+  let html = '';
+  let totalShown = 0;
+
+  allCats.forEach(cat => {
+    const data = MAJOR_DATA[cat];
+    if (!categoryMatchesFilters(cat, data)) return;
+    const majors = (typeof MAJORS !== 'undefined' && MAJORS[cat]) ? MAJORS[cat] : [];
+    const filteredMajors = q ? majors.filter(m => m.toLowerCase().includes(q) || cat.toLowerCase().includes(q)) : majors;
+    const catMatch = !q || cat.toLowerCase().includes(q);
+    if (q && !catMatch && filteredMajors.length === 0) return;
+
+    totalShown += filteredMajors.length || 1;
+    const isActive = activeMajorKey === cat;
+    const isOpen = isActive || (q && filteredMajors.length > 0) || (q && catMatch);
+    const icon = data ? data.icon : '📁';
+    html += `<div class="bl-cat-header${isActive && !activeMajorName?' active':''}" onclick="toggleMajorCat('${cat.replace(/'/g,"\\'").replace(/&/g,'&amp;')}')" id="cat-${cat.replace(/[^a-z0-9]/gi,'_')}">
+      <span>${icon}</span>
+      <span style="flex:1;">${cat}</span>
+      <span class="bl-cat-count">${majors.length}</span>
+      <span class="bl-cat-chevron${isOpen?' open':''}">▶</span>
+    </div>
+    <div class="bl-major-list" id="catlist-${cat.replace(/[^a-z0-9]/gi,'_')}" ${isOpen?'':'style="display:none;"'}>`;
+    filteredMajors.forEach(m => {
+      const isActiveMaj = activeMajorName === m;
+      html += `<span class="bl-major-item${isActiveMaj?' active':''}" onclick="selectMajor('${cat.replace(/'/g,"\\'").replace(/&/g,'&amp;')}','${m.replace(/'/g,"\\'")}')">${m}</span>`;
+    });
+    if (!q) {
+      html += `<span class="bl-major-item" style="color:var(--red);font-weight:700;font-style:italic;" onclick="selectMajor('${cat.replace(/'/g,"\\'").replace(/&/g,'&amp;')}','')">📊 View ${cat} overview →</span>`;
+    }
+    html += `</div>`;
+  });
+
+  if (!html) html = `<div class="no-results-msg">No majors match your filters.</div>`;
+  panel.innerHTML = html;
+  document.getElementById('browseResultCount').textContent = totalShown ? `${totalShown} majors` : '';
+}
+
+function toggleMajorCat(cat) {
+  const safeId = cat.replace(/[^a-z0-9]/gi,'_');
+  const list = document.getElementById(`catlist-${safeId}`);
+  const header = document.getElementById(`cat-${safeId}`);
+  const chevron = header.querySelector('.bl-cat-chevron');
+  const isOpen = list.style.display !== 'none';
+  list.style.display = isOpen ? 'none' : '';
+  if (chevron) chevron.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    activeMajorKey = cat;
+    activeMajorName = null;
+    renderMajorDetail(cat, null);
+  }
+}
+
+function selectMajor(cat, majorName) {
+  activeMajorKey = cat;
+  activeMajorName = majorName || null;
+  // Update active states
+  document.querySelectorAll('.bl-major-item.active').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.bl-cat-header.active').forEach(el => el.classList.remove('active'));
+  if (majorName) {
+    const allItems = document.querySelectorAll('.bl-major-item');
+    allItems.forEach(el => { if (el.textContent.trim() === majorName) el.classList.add('active'); });
+  }
+  renderMajorDetail(cat, majorName || null);
+}
+
+function renderMajorDetail(cat, majorName) {
+  const panel = document.getElementById('majorDetailPanel');
+  const data = MAJOR_DATA[cat];
+  if (!data) { panel.innerHTML = `<div class="bd-empty"><div class="bd-empty-icon">📚</div><h3>No detailed data for this category yet.</h3></div>`; return; }
+
+  const displayName = majorName || cat;
+  const isOverview = !majorName;
+
+  const mathStars = stars(data.mathIntensity);
+  const creatStars = stars(data.creativity);
+  const diffStars = stars(data.difficulty);
+  const teamStars = stars(data.teamwork);
+  const wlbStars = stars(data.workLifeBalance);
+
+  const salaryBar = `<div class="salary-bar">
+    <div class="salary-seg entry"><div class="salary-label">Entry</div>${(data.salaryEntry/1000).toFixed(0)}k</div>
+    <div class="salary-seg mid"><div class="salary-label">Mid-Career</div>${(data.salaryMid/1000).toFixed(0)}k</div>
+    <div class="salary-seg senior"><div class="salary-label">Senior</div>${(data.salarySenior/1000).toFixed(0)}k+</div>
+  </div>`;
+
+  const outBadge = {Excellent:'green',Good:'',Moderate:'yellow',Variable:'yellow'}[data.jobOutlook]||'';
+
+  const subMajors = (typeof MAJORS !== 'undefined' && MAJORS[cat]) ? MAJORS[cat] : [];
+  const subMajorsHtml = subMajors.length ? `
+    <div class="bd-section">
+      <div class="bd-section-title">📋 All Majors in ${cat}</div>
+      <div class="bd-programs-grid">${subMajors.map(m=>`<span class="bd-program-tag" onclick="selectMajor('${cat.replace(/'/g,"\\'").replace(/&/g,'&amp;')}','${m.replace(/'/g,"\\'")}')" style="cursor:pointer;" title="Click to select">${m}</span>`).join('')}</div>
+    </div>` : '';
+
+  panel.innerHTML = `
+    <div class="bd-major-hero">
+      <div class="bd-major-icon">${data.icon}</div>
+      ${!isOverview ? `<div class="bd-major-cat">${cat}</div>` : ''}
+      <div class="bd-major-name">${displayName}</div>
+      <div class="bd-major-headline">${data.headline}</div>
+    </div>
+
+    <div class="bd-metrics">
+      <div class="bd-metric"><div class="bd-metric-val">${mathStars}</div><div class="bd-metric-label">Math Intensity</div></div>
+      <div class="bd-metric"><div class="bd-metric-val">${creatStars}</div><div class="bd-metric-label">Creativity</div></div>
+      <div class="bd-metric"><div class="bd-metric-val">${diffStars}</div><div class="bd-metric-label">Difficulty</div></div>
+      <div class="bd-metric"><div class="bd-metric-val">${teamStars}</div><div class="bd-metric-label">Teamwork</div></div>
+      <div class="bd-metric"><div class="bd-metric-val">${wlbStars}</div><div class="bd-metric-label">Work-Life Balance</div></div>
+      <div class="bd-metric"><div class="bd-metric-val" style="font-size:.9rem;color:var(--red);">${data.jobOutlook}</div><div class="bd-metric-label">Job Outlook</div></div>
+    </div>
+
+    <div class="bd-sections">
+      <div class="bd-section">
+        <div class="bd-section-title">💡 About ${isOverview ? cat : majorName}</div>
+        <p class="bd-section-text">${data.description}</p>
+        ${data.jobOutlookNote ? `<p class="bd-section-text" style="margin-top:10px;font-style:italic;color:var(--grey);">${data.jobOutlookNote}</p>` : ''}
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">💰 Salary Ranges (CAD, annual)</div>
+        ${salaryBar}
+        <p style="font-size:.76rem;color:var(--grey);margin-top:6px;">Salaries vary by specialization, province, employer, and experience. ${data.requiresGrad?'<strong>Note: Graduate degree often required for these salary levels.</strong>':''}</p>
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🏢 Typical Job Titles</div>
+        <div class="bd-tags">${data.jobs.map(j=>`<span class="bd-tag">${j}</span>`).join('')}</div>
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🎓 Degrees & Time to Complete</div>
+        <div class="bd-tags" style="margin-bottom:8px;">${data.degreeTypes.map(d=>`<span class="bd-tag red">${d}</span>`).join('')}</div>
+        <p class="bd-section-text">${data.yearsToComplete}</p>
+        ${data.gradPathNote ? `<p class="bd-section-text" style="margin-top:6px;"><strong>Graduate paths:</strong> ${data.gradPathNote}</p>` : ''}
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🏫 Top Canadian Schools</div>
+        <ul class="bd-list">${data.topSchoolsCA.map(s=>`<li>${s}</li>`).join('')}</ul>
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🛠️ Skills You'll Develop</div>
+        <div class="bd-tags">${data.skills.map(s=>`<span class="bd-tag">${s}</span>`).join('')}</div>
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🏢 Work Settings</div>
+        <div class="bd-tags">${data.workSettings.map(s=>`<span class="bd-tag green">${s}</span>`).join('')}</div>
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">✅ Pros & Challenges</div>
+        <div class="bd-pros-cons">
+          <div class="bd-pro">
+            <div class="bd-pc-title">✅ Pros</div>
+            <ul class="bd-pc-list">${data.pros.map(p=>`<li>${p}</li>`).join('')}</ul>
+          </div>
+          <div class="bd-con">
+            <div class="bd-pc-title">⚠️ Challenges</div>
+            <ul class="bd-pc-list">${data.cons.map(c=>`<li>${c}</li>`).join('')}</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">💭 Common Misconceptions</div>
+        <ul class="bd-list">${data.misconceptions.map(m=>`<li style="margin-bottom:6px;">${m}</li>`).join('')}</ul>
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🔗 Related Majors</div>
+        <div class="bd-tags">${data.relatedMajors.map(m=>`<span class="bd-tag" style="cursor:pointer;" onclick="browseRelatedMajor('${m}')">${m}</span>`).join('')}</div>
+      </div>
+
+      ${isOverview ? subMajorsHtml : ''}
+
+      <div style="padding-bottom:32px;"></div>
+    </div>`;
+}
+
+function browseRelatedMajor(name) {
+  // Find which category this major belongs to
+  if (typeof MAJORS !== 'undefined') {
+    for (const [cat, list] of Object.entries(MAJORS)) {
+      if (list.includes(name) || cat === name) {
+        selectMajor(cat, list.includes(name) ? name : null);
+        return;
+      }
+    }
+  }
+  // Fallback: search by MAJOR_DATA key
+  if (MAJOR_DATA[name]) { selectMajor(name, null); return; }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  UNIVERSITY RENDERING
+// ══════════════════════════════════════════════════════════════
+function getFilteredUnis() {
+  if (typeof UNIVERSITIES === 'undefined') return [];
+  const f = uniFiltersState;
+  const q = uniSearchQuery;
+  return UNIVERSITIES.filter(u => {
+    if (q) {
+      const hay = `${u.name} ${u.city} ${u.province} ${(u.programs||[]).join(' ')}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    if (f.province && u.province !== f.province) return false;
+    if (f.size) {
+      const pop = parseInt((u.studentPop||'0').replace(/[^0-9]/g,'')) || (UNI_SUPPLEMENT[u.id]?.studentPop ? parseInt(UNI_SUPPLEMENT[u.id].studentPop.replace(/[^0-9]/g,'')) : 15000);
+      if (f.size === 'small' && pop >= 8000) return false;
+      if (f.size === 'medium' && (pop < 8000 || pop >= 25000)) return false;
+      if (f.size === 'large' && (pop < 25000 || pop >= 50000)) return false;
+      if (f.size === 'xlarge' && pop < 50000) return false;
+    }
+    if (f.lang) {
+      const lang = (u.languageOfInstruction || 'en').toLowerCase();
+      const isFr = lang === 'fr' || lang === 'french' || (u.name && (u.name.toLowerCase().includes('montréal') || u.name.toLowerCase().includes('laval') || u.name.toLowerCase().includes('uqam') || u.name.toLowerCase().includes('moncton') || u.name.toLowerCase().includes('sherbrooke') || u.name.toLowerCase().includes('uqac') || u.name.toLowerCase().includes('uqar') || u.name.toLowerCase().includes('uqtr') || u.name.toLowerCase().includes('uqo') || u.name.toLowerCase().includes('hearst') || u.name.toLowerCase().includes('boniface')));
+      const isBi = lang === 'bi' || lang === 'bilingual' || (u.name && (u.name.toLowerCase().includes('ottawa') || u.name.toLowerCase().includes("laurentian")));
+      if (f.lang === 'en' && (isFr || isBi)) return false;
+      if (f.lang === 'fr' && !isFr) return false;
+      if (f.lang === 'bi' && !isBi) return false;
+    }
+    if (f.coop === 'yes' && !u.coop) return false;
+    if (f.research === 'yes' && !U15.has(u.id)) return false;
+    if (f.research === 'no' && U15.has(u.id)) return false;
+    return true;
+  });
+}
+
+function applyUniFilters() {
+  uniFiltersState.province = document.getElementById('ufProvince').value;
+  uniFiltersState.size = document.getElementById('ufSize').value;
+  uniFiltersState.lang = document.getElementById('ufLang').value;
+  uniFiltersState.coop = document.getElementById('ufCoop').value;
+  uniFiltersState.research = document.getElementById('ufResearch').value;
+  const hasF = Object.values(uniFiltersState).some(v=>v);
+  document.getElementById('ufResetBtn').style.display = hasF ? '' : 'none';
+  renderUniList();
+}
+
+function resetUniFilters() {
+  ['ufProvince','ufSize','ufLang','ufCoop','ufResearch'].forEach(id => document.getElementById(id).value = '');
+  uniFiltersState = {province:'',size:'',lang:'',coop:'',research:''};
+  document.getElementById('ufResetBtn').style.display = 'none';
+  renderUniList();
+}
+
+function renderUniList() {
+  const panel = document.getElementById('uniListPanel');
+  const unis = getFilteredUnis();
+  document.getElementById('browseResultCount').textContent = `${unis.length} universities`;
+  if (!unis.length) { panel.innerHTML = '<div class="no-results-msg">No universities match your filters.</div>'; return; }
+  panel.innerHTML = unis.map((u,i) => {
+    const sup = UNI_SUPPLEMENT[u.id];
+    const isActive = activeUniId === u.id;
+    const rankBadge = u.canadaRank ? `#${u.canadaRank}` : '';
+    return `<div class="bl-uni-item${isActive?' active':''}" onclick="selectUni('${u.id}')">
+      <div class="bl-uni-rank">${rankBadge}</div>
+      <div class="bl-uni-info">
+        <div class="bl-uni-name">${u.shortName || u.name}</div>
+        <div class="bl-uni-loc">${u.city}, ${u.province ? u.province.substring(0,3).toUpperCase() : ''}</div>
+      </div>
+      ${u.coop ? '<span style="font-size:.65rem;background:#dcfce7;color:#166534;padding:2px 6px;border-radius:50px;font-weight:700;flex-shrink:0;">Co-op</span>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function selectUni(id) {
+  activeUniId = id;
+  document.querySelectorAll('.bl-uni-item.active').forEach(el=>el.classList.remove('active'));
+  const el = document.querySelector(`.bl-uni-item[onclick="selectUni('${id}')"]`);
+  if (el) el.classList.add('active');
+  renderUniDetail(id);
+}
+
+function renderUniDetail(id) {
+  const panel = document.getElementById('uniDetailPanel');
+  const u = typeof UNIVERSITIES !== 'undefined' ? UNIVERSITIES.find(x=>x.id===id) : null;
+  if (!u) { panel.innerHTML = '<div class="bd-empty"><div class="bd-empty-icon">🏛️</div><p>University data not found.</p></div>'; return; }
+  const sup = UNI_SUPPLEMENT[id] || {};
+  const isU15 = U15.has(id);
+  const founded = sup.founded ? sup.founded : '—';
+  const studentPop = sup.studentPop || '—';
+  const tuitionDom = u.tuition ? `$${u.tuition.domestic.toLocaleString()}` : '—';
+  const tuitionIntl = u.tuition ? `$${u.tuition.intl.toLocaleString()}` : '—';
+  const compLabel = {very:'Very Competitive',comp:'Competitive',mod:'Moderate',low:'Less Selective'}[u.comp] || u.compLabel || '—';
+  const avgRange = u.avgRange ? `${u.avgRange.low}–${u.avgRange.high}%` : '—';
+  const coopBadge = u.coop ? '<span class="bd-uni-badge" style="background:rgba(0,200,100,.2);border-color:rgba(0,200,100,.3);">Co-op Available</span>' : '';
+  const u15Badge = isU15 ? '<span class="bd-uni-badge">U15 Research University</span>' : '';
+  const gradRateBadge = u.gradRate ? `<span class="bd-uni-badge">${u.gradRate} Grad Rate</span>` : '';
+  const langNote = (u.name||'').toLowerCase().includes('mont') || (u.name||'').toLowerCase().includes('laval') || (u.name||'').toLowerCase().includes('uqam') ? '<span class="bd-uni-badge" style="background:rgba(200,50,50,.2);">French</span>' : (id === 'uottawa' || id === 'laurentian') ? '<span class="bd-uni-badge" style="background:rgba(200,150,0,.2);">Bilingual</span>' : '<span class="bd-uni-badge">English</span>';
+
+  const campusesHtml = sup.campuses ? `<ul class="bd-list">${sup.campuses.map(c=>`<li>${c}</li>`).join('')}</ul>` : `<p class="bd-section-text">Single main campus in ${u.city}, ${u.province}.</p>`;
+
+  const mensSportsHtml = sup.mensSports ? `<ul class="bd-sport-list">${sup.mensSports.map(s=>`<li>${s}</li>`).join('')}</ul>` : '<p style="font-size:.8rem;color:var(--grey);">Contact athletics for current team listings.</p>';
+  const womensSportsHtml = sup.womensSports ? `<ul class="bd-sport-list">${sup.womensSports.map(s=>`<li>${s}</li>`).join('')}</ul>` : '<p style="font-size:.8rem;color:var(--grey);">Contact athletics for current team listings.</p>';
+  const alumniHtml = sup.famousAlumni ? `<div class="bd-tags">${sup.famousAlumni.map(a=>`<span class="bd-tag">${a}</span>`).join('')}</div>` : '<p class="bd-section-text">See the university website for alumni network.</p>';
+
+  const programsHtml = u.programs && u.programs.length ? `<div class="bd-programs-grid">${u.programs.slice(0,50).map(p=>`<span class="bd-program-tag">${p}</span>`).join('')}${u.programs.length>50?`<span class="bd-program-tag" style="font-style:italic;">+${u.programs.length-50} more…</span>`:''}</div>` : '<p class="bd-section-text">See university website for full program list.</p>';
+
+  const scholarshipHtml = u.scholarships && u.scholarships.length ? `<ul class="bd-list">${u.scholarships.map(s=>`<li>${s}</li>`).join('')}</ul>` : '<p class="bd-section-text">Check the university financial aid office for entrance scholarships.</p>';
+
+  panel.innerHTML = `
+    <div class="bd-uni-hero">
+      <div class="bd-uni-name">${u.name}</div>
+      <div class="bd-uni-loc">📍 ${u.loc || `${u.city}, ${u.province}`} · Founded ${founded}</div>
+      <div class="bd-uni-badges">
+        ${u.canadaRank ? `<span class="bd-uni-badge">#${u.canadaRank} in Canada</span>` : ''}
+        ${u.worldRank ? `<span class="bd-uni-badge">#${u.worldRank} Globally</span>` : ''}
+        ${coopBadge}${u15Badge}${gradRateBadge}${langNote}
+      </div>
+    </div>
+
+    <div class="bd-uni-stats">
+      <div class="bd-uni-stat"><div class="bd-uni-stat-val">${avgRange}</div><div class="bd-uni-stat-lbl">Admission Avg</div></div>
+      <div class="bd-uni-stat"><div class="bd-uni-stat-val">${compLabel}</div><div class="bd-uni-stat-lbl">Competitiveness</div></div>
+      <div class="bd-uni-stat"><div class="bd-uni-stat-val">${tuitionDom}</div><div class="bd-uni-stat-lbl">Domestic Tuition</div></div>
+      <div class="bd-uni-stat"><div class="bd-uni-stat-val">${u.acceptanceRate||'—'}</div><div class="bd-uni-stat-lbl">Acceptance Rate</div></div>
+      <div class="bd-uni-stat"><div class="bd-uni-stat-val">${studentPop}</div><div class="bd-uni-stat-lbl">Students</div></div>
+      <div class="bd-uni-stat"><div class="bd-uni-stat-val">${u.campusSize||'—'}</div><div class="bd-uni-stat-lbl">Campus</div></div>
+    </div>
+
+    <div class="bd-sections">
+      <div class="bd-section">
+        <div class="bd-section-title">🏛️ About ${u.shortName || u.name}</div>
+        <p class="bd-section-text">${u.vibe || 'See university website for details.'}</p>
+        ${u.repNote ? `<p class="bd-section-text" style="margin-top:8px;font-weight:700;color:var(--red);">${u.repNote}</p>` : ''}
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🗺️ Campuses</div>
+        ${campusesHtml}
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🏠 Residence & Housing</div>
+        <p class="bd-section-text">${sup.housingNote || (u.residence ? `Avg residence cost: $${u.residence.avg?.toLocaleString()}/yr. ${u.residence.notes||''}` : 'Contact the housing office for availability and costs.')}</p>
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🎓 Programs Offered</div>
+        ${programsHtml}
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🏅 Entrance Scholarships</div>
+        ${scholarshipHtml}
+      </div>
+
+      ${u.coop ? `<div class="bd-section">
+        <div class="bd-section-title">💼 Co-op / Work Experience</div>
+        <p class="bd-section-text">${u.coopNote || 'Co-op available. Check the co-op office for program-specific details.'}</p>
+      </div>` : ''}
+
+      <div class="bd-section">
+        <div class="bd-section-title">⚽ Men's Varsity Sports</div>
+        <div class="bd-sport-grid">
+          <div class="bd-sport-box">
+            <div class="bd-sport-title">🔵 Men's Teams</div>
+            ${mensSportsHtml}
+          </div>
+          <div class="bd-sport-box">
+            <div class="bd-sport-title">🔴 Women's Teams</div>
+            ${womensSportsHtml}
+          </div>
+        </div>
+      </div>
+
+      <div class="bd-section">
+        <div class="bd-section-title">🌟 Notable Alumni</div>
+        ${alumniHtml}
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;padding:0 0 16px;">
+        ${u.websiteURL ? `<a href="${u.websiteURL}" target="_blank" rel="noopener" class="btn btn-navy btn-sm">Visit Website →</a>` : ''}
+        ${u.applyURL ? `<a href="${u.applyURL}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Apply →</a>` : ''}
+      </div>
+
+      <div style="padding-bottom:32px;"></div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════
+switchBrowseTab('majors');
+renderMajorList();
+</script>
+</body>
+</html>

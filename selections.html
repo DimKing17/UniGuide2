@@ -321,6 +321,7 @@
 <nav class="nav">
   <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
   <div class="nav-links">
+    <a href="browsing.html">Browse</a>
     <a href="selections.html" class="active">Selections</a>
     <a href="saved.html">My List</a>
     <a href="scholarships.html">Funding</a>
@@ -444,6 +445,9 @@
       <div class="sel-divider">— or —</div>
 
       <div style="text-align:center;margin-bottom:32px;">
+        <div id="quizRetakeRow" style="display:none;margin-bottom:8px;">
+          <button class="btn btn-outline btn-sm" onclick="retakeMajorQuiz()" style="font-size:.8rem;">↺ Retake Major Quiz</button>
+        </div>
         <button class="btn btn-outline btn-lg" onclick="startQuiz()" id="quizToggleBtn">
           🤔 I don't know my major — Take the Discovery Quiz
         </button>
@@ -599,10 +603,13 @@
 
       <!-- Quiz results -->
       <div class="result-section" id="resultSection">
-        <div style="background:var(--navy);color:#fff;border-radius:var(--radius);padding:20px 24px;margin-bottom:22px;">
-          <div style="font-size:.74rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:5px;">Your Results</div>
-          <h2 style="color:#fff;margin-bottom:4px;font-size:1.2rem;">Top matches based on your answers</h2>
-          <p style="color:rgba(255,255,255,.65);font-size:.88rem;">Retake the quiz anytime as your interests evolve.</p>
+        <div style="background:var(--navy);color:#fff;border-radius:var(--radius);padding:20px 24px;margin-bottom:22px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-size:.74rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:5px;">Your Results</div>
+            <h2 style="color:#fff;margin-bottom:4px;font-size:1.2rem;">Top matches based on your answers</h2>
+            <p style="color:rgba(255,255,255,.65);font-size:.88rem;">Your interests may change — retake anytime.</p>
+          </div>
+          <button onclick="retakeMajorQuiz()" style="background:rgba(255,255,255,0.12);color:#fff;border:1.5px solid rgba(255,255,255,0.25);border-radius:50px;padding:8px 18px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">↺ Retake Quiz</button>
         </div>
         <div id="resultsContainer"></div>
       </div>
@@ -1013,7 +1020,7 @@ const CATEGORIES = [
   {key:"Health Sciences",icon:"🏥"},{key:"Business",icon:"💼"},
   {key:"Arts & Humanities",icon:"🎨"},{key:"Social Sciences",icon:"🌍"},
   {key:"Science",icon:"🔬"},{key:"Education",icon:"📚"},
-  {key:"Law",icon:"⚖️"},{key:"Trades & Applied Technology",icon:"🔧"},
+  {key:"Law & Legal Studies",icon:"⚖️"},{key:"Trades & Applied Technology",icon:"🔧"},
   {key:"Agriculture & Environment",icon:"🌱"},{key:"Media & Communication",icon:"📡"},
   {key:"Architecture & Design",icon:"🏛️"},{key:"Social Work & Community",icon:"🤝"},
   {key:"Kinesiology & Sport",icon:"🏃"},
@@ -1243,6 +1250,19 @@ function addResultMajor(major){
   if(!selectedMajors.includes(major)){
     selectedMajors=[major]; syncMajors();
   }
+}
+
+function retakeMajorQuiz() {
+  quizAnswers = {};
+  try { ugSave('quizAnswers', {}); } catch(e) {}
+  document.getElementById('resultSection').classList.remove('visible');
+  document.getElementById('quizToggleBtn').style.display = '';
+  document.getElementById('quizRetakeRow').style.display = 'none';
+  const qs = document.getElementById('quizSection');
+  qs.classList.add('visible');
+  // Reset all quiz selections
+  qs.querySelectorAll('.quiz-opt.selected').forEach(o => o.classList.remove('selected'));
+  qs.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 // ════════════════════════════════════════════════════════
