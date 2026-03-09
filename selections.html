@@ -1046,7 +1046,7 @@ function showMajorList(cat){
   document.getElementById('majorListCount').textContent=list.length+' programs';
   document.getElementById('majorGrid').innerHTML=list.map(m=>{
     const sel=selectedMajors.includes(m);
-    const browseUrl=`browsing.html?tab=majors&cat=${encodeURIComponent(cat)}&major=${encodeURIComponent(m)}`;
+    const browseUrl=`browsing?tab=majors&cat=${encodeURIComponent(cat)}&major=${encodeURIComponent(m)}`;
     return `<div class="major-item ${sel?'selected':''}" onclick="toggleMajor(this,'${m.replace(/'/g,"\\'")}')">
       <span>${m}</span>
       <span style="display:flex;align-items:center;gap:6px;">
@@ -1839,7 +1839,7 @@ function renderUnis(list){
           <button class="btn btn-red btn-sm" onclick="saveAndView('${u.id}','${u.name.replace(/'/g,"\\'")}')">Save &amp; View Plan →</button>
           <button class="btn btn-outline btn-sm" onclick="saveToList('${u.id}','${u.name.replace(/'/g,"\\'")}')">+ Save to My List</button>
           <a href="${u.websiteURL}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Website ↗</a>
-          <a href="browsing.html?tab=unis&uni=${u.id}" class="btn btn-outline btn-sm" title="View ${u.name.replace(/'/g,"\\'")} in Browse tab" style="padding:6px 10px;">⤴</a>
+          <a href="browsing?tab=unis&uni=${u.id}" class="btn btn-outline btn-sm" title="View ${u.name.replace(/'/g,"\\'")} in Browse tab" style="padding:6px 10px;">⤴</a>
         </div>
       </div>`;
   }).join('');

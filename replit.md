@@ -31,10 +31,10 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 ## Key Features (browsing.html)
 - **Major detail panel**: Merges `INDIVIDUAL_MAJOR_DATA` + `MAJOR_EXTRA_DATA` (103 entries) — uses `extra.schools` for Top Canadian Schools, `extra.skills`, `extra.related` for Related Majors, `extra.desc2` appended to description, `extra.degree` for degree-specific info, `extra.outlookNote` in Job Outlook panel
 - **University detail panel**: Uses `sup.vibeExt` for extended About text; 7 enriched universities (UofT, UBC, McGill, Waterloo, McMaster, Queen's, Western) also have `researchNote`, `studentLife`, `knownFor` in `UNI_SUPPLEMENT`; Programs Offered is a collapsible `<details>` element
-- **URL deep linking**: `browsing.html?tab=unis&uni={id}` and `browsing.html?tab=majors&cat={cat}&major={major}` — handled on init via `initFromURL()` → calls `selectUni(id)` or `selectMajor(cat, major)`
+- **URL deep linking**: `browsing?tab=unis&uni={id}` and `browsing?tab=majors&cat={cat}&major={major}` — handled on init via `initFromURL()` → calls `selectUni(id)` or `selectMajor(cat, major)`. Must use extension-less URL (`browsing` not `browsing.html`) — `serve` strips query strings when doing the `.html` redirect.
 
 ## Key Features (selections.html)
-- **Browse buttons**: Each major item in `showMajorList()` has a ⤴ icon-link (stops propagation, navigates to `browsing.html?tab=majors&cat=…&major=…`). Each university card has a ⤴ link button next to "Website ↗" (navigates to `browsing.html?tab=unis&uni=…`)
+- **Browse buttons**: Each major item in `showMajorList()` has a ⤴ icon-link (stops propagation, navigates to `browsing?tab=majors&cat=…&major=…`). Each university card has a ⤴ link button next to "Website ↗" (navigates to `browsing?tab=unis&uni=…`)
 - **Split workspace**: Majors picker (left) + Universities picker (right)
 - **Majors panel**: Search 800+ programs, browse 17 categories (incl. "Law" and "Trades & Applied Technology"), discovery quiz, **single major selection** (auto-replaces if one already chosen)
 - **Universities panel**: Search + 6 filters, university cards with:
