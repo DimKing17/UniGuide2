@@ -3594,6 +3594,7 @@ ${(()=>{
 // ─────────────────────────────────────────────────────────────
 const TAB_CHAT_MODE = { 'tab-academics':'academic', 'tab-ec':'ec', 'tab-application':'app', 'tab-money':'money' };
 function switchTab(el, tabId) {
+  _saveChatHistory();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
@@ -3706,6 +3707,26 @@ const chatKnowledge = {
 };
 
 let ecChatIdx = { academic:0, ec:0, app:0, money:0, general:0 };
+const chatHistories = { academic:null, ec:null, app:null, money:null, general:null };
+
+function _saveChatHistory() {
+  const msgs = document.getElementById('chatMessages');
+  if (msgs && chatMode) chatHistories[chatMode] = msgs.innerHTML;
+}
+function _loadChatHistory(mode) {
+  const msgs = document.getElementById('chatMessages');
+  if (!msgs) return;
+  if (chatHistories[mode]) {
+    msgs.innerHTML = chatHistories[mode];
+  } else if (chatContext.prog) {
+    const greetFn = CHAT_GREETINGS[mode] || CHAT_GREETINGS.general;
+    const ctx = { ...chatContext.prog, pd: chatContext.pd, prog: chatContext.prog };
+    msgs.innerHTML = `<div class="chat-msg bot">${greetFn(ctx)}</div>`;
+    chatHistories[mode] = msgs.innerHTML;
+  }
+  const msgs2 = document.getElementById('chatMessages');
+  if (msgs2) msgs2.scrollTop = msgs2.scrollHeight;
+}
 
 const CHAT_GREETINGS = {
   academic: p => `Hi! I'm your <strong>Academics Advisor</strong> for <strong>${p.programName}</strong> at <strong>${p.uniName}</strong>. Ask me about target averages, required courses, how grades are calculated, or how to improve a specific subject.`,
@@ -3717,12 +3738,8 @@ const CHAT_GREETINGS = {
 
 function setChatContext(prog, pd) {
   chatContext = { prog, pd };
-  const msgs = document.getElementById('chatMessages');
-  if (msgs) {
-    const greetFn = CHAT_GREETINGS[chatMode] || CHAT_GREETINGS.general;
-    const ctx = { ...prog, pd, prog };
-    msgs.innerHTML = `<div class="chat-msg bot">${greetFn(ctx)}</div>`;
-  }
+  Object.keys(chatHistories).forEach(k => chatHistories[k] = null);
+  _loadChatHistory(chatMode);
 }
 function detectChatMode(msg) {
   const lm = msg.toLowerCase();
@@ -3733,22 +3750,19 @@ function detectChatMode(msg) {
   return chatMode !== 'general' ? chatMode : 'general';
 }
 function openChat(mode) {
+  _saveChatHistory();
   chatMode = mode || 'general';
   const modeNames = { academic:'Academics Advisor', ec:'EC Advisor', app:'Application Advisor', money:'Funding Advisor', general:'Program Advisor' };
   const hdr = document.getElementById('chatModeLabel');
   if (hdr) hdr.textContent = modeNames[chatMode] || 'Program Advisor';
-  if (chatContext.prog) {
-    const msgs = document.getElementById('chatMessages');
-    if (msgs) {
-      const greetFn = CHAT_GREETINGS[chatMode] || CHAT_GREETINGS.general;
-      const ctx = { ...chatContext.prog, pd: chatContext.pd, prog: chatContext.prog };
-      msgs.innerHTML = `<div class="chat-msg bot">${greetFn(ctx)}</div>`;
-    }
-  }
+  _loadChatHistory(chatMode);
   document.getElementById('chatPanel').classList.add('open');
 }
 function toggleChat() {
-  document.getElementById('chatPanel').classList.toggle('open');
+  const panel = document.getElementById('chatPanel');
+  const isOpening = !panel.classList.contains('open');
+  if (isOpening) _loadChatHistory(chatMode);
+  panel.classList.toggle('open');
 }
 function sendChat() {
   const inp  = document.getElementById('chatInput');
@@ -3777,6 +3791,7 @@ function sendChat() {
     msgs.innerHTML += `<div class="chat-msg bot">${resp}</div>`;
     ecChatIdx[mode] = (idx + 1);
     msgs.scrollTop = msgs.scrollHeight;
+    _saveChatHistory();
   }, 650);
 }
 
