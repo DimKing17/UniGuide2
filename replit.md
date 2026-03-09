@@ -28,7 +28,13 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 - CSS variables for theming in `style.css`
 - Firebase config generated at startup by `generate-config.js` from Replit secrets
 
+## Key Features (browsing.html)
+- **Major detail panel**: Merges `INDIVIDUAL_MAJOR_DATA` + `MAJOR_EXTRA_DATA` (103 entries) — uses `extra.schools` for Top Canadian Schools, `extra.skills`, `extra.related` for Related Majors, `extra.desc2` appended to description, `extra.degree` for degree-specific info, `extra.outlookNote` in Job Outlook panel
+- **University detail panel**: Uses `sup.vibeExt` for extended About text; 7 enriched universities (UofT, UBC, McGill, Waterloo, McMaster, Queen's, Western) also have `researchNote`, `studentLife`, `knownFor` in `UNI_SUPPLEMENT`; Programs Offered is a collapsible `<details>` element
+- **URL deep linking**: `browsing.html?tab=unis&uni={id}` and `browsing.html?tab=majors&cat={cat}&major={major}` — handled on init via `initFromURL()` → calls `selectUni(id)` or `selectMajor(cat, major)`
+
 ## Key Features (selections.html)
+- **Browse buttons**: Each major item in `showMajorList()` has a ⤴ icon-link (stops propagation, navigates to `browsing.html?tab=majors&cat=…&major=…`). Each university card has a ⤴ link button next to "Website ↗" (navigates to `browsing.html?tab=unis&uni=…`)
 - **Split workspace**: Majors picker (left) + Universities picker (right)
 - **Majors panel**: Search 800+ programs, browse 17 categories (incl. "Law" and "Trades & Applied Technology"), discovery quiz, **single major selection** (auto-replaces if one already chosen)
 - **Universities panel**: Search + 6 filters, university cards with:
@@ -71,7 +77,7 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 
 ## data.js Key Sections
 - **MAJORS**: 17 categories including `"Law"` (30+ programs) and `"Trades & Applied Technology"` (33 programs); backward-compat `"Law & Legal Studies"` kept
-- **UNIVERSITIES**: 60 Canadian universities with fit scoring data
+- **UNIVERSITIES**: 60 Canadian universities with fit scoring data; campus `lat`/`lng` are street-address-level coordinates (not city center); corrected for UNB (3 Bailey Dr, Fredericton), ULaval (2325 Rue de l'Université, QC), UCalgary, UOttawa, UManitoba, Memorial, York, Concordia
 - **PROGRAM_DATA**: 100+ entries keyed as `uniId__slug`; includes common variants: `uoft__mechanical-engineering`, `uoft__computer-science`, `uoft__life-sciences`, `mcmaster__health-sciences`, `mcmaster__engineering-i`, `queens__commerce`, `queens__engineering`, `western__ivey`, `mcgill__engineering`
 - **SCHOLARSHIPS**: 50-entry array (also used internally); scholarships.html has its own inline 100+ array with `link` field
 
