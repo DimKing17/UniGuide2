@@ -2523,7 +2523,7 @@ let fundingSearchQuery = '';
 let fundingFiltersState = { type:'', prov:'', area:'' };
 let activeFundingItem = null;
 
-const SCHOLARSHIPS = [
+const SCHOL_LIST = [
   { name:'Loran Award', amount:'$100,000 total', type:'merit', area:'any', prov:'National', desc:'Canada\'s most prestigious undergraduate scholarship. Awarded to students who demonstrate character, service, and leadership — plus mentoring and summer programs.', deadline:'Mid-November (school nomination)', deadlineClass:'', link:'https://loranscholar.ca/', tags:['Merit','Leadership','National','Full Package'] },
   { name:'Schulich Leader Scholarship', amount:'$12,000–$20,000', type:'stem', area:'eng', prov:'National', desc:'For STEM-focused students with entrepreneurial leadership. Nominated through your high school. Over 100 awarded annually across Canada.', deadline:'March (school nominates)', deadlineClass:'', link:'https://schulichleaders.com/', tags:['STEM','Leadership','Engineering','CS','Science'] },
   { name:'Terry Fox Humanitarian Award', amount:'$28,000 ($7,000/yr × 4)', type:'community', area:'any', prov:'National', desc:'For students who emulate Terry Fox\'s dedication to helping others — community service, leadership, courage, and academic excellence.', deadline:'February 1', deadlineClass:'', link:'https://terryfox.org/humanitarian-award/', tags:['Community','Leadership','National','Humanitarian'] },
@@ -2627,7 +2627,7 @@ const COST_DATA = {
 function getFilteredScholarships() {
   const f = fundingFiltersState;
   const q = fundingSearchQuery;
-  return SCHOLARSHIPS.filter(s => {
+  return SCHOL_LIST.filter(s => {
     if (f.type && s.type !== f.type) return false;
     if (f.prov && s.prov !== f.prov) return false;
     if (f.area && s.area !== f.area && s.area !== 'any') return false;
@@ -2650,8 +2650,8 @@ function renderFundingList() {
   const scholHtml = list.length
     ? list.map((s, i) => {
         const dotClass = s.type === 'need' ? 'green' : s.type === 'stem' ? 'amber' : '';
-        const isActive = activeFundingItem === 'schol_' + SCHOLARSHIPS.indexOf(s);
-        return `<div class="bl-schol-item${isActive?' active':''}" onclick="selectSchol(${SCHOLARSHIPS.indexOf(s)})">
+        const isActive = activeFundingItem === 'schol_' + SCHOL_LIST.indexOf(s);
+        return `<div class="bl-schol-item${isActive?' active':''}" onclick="selectSchol(${SCHOL_LIST.indexOf(s)})">
           <div class="bl-schol-dot ${dotClass}"></div>
           <div class="bl-schol-info">
             <div class="bl-schol-name" title="${s.name}">${s.name}</div>
@@ -2665,7 +2665,7 @@ function renderFundingList() {
 }
 
 function selectSchol(idx) {
-  const s = SCHOLARSHIPS[idx];
+  const s = SCHOL_LIST[idx];
   if (!s) return;
   activeFundingItem = 'schol_' + idx;
   renderFundingList();
