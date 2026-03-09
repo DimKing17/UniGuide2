@@ -419,22 +419,35 @@
     .chatbot-input-row input { flex:1; padding:10px 12px; border:none; font-size:.85rem; outline:none; }
     .chatbot-input-row button { padding:0 16px; background:var(--red); color:#fff; border:none; cursor:pointer; font-size:1rem; }
 
-    /* ── Application checklist ── */
-    .app-checklist-item {
-      display:flex; gap:12px; align-items:flex-start;
-      padding:12px 14px; background:var(--light); border-radius:9px;
-      margin-bottom:8px; border:1px solid var(--border);
-    }
+    /* ── Application tracker (revamped) ── */
     .app-check {
       width:22px; height:22px; border-radius:5px; border:2px solid var(--border);
       display:flex; align-items:center; justify-content:center; cursor:pointer;
-      font-size:.80rem; flex-shrink:0; background:#fff; margin-top:1px;
+      font-size:.80rem; flex-shrink:0; background:#fff; margin-top:2px;
       transition:all .15s;
     }
     .app-check.checked { background:var(--success); border-color:var(--success); color:#fff; }
-    .app-item-title { font-weight:700; font-size:.88rem; margin-bottom:2px; }
-    .app-item-desc  { font-size:.78rem; color:var(--grey); }
-    .app-item-link  { font-size:.75rem; font-weight:700; color:var(--red); text-decoration:none; display:inline-flex; align-items:center; gap:3px; margin-top:4px; }
+    .tracker-deadline-bar { display:flex;align-items:center;gap:14px;background:var(--light);border-radius:12px;padding:14px 16px;margin-bottom:16px;flex-wrap:wrap;border:1px solid var(--border); }
+    .tracker-dl-chip { display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:.80rem;font-weight:800;border:2px solid; }
+    .tracker-dl-chip.green  { background:#e6f7f0;border-color:#88d5b5;color:#1a7a52; }
+    .tracker-dl-chip.amber  { background:#fff8e0;border-color:#f7c948;color:#7a5200; }
+    .tracker-dl-chip.red    { background:#fff0f0;border-color:var(--red);color:var(--red); }
+    .tracker-dl-chip.past   { background:#f0f0f0;border-color:#aaa;color:#888; }
+    .tracker-section-hdr { font-weight:800;font-size:.77rem;letter-spacing:.06em;text-transform:uppercase;padding:10px 0 6px;margin-top:8px;color:var(--grey);border-bottom:1px solid var(--border);margin-bottom:8px; }
+    .tracker-item { display:flex;gap:10px;align-items:flex-start;padding:12px 13px;background:#fff;border:1px solid var(--border);border-radius:9px;margin-bottom:7px;transition:box-shadow .15s; }
+    .tracker-item:hover { box-shadow:0 2px 8px rgba(0,0,0,.06); }
+    .tracker-item.urgent-item { border-left:4px solid var(--red); }
+    .tracker-item.done-item { opacity:.65; }
+    .tracker-item-body { flex:1;min-width:0; }
+    .tracker-item-title { font-weight:700;font-size:.88rem;margin-bottom:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap; }
+    .tracker-item-desc { font-size:.78rem;color:var(--grey);line-height:1.5;margin-bottom:4px; }
+    .tracker-item-tip { font-size:.76rem;color:#4050a0;background:#eff2ff;border-radius:6px;padding:5px 10px;margin-top:5px;margin-bottom:4px;line-height:1.5; }
+    .tracker-dl-inline { display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;border:1.5px solid; }
+    .tracker-dl-inline.green { background:#e6f7f0;border-color:#88d5b5;color:#1a7a52; }
+    .tracker-dl-inline.amber { background:#fff8e0;border-color:#f7c948;color:#7a5200; }
+    .tracker-dl-inline.red   { background:#fff0f0;border-color:var(--red);color:var(--red); }
+    .tracker-dl-inline.past  { background:#f0f0f0;border-color:#aaa;color:#888; }
+    .app-item-link { font-size:.75rem;font-weight:700;color:var(--red);text-decoration:none;display:inline-flex;align-items:center;gap:3px;margin-top:4px; }
     .app-item-link:hover { text-decoration:underline; }
 
     /* ── Funding ── */
@@ -547,7 +560,7 @@
 <div class="chatbot-bubble">
   <div class="chatbot-panel" id="chatPanel">
     <div class="chatbot-header">
-      🤖 Program Advisor
+      🤖 <span id="chatModeLabel">Program Advisor</span>
       <span style="margin-left:auto;cursor:pointer;opacity:.75;font-weight:400;" onclick="toggleChat()">✕</span>
     </div>
     <div class="chatbot-messages" id="chatMessages"></div>
@@ -619,7 +632,7 @@ function renderSidebar(filter='') {
     const isActive = p.id === activeProgramId ? 'active' : '';
     // Per-program tracker progress from localStorage
     const state      = getCLState(p.id);
-    const appKeys    = ['ouac-account','ouac-add','transcript','references','essay','fee','deadline','portal','osap'];
+    const appKeys    = ['research','account','apply','transcript','aif','references','deadline','portal','aid','scholarship','offer'];
     const total      = appKeys.length;
     const done       = appKeys.filter(k => state['app_'+k]).length;
     const pct        = Math.round(done / total * 100);
@@ -1939,7 +1952,7 @@ function buildECGuide(prog, pd) {
   });
 
   const typeFilterOpts = [['all','All Types'],...Object.entries(EC_TYPES).map(([k,v]) => [k, v.label])];
-  const impactOpts = [['all','All Impact Levels'],['9','⭐ Outstanding (9–10)'],['7','🔥 High Impact (7–8)'],['5','✅ Solid Choice (5–6)'],['3','📋 Any Profile (3–4)'],['1','All (1+)']];
+  const impactOpts = [['all','All Impact Levels'],['9','⭐ Outstanding (9+)'],['7','🔥 High Impact (7+)'],['5','✅ Solid Choice (5+)'],['3','📋 All Levels (3+)']];
   const costOpts   = [['all','Any Cost'],['free','Free'],['low','Low (<$100)'],['mid','Medium ($100–500)'],['high','High (>$500)']];
   const remoteOpts = [['all','In-Person & Remote'],['remote','Remote OK'],['onsite','In-Person Only']];
 
@@ -2243,6 +2256,69 @@ function getECAIFeedback(score, name, desc) {
   if (tips.length === 0) tips.push("Keep documenting your specific contributions — concrete details matter most in your AIF.");
   return base + " " + tips.join(" ");
 }
+function computeECStrength(userECs) {
+  if (!userECs || !userECs.length) return 0;
+  const sorted = [...userECs].sort((a, b) => (b.score||0) - (a.score||0));
+  const weights = [0.38, 0.24, 0.16, 0.10, 0.07, 0.05];
+  let wSum = 0, wTotal = 0;
+  sorted.forEach((ec, i) => {
+    const w = i < weights.length ? weights[i] : 0.02;
+    wSum   += (ec.score || 0) * w;
+    wTotal += w;
+  });
+  const raw = wTotal > 0 ? (wSum / wTotal) : 0;
+  return Math.min(100, Math.round(raw * 10));
+}
+function renderECStrengthBlock(progId) {
+  const userECs = getUserECsFromStorage();
+  const score = computeECStrength(userECs);
+  const lbl = score >= 85 ? {text:'Exceptional',color:'var(--red)'} :
+              score >= 70 ? {text:'Strong',color:'#c46000'} :
+              score >= 50 ? {text:'Solid',color:'#5060a0'} :
+              score >= 30 ? {text:'Developing',color:'var(--grey)'} :
+              {text:'Getting Started',color:'var(--grey)'};
+  const state = getCLState(progId);
+  if (state['ecScore'] !== String(score)) {
+    state['ecScore'] = String(score);
+    saveCLState(progId, state);
+  }
+  const sorted = [...userECs].sort((a,b)=>(b.score||0)-(a.score||0));
+  const topItems = sorted.slice(0,5).map(ec =>
+    `<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+      <span style="font-size:.7rem;font-weight:800;background:${(ec.score||0)>=9?'var(--red)':(ec.score||0)>=7?'#c46000':(ec.score||0)>=5?'#5060a0':'var(--grey)'};color:#fff;border-radius:4px;padding:1px 7px;min-width:28px;text-align:center;">${ec.score||'?'}</span>
+      <span style="font-size:.80rem;color:var(--navy);font-weight:600;">${ec.name}</span>
+    </div>`
+  ).join('');
+  let advice = '';
+  if (!userECs.length) {
+    advice = 'Add your activities above to get an AI-computed strength rating. Your score will feed into your Application Tracker automatically.';
+  } else if (score < 40) {
+    advice = 'Your current activities are a start. Focus on one high-impact activity — a club leadership role, competition, or meaningful volunteer position — and commit to it for 1+ year.';
+  } else if (score < 65) {
+    advice = 'Solid base. To improve your score, aim for at least one activity rated 8+ (competition win, research, founded something) and deepen your commitment to what you already do.';
+  } else if (score < 80) {
+    advice = 'Strong profile. Look for national-level recognition or a founding/leadership role in something meaningful to push into the top tier.';
+  } else {
+    advice = 'Exceptional extracurricular profile. Make sure your AIF/essays translate this into specific, concrete stories with outcomes and numbers.';
+  }
+  return `<div id="ecStrengthBlock">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <div style="flex:1;">
+        <div style="font-size:.75rem;color:var(--grey);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">AI-Computed EC Strength</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:1;height:10px;background:#e0e4ee;border-radius:50px;overflow:hidden;">
+            <div style="height:100%;width:${score}%;background:${lbl.color};border-radius:50px;transition:width .5s;"></div>
+          </div>
+          <span style="font-weight:900;font-size:1.05rem;color:${lbl.color};min-width:38px;">${score}%</span>
+          <span style="font-size:.80rem;font-weight:700;color:${lbl.color};">${lbl.text}</span>
+        </div>
+      </div>
+    </div>
+    ${userECs.length ? `<div style="margin-bottom:10px;">${topItems}</div>` : ''}
+    <div style="font-size:.79rem;color:var(--navy);background:var(--light);border-radius:8px;padding:9px 12px;line-height:1.5;">${advice}</div>
+    <div style="font-size:.72rem;color:var(--grey);margin-top:6px;">Score auto-updates when you add or edit activities above. Feeds into your Application Tracker automatically.</div>
+  </div>`;
+}
 function rateAndAddEC() {
   const name = (document.getElementById('ecAddName').value||"").trim();
   const desc = (document.getElementById('ecAddDesc').value||"").trim();
@@ -2512,110 +2588,290 @@ function buildFundingTab(prog, pd, uni, tuition) {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  APPLICATION CHECKLIST (Fix #10 — real links)
+//  APPLICATION TRACKER (revamped — university-specific)
 // ─────────────────────────────────────────────────────────────
 function buildAppChecklist(prog, pd, uni) {
-  const applyURL  = (pd && pd.applyURL)  || (uni && uni.applyURL)  || '#';
-  const aifURL    = (pd && pd.aifURL)    || '#';
-  const ouacURL   = 'https://www.ouac.on.ca';
-  const osapURL   = 'https://www.ontario.ca/page/ontario-student-assistance-program';
-  const hasAIF    = pd && pd.aifRequired;
+  const uniName     = prog.uniName;
+  const programName = prog.programName;
+  const applyURL    = (pd && pd.applyURL) || (uni && uni.applyURL) || '#';
+  const aifURL      = (pd && pd.aifURL)   || '#';
+  const hasAIF      = !!(pd && pd.aifRequired);
+  const province    = uni && uni.province;
+  const isOntario   = province === 'Ontario';
+  const isQuebec    = province === 'Quebec';
+  const isBC        = province === 'British Columbia';
+  const isAlberta   = province === 'Alberta';
+  const uLower      = uniName.toLowerCase();
+  const isMcGill    = uLower.includes('mcgill');
+  const isWaterloo  = uLower.includes('waterloo');
+  const isMcMaster  = uLower.includes('mcmaster');
+  const isUofT      = uLower.includes('toronto') || uLower.includes('u of t');
 
+  // ── Deadline parsing ──
+  const rawDeadline = (uni && uni.deadlines && uni.deadlines.main) ? uni.deadlines.main.split(',')[0].split('(')[0].trim() : null;
+  function parseDeadline(str) {
+    if (!str) return null;
+    const m = str.match(/^([A-Za-z]+)\s+(\d+)/);
+    if (!m) return null;
+    const mo = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    const month = mo[m[1].slice(0,3)];
+    if (month === undefined) return null;
+    const d = new Date(2027, month, parseInt(m[2]));
+    return d;
+  }
+  const deadlineDate = parseDeadline(rawDeadline);
+  const today = new Date();
+  const daysLeft = deadlineDate ? Math.ceil((deadlineDate - today) / 86400000) : null;
+  const dlClass  = daysLeft === null ? '' : daysLeft < 0 ? 'past' : daysLeft < 30 ? 'red' : daysLeft < 90 ? 'amber' : 'green';
+  const dlEmoji  = daysLeft === null ? '' : daysLeft < 0 ? '☑️' : daysLeft < 7 ? '🔴' : daysLeft < 30 ? '🟡' : '🟢';
+  const dlText   = daysLeft === null ? (rawDeadline || 'Check university website')
+                 : daysLeft < 0    ? `${rawDeadline} 2027 — deadline passed`
+                 : `${rawDeadline} 2027 — ${daysLeft} days remaining`;
+
+  function dlChip(str) {
+    const d = parseDeadline(str);
+    if (!d) return '';
+    const days = Math.ceil((d - today) / 86400000);
+    const cls  = days < 0 ? 'past' : days < 30 ? 'red' : days < 90 ? 'amber' : 'green';
+    const em   = days < 0 ? '☑️' : days < 7 ? '🔴' : days < 30 ? '🟡' : '🟢';
+    const txt  = days < 0 ? `${str} 2027 (passed)` : `${str} 2027 — ${days} days left`;
+    return `<span class="tracker-dl-inline ${cls}">${em} ${txt}</span>`;
+  }
+
+  // ── Financial aid links ──
+  const aidURL   = isOntario  ? 'https://www.ontario.ca/page/ontario-student-assistance-program'
+                 : isBC       ? 'https://studentaidbc.ca/'
+                 : isAlberta  ? 'https://www.alberta.ca/student-loans'
+                 : 'https://www.canada.ca/en/services/benefits/education/student-aid.html';
+  const aidLabel = isOntario  ? 'Apply for OSAP →'
+                 : isBC       ? 'StudentAid BC →'
+                 : isAlberta  ? 'Alberta student aid →'
+                 : 'Find provincial aid →';
+  const aidDesc  = isOntario
+    ? 'Apply for OSAP — Ontario\'s student assistance program. Most families earning under $175,000 qualify for some non-repayable grant. Opens each summer — apply the day it opens.'
+    : `Apply for student financial assistance from your home province. Check deadlines — provincial programs typically open in spring.`;
+
+  // ── Build items by section ──
   const state = getCLState(prog.id);
-  const items = [
-    {
-      key:'ouac-account', icon:'🌐',
-      title:'Create OUAC account',
-      desc:`Ontario's application portal for all Ontario universities. You need this first.`,
-      link: { href: ouacURL, text: 'ouac.on.ca →' }
-    },
-    {
-      key:'ouac-add', icon:'📋',
-      title:`Add ${prog.uniName} to your OUAC choices`,
-      desc:`Select "${prog.programName}" under ${prog.uniName}'s program list.`,
-      link: { href: applyURL, text: 'Open OUAC →' }
-    },
-    {
-      key:'transcript', icon:'📄',
-      title:'Request official transcript',
-      desc:'Ask your guidance counsellor to submit your transcript via OUAC.',
-    },
-    ...(hasAIF ? [{
-      key:'aif', icon:'📝',
-      title:`Complete ${prog.uniName} Supplementary Form / AIF`,
-      desc:`This is MANDATORY for ${prog.uniName} — heavily weighted alongside your grades. Plan for several weeks of work.`,
-      link: { href: aifURL, text: 'Open AIF form →' },
-      urgent: true
-    }] : []),
-    {
-      key:'references', icon:'📬',
-      title:'Request reference letters (if required)',
-      desc:'Contact teachers early — give them at least 6–8 weeks notice.',
-    },
-    {
-      key:'essay', icon:'✍️',
-      title:'Draft supplementary essays or personal statement',
-      desc:'Many programs require essays. Start early and get them reviewed.',
-      link: { href:'essays.html', text:'Essay Guide →' }
-    },
-    {
-      key:'fee', icon:'💳',
-      title:'Pay OUAC application fee',
-      desc:'~$156 for the first 3 choices, ~$51 per additional choice.',
-      link: { href: ouacURL, text: 'Pay at OUAC →' }
-    },
-    {
-      key:'deadline', icon:'⏰',
-      title:`Submit before the admission date`,
-      desc:`${prog.uniName} admission date: ${pd && pd.deadline ? pd.deadline + ', 2026' : 'check university website'}. Missing the admission date = automatic rejection.`,
-      urgent: true
-    },
-    {
-      key:'portal', icon:'🔔',
-      title:'Monitor application portal for updates',
-      desc:'Universities send offers, document requests, and decisions through their portal. Check weekly.',
-      link: { href: uni && uni.websiteURL ? uni.websiteURL : '#', text: `${prog.uniName} portal →` }
-    },
-    {
-      key:'osap', icon:'💰',
-      title:'Apply for OSAP (Ontario) or provincial financial aid',
-      desc:'Opens each summer. Apply as early as possible — funding is not guaranteed.',
-      link: { href: osapURL, text: 'Apply for OSAP →' }
-    },
-  ];
+  const cid   = 'app-tracker-' + prog.id.replace(/[^a-z0-9]/gi,'_');
 
-  const checked = items.filter(i => state['app_'+i.key]).length;
-  const pct = Math.round(checked / items.length * 100);
-  // Scoped container ID: unique per program so each has its own tracker DOM
-  const containerId = 'app-tracker-' + prog.id.replace(/[^a-z0-9]/gi,'_');
+  const sections = [
+    { id:'before', label:'📋 Before You Apply', items:[] },
+    { id:'during', label:'📝 Application Steps', items:[] },
+    { id:'after',  label:'🔔 After Submitting',  items:[] },
+  ];
+  function addItem(sectionId, item) {
+    sections.find(s=>s.id===sectionId).items.push(item);
+  }
+
+  // BEFORE
+  addItem('before', {
+    key:'research', icon:'🔍',
+    title:`Research ${uniName} admission requirements for ${programName}`,
+    desc:`Confirm the exact minimum average, required Grade 12 courses, supplementary materials, and any program-specific prerequisites. Don't rely on what you heard — check the official page.`,
+    tip:`Tip: Look at the program-specific requirements page, not just the general admissions page. Many programs have unique prerequisites and cut-offs that differ from the university average.`,
+    link: { href: applyURL, text:`${uniName} admissions →` }
+  });
+
+  if (isOntario) {
+    addItem('before', {
+      key:'account', icon:'🌐',
+      title:'Create your OUAC account',
+      desc:`All Ontario universities use OUAC (Ontario Universities' Application Centre) as the single application portal. Create your account and have your school linked early — it's free, but takes setup time.`,
+      tip:`Tip: Your guidance counsellor must approve your enrollment through OUAC. Tell them in September — they get busy by December.`,
+      link: { href:'https://www.ouac.on.ca', text:'Create OUAC account →' }
+    });
+  } else if (isMcGill) {
+    addItem('before', {
+      key:'account', icon:'🌐',
+      title:'Apply through McGill\'s admissions portal (not OUAC)',
+      desc:`McGill does NOT use OUAC. Apply directly through McGill's online system (Slate) at mcgill.ca/applying. The application fee is $120.50 CAD.`,
+      tip:`Tip: You can apply to multiple programs at McGill within a single application. If your first-choice program is competitive (Medicine, Law, Engineering), apply to a backup program at McGill in the same submission.`,
+      link: { href:'https://www.mcgill.ca/applying/', text:'Apply to McGill →' }
+    });
+  } else if (isQuebec) {
+    addItem('before', {
+      key:'account', icon:'🌐',
+      title:`Apply directly to ${uniName} (not OUAC)`,
+      desc:`Quebec universities do NOT use OUAC. Apply through ${uniName}'s own admissions portal. Check their website for the application fee and instructions.`,
+      tip:`Tip: Some Quebec universities require French language proficiency documentation if your schooling has not been in French. Check requirements early.`,
+      link: { href: applyURL, text:`Apply to ${uniName} →` }
+    });
+  } else {
+    addItem('before', {
+      key:'account', icon:'🌐',
+      title:`Create your application account at ${uniName} (not OUAC)`,
+      desc:`${uniName} has its own online application system. Create your account and start your application at least 2 months before the deadline.`,
+      tip:`Tip: Western Canadian and Atlantic universities often use rolling admissions — applying early gets your file reviewed earlier and sometimes results in faster decisions.`,
+      link: { href: applyURL, text:`Apply to ${uniName} →` }
+    });
+  }
+
+  // DURING
+  if (isOntario) {
+    addItem('during', {
+      key:'apply', icon:'📋',
+      title:`Add ${uniName} — ${programName} to your OUAC choices`,
+      desc:`Log into OUAC, search for ${uniName}, and add "${programName}". You can select up to 3 choices in the base fee, plus additional at ~$51 each.`,
+      tip:isWaterloo
+        ? `Tip: Waterloo considers your "first choice" ranking — if you rank them #1, it slightly improves your admission chances for programs like CS and Software Engineering.`
+        : `Tip: The order of your OUAC choices does NOT affect priority at most Ontario universities — all choices are reviewed equally. Apply to all programs you're genuinely interested in.`,
+      link: { href:'https://www.ouac.on.ca', text:'Open OUAC →' },
+      deadline: rawDeadline
+    });
+    addItem('during', {
+      key:'fee', icon:'💳',
+      title:'Pay the OUAC application fee',
+      desc:'~$156 for the first 3 choices (~$51 per additional). Fee waivers are available for students with demonstrated financial need — ask your guidance counsellor.',
+      tip:`Tip: Pay the fee well before the deadline. Payment processing delays close to the deadline can cause your application to be submitted late.`,
+      link: { href:'https://www.ouac.on.ca', text:'Pay at OUAC →' }
+    });
+  } else {
+    addItem('during', {
+      key:'apply', icon:'📋',
+      title:`Submit your application to ${uniName}`,
+      desc:`Complete and submit your application through ${uniName}'s portal. Review every section before submitting — you usually cannot edit once submitted.`,
+      tip:`Tip: Make a checklist of every required field and document before you open the portal. Incomplete applications are common — one missing document can stall your whole file.`,
+      link: { href: applyURL, text:`Submit application →` },
+      deadline: rawDeadline
+    });
+    addItem('during', {
+      key:'fee', icon:'💳',
+      title:`Pay the ${uniName} application fee`,
+      desc:'Application fees vary ($50–$175 CAD). Some universities offer fee waivers for financial hardship — check the admissions FAQ.',
+      tip:`Tip: Save the payment confirmation email. Reference it if you get a "fee not received" notice.`,
+      link: { href: applyURL, text:`${uniName} admissions →` }
+    });
+  }
+
+  addItem('during', {
+    key:'transcript', icon:'📄',
+    title:'Request your official transcript from your guidance counsellor',
+    desc: isOntario
+      ? 'Your guidance counsellor submits your transcript directly through OUAC. Confirm they\'ve done this — especially your Grade 11 finals and Grade 12 midterms when available.'
+      : `Your guidance counsellor submits your transcript directly to ${uniName}. Confirm the submission method with your counsellor — some universities require mailed originals, others accept electronic.`,
+    tip:`Tip: Ask your counsellor in early October. Guidance offices are overwhelmed in December. A 2-week head start prevents last-minute emergencies.`
+  });
+
+  if (hasAIF) {
+    addItem('during', {
+      key:'aif', icon:'📝',
+      title:`Complete the ${uniName} Supplementary / AIF — MANDATORY`,
+      desc: isWaterloo
+        ? `The Waterloo Student Profile (AIF) is required for ALL Waterloo programs. It's submitted through your Waterloo Quest portal after you apply. Missing it = automatic disqualification regardless of grades.`
+        : `The AIF/supplementary form is MANDATORY for ${uniName}. It carries significant weight alongside your grades. Allow 3–6 weeks to write strong, specific responses.`,
+      tip:`Tip: Draft every answer in a separate document first. Avoid vague generalizations — every answer should include your specific role, what you actually did, and a measurable outcome. Have 2+ people review the final draft.`,
+      link: { href: aifURL !== '#' ? aifURL : applyURL, text:'Open supplementary form →' },
+      deadline: rawDeadline,
+      urgent: true
+    });
+  }
+
+  addItem('during', {
+    key:'references', icon:'📬',
+    title:'Request reference letters (if required)',
+    desc:`Check whether ${uniName} requires references for ${programName}. If so, ask teachers who know your work in relevant subjects — give them at least 6 weeks notice.`,
+    tip:`Tip: Give each teacher a package: your resume, the program you're applying to, and 3 specific things you'd like them to highlight. Follow up 2 weeks before the deadline.`
+  });
+
+  addItem('during', {
+    key:'deadline', icon:'⏰',
+    title:`Submit everything by the ${uniName} deadline`,
+    desc:`All application materials — including transcript, AIF, and references — must be received by the deadline. Late submissions are not reviewed.`,
+    tip:`Tip: Aim to submit 5–7 days early. Technical issues, missing transcripts, and payment failures are common last-minute problems with no grace period.`,
+    deadline: rawDeadline,
+    urgent: true
+  });
+
+  // AFTER
+  addItem('after', {
+    key:'portal', icon:'🔔',
+    title:`Monitor the ${uniName} applicant portal weekly`,
+    desc:'Universities send document requests, conditional offers, and final decisions through the applicant portal — not always by email. Check at least once a week after applying.',
+    tip:`Tip: Set a recurring calendar reminder every Monday. Missing a document request can stall your application with no warning. Offers also expire if not acknowledged.`,
+    link: { href:(uni && uni.websiteURL) ? uni.websiteURL : applyURL, text:`${uniName} portal →` }
+  });
+
+  addItem('after', {
+    key:'aid', icon:'💰',
+    title:`Apply for ${isOntario ? 'OSAP' : 'provincial financial aid'} as soon as it opens`,
+    desc: aidDesc,
+    tip:`Tip: Do not wait. OSAP and most provincial programs process on a first-come basis. Students who apply late may not receive funds until October — weeks after school starts.`,
+    link: { href: aidURL, text: aidLabel }
+  });
+
+  addItem('after', {
+    key:'scholarship', icon:'🏅',
+    title:`Apply for ${uniName} entrance scholarships`,
+    desc:`Many entrance scholarships are automatic (awarded based on your admission average), but some require a separate application with October–February deadlines. Check now — missing the window means leaving money behind.`,
+    tip:`Tip: Search "[university name] entrance scholarship" and look for the specific award pages, not just the general financial aid page. Awards of $2,000–$40,000/yr often go unclaimed because students don't apply.`,
+    link: { href:(uni && uni.websiteURL) ? uni.websiteURL : '#', text:`${uniName} scholarships →` }
+  });
+
+  addItem('after', {
+    key:'offer', icon:'✅',
+    title:'Accept or decline your offer of admission',
+    desc:`When ${uniName} extends an offer, you'll have a deadline to respond (typically May 1). If you hold offers from multiple schools, compare carefully — program, co-op, scholarships, location, and fit — before confirming.`,
+    tip:`Tip: Accepting an offer often requires a non-refundable deposit ($500–$1,000). Read the terms before clicking confirm. You can hold multiple offers provisionally until the acceptance deadline.`
+  });
+
+  // ── Compute progress ──
+  const allKeys = sections.flatMap(s => s.items.map(i => i.key));
+  const checked = allKeys.filter(k => state['app_'+k]).length;
+  const pct     = allKeys.length ? Math.round(checked / allKeys.length * 100) : 0;
+
+  // ── Render ──
+  function renderItem(item) {
+    const isChecked = !!state['app_'+item.key];
+    const chkCls = isChecked ? 'checked' : '';
+    const doneCls = isChecked ? 'done-item' : '';
+    const urgCls  = item.urgent && !isChecked ? 'urgent-item' : '';
+    return `<div class="tracker-item ${urgCls} ${doneCls}" id="${cid}-item-${item.key}">
+      <div class="app-check ${chkCls}" onclick="toggleAppCheck(this,'${item.key}','${prog.id}','${cid}')">${isChecked?'✓':''}</div>
+      <div class="tracker-item-body">
+        <div class="tracker-item-title">
+          <span>${item.icon} ${item.title}</span>
+          ${item.deadline ? dlChip(item.deadline) : ''}
+        </div>
+        <div class="tracker-item-desc">${item.desc}</div>
+        ${item.tip ? `<div class="tracker-item-tip">💡 ${item.tip}</div>` : ''}
+        ${item.link ? `<a class="app-item-link" href="${item.link.href}" target="_blank" rel="noopener">🔗 ${item.link.text}</a>` : ''}
+      </div>
+    </div>`;
+  }
+
+  const sectionsHtml = sections.map(sec => {
+    if (!sec.items.length) return '';
+    return `<div class="tracker-section-hdr">${sec.label}</div>
+      ${sec.items.map(renderItem).join('')}`;
+  }).join('');
 
   return {
     html: `
-      <div id="${containerId}" data-progid="${prog.id}" data-total="${items.length}">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-          <h3 style="margin:0;">Application Tracker — ${prog.uniName}</h3>
+      <div id="${cid}" data-progid="${prog.id}" data-total="${allKeys.length}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <h3 style="margin:0;font-size:1rem;">Application Tracker — ${uniName}</h3>
           <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:.84rem;color:var(--grey);">Progress:</span>
-            <div class="progress-wrap" style="width:120px;"><div class="progress-fill" id="${containerId}-bar" style="width:${pct}%;"></div></div>
-            <span style="font-weight:800;font-size:.88rem;" id="${containerId}-pct">${pct}%</span>
+            <div class="progress-wrap" style="width:110px;"><div class="progress-fill" id="${cid}-bar" style="width:${pct}%;"></div></div>
+            <span style="font-weight:800;font-size:.88rem;" id="${cid}-pct">${pct}%</span>
           </div>
         </div>
-        <div class="app-tracker-items">
-          ${items.map(i => {
-            const chkd = state['app_'+i.key] ? 'checked' : '';
-            return `
-              <div class="app-checklist-item" style="${i.urgent ? 'border-left:4px solid var(--red);' : ''}">
-                <div class="app-check ${chkd}" onclick="toggleAppCheck(this,'${i.key}','${prog.id}','${containerId}')">${chkd?'✓':''}</div>
-                <div>
-                  <div class="app-item-title">${i.icon} ${i.title}</div>
-                  <div class="app-item-desc">${i.desc}</div>
-                  ${i.link ? `<a class="app-item-link" href="${i.link.href}" target="_blank" rel="noopener">🔗 ${i.link.text}</a>` : ''}
-                </div>
-              </div>`;
-          }).join('')}
+
+        <div class="tracker-deadline-bar">
+          <div>
+            <div style="font-size:.72rem;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Main Deadline</div>
+            <span class="tracker-dl-chip ${dlClass}">${dlEmoji} ${dlText}</span>
+          </div>
+          <div style="border-left:1px solid var(--border);padding-left:14px;font-size:.80rem;color:var(--navy);">
+            <div><strong>Portal:</strong> ${isOntario ? 'OUAC (ouac.on.ca)' : isMcGill ? 'McGill Slate (direct)' : isQuebec ? 'Direct to university' : `Direct to ${uniName}`}</div>
+            ${hasAIF ? `<div style="color:var(--red);font-weight:700;margin-top:2px;">⚠️ AIF/Supplementary required</div>` : ''}
+            ${pd && pd.coopTerms > 0 ? `<div style="color:#1a7a52;font-weight:700;margin-top:2px;">✅ Co-op available (${pd.coopTerms} work terms)</div>` : ''}
+          </div>
         </div>
+
+        ${sectionsHtml}
       </div>`,
-    total: items.length
+    total: allKeys.length
   };
 }
 
@@ -2626,17 +2882,20 @@ function toggleAppCheck(el, key, progId, containerId) {
   const state = getCLState(progId);
   state['app_'+key] = done;
   saveCLState(progId, state);
-  // Recalc progress scoped to THIS program's tracker container only
+  const itemEl = el.closest('.tracker-item');
+  if (itemEl) {
+    if (done) { itemEl.classList.add('done-item'); itemEl.classList.remove('urgent-item'); }
+    else { itemEl.classList.remove('done-item'); }
+  }
   const container = document.getElementById(containerId);
   if (!container) return;
-  const allChecks     = container.querySelectorAll('.app-check');
-  const checkedCount  = container.querySelectorAll('.app-check.checked').length;
-  const pct = Math.round(checkedCount / allChecks.length * 100);
+  const allChecks    = container.querySelectorAll('.app-check');
+  const checkedCount = container.querySelectorAll('.app-check.checked').length;
+  const pct = allChecks.length ? Math.round(checkedCount / allChecks.length * 100) : 0;
   const bar = document.getElementById(containerId + '-bar');
   const lbl = document.getElementById(containerId + '-pct');
   if (bar) bar.style.width = pct + '%';
   if (lbl) lbl.textContent = pct + '%';
-  // Refresh sidebar mini-bars to reflect updated progress
   renderSidebar(document.getElementById('sidebarSearch').value);
 }
 
@@ -3259,6 +3518,13 @@ ${(()=>{
       <!-- Grade 12 subjects -->
       ${gr12SectionHtml}
 
+      <div style="background:var(--navy);border-radius:12px;padding:14px 18px;display:flex;gap:14px;align-items:center;cursor:pointer;margin-top:16px;" onclick="openChat('academic')">
+        <span style="font-size:1.4rem;">🤖</span>
+        <div>
+          <div style="color:#fff;font-weight:800;font-size:.92rem;">Academics Advisor</div>
+          <div style="color:rgba(255,255,255,.65);font-size:.81rem;">Ask about target averages, required courses, grade improvement, or what ${prog.uniName} looks for</div>
+        </div>
+      </div>
     </div>
 
     <!-- ── EC TAB ── -->
@@ -3268,15 +3534,14 @@ ${(()=>{
       </div>
       <div class="card-flat" style="margin-bottom:16px;">
         <h4 style="margin-bottom:6px;">⚽ Extracurriculars Strength</h4>
-        <p style="font-size:.82rem;color:var(--grey);margin-bottom:12px;">Rate your overall extracurricular quality. This feeds your score in the Application Tracker.</p>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <input type="range" min="0" max="100" step="5" value="${clSt['ecScore'] || 0}"
-            id="ecScoreSlider"
-            oninput="document.getElementById('ecScoreVal').textContent=this.value+'%';saveSelfScore('ec','${prog.id}',this.value)"
-            style="flex:1;accent-color:var(--accent);"/>
-          <span id="ecScoreVal" style="font-weight:800;font-size:1rem;min-width:42px;color:var(--navy);">${clSt['ecScore'] ? clSt['ecScore']+'%' : '0%'}</span>
+        ${renderECStrengthBlock(prog.id)}
+      </div>
+      <div style="background:var(--navy);border-radius:12px;padding:14px 18px;display:flex;gap:14px;align-items:center;cursor:pointer;margin-bottom:16px;" onclick="openChat('ec')">
+        <span style="font-size:1.4rem;">🤖</span>
+        <div>
+          <div style="color:#fff;font-weight:800;font-size:.92rem;">EC Advisor</div>
+          <div style="color:rgba(255,255,255,.65);font-size:.81rem;">Ask about extracurriculars, your AIF, how to improve your profile</div>
         </div>
-        <div style="font-size:.73rem;color:var(--grey);margin-top:6px;">0 = no ECs &nbsp;·&nbsp; 50 = solid involvement &nbsp;·&nbsp; 100 = exceptional leadership</div>
       </div>
     </div>
 
@@ -3327,11 +3592,16 @@ ${(()=>{
 // ─────────────────────────────────────────────────────────────
 //  TAB SWITCHING
 // ─────────────────────────────────────────────────────────────
+const TAB_CHAT_MODE = { 'tab-academics':'academic', 'tab-ec':'ec', 'tab-application':'app', 'tab-money':'money' };
 function switchTab(el, tabId) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById(tabId).classList.add('active');
+  chatMode = TAB_CHAT_MODE[tabId] || 'general';
+  const hdr = document.getElementById('chatModeLabel');
+  const modeNames = { academic:'Academics Advisor', ec:'EC Advisor', app:'Application Advisor', money:'Funding Advisor', general:'Program Advisor' };
+  if (hdr) hdr.textContent = modeNames[chatMode] || 'Program Advisor';
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -3373,26 +3643,44 @@ let chatContext = { prog: null, pd: null };
 let chatMode = 'general';
 
 const chatKnowledge = {
+  academic: {
+    keywords: ['grade','average','mark','course','math','chemistry','physics','english','prereq','requirement','gpa','target','calculus','biology','improve','subject'],
+    responses: [
+      p => `For ${p.programName} at ${p.uniName}, the target admission average is ${p.pd && p.pd.targetAvg ? p.pd.targetAvg.low + '–' + p.pd.targetAvg.high + '%' : 'typically listed on their admissions page'}. This is usually calculated from your top 6 Grade 12 courses, not your overall average. Which courses are you concerned about?`,
+      p => `${p.uniName} calculates your admission average from your best 6 Grade 12 U/M courses. That means you can sometimes drop a weak course from the calculation — but never drop a required prerequisite. What does your current top 6 look like?`,
+      p => `If you're below the target average, focus on the 1–2 courses dragging you down. A 3–5% improvement in one course can shift you from a waitlist to an offer. Office hours, peer tutoring, and consistent review sessions are proven strategies.`,
+      p => `${p.pd && p.pd.requiredCourses && p.pd.requiredCourses.length ? `Required courses for ${p.programName}: ${p.pd.requiredCourses.join(', ')}. Missing any of these means automatic ineligibility — even with a 95% average.` : `Check the ${p.uniName} admissions page for required Grade 12 courses for ${p.programName}. Most programs require specific courses beyond the general minimum.`}`,
+      p => `Grade 11 marks matter — they're used for conditional early offers and initial eligibility screening. But Grade 12 midterms are what universities base admission offers on. Strong Grade 12 marks can compensate for a weaker Grade 11.`,
+      p => `Consistency matters as much as the peak. A student with 87% across all courses is often viewed more favorably than one with 92% in some and 78% in others — admissions officers notice instability in the academic record.`,
+      p => `For ${p.programName} specifically: admissions officers aren't just looking at your average. They want to see you've challenged yourself — taking the harder math option, AP courses, or enrichment where available.`,
+    ]
+  },
   ec: {
-    keywords: ['extracurricular','ec','activity','club','sport','volunteer','robotics','hackathon','competition','leadership'],
+    keywords: ['extracurricular','ec','activity','club','sport','volunteer','robotics','hackathon','competition','leadership','aif','hobby','project'],
     responses: [
       p => `For ${p.programName} at ${p.uniName}, the most impactful extracurriculars are those that directly demonstrate interest in your field. What kind of activities do you enjoy or already do?`,
-      p => `Quality beats quantity every time. One year as president of the robotics club is worth more to ${p.uniName} than 10 clubs you barely attended. What's one activity you're genuinely passionate about?`,
-      p => `For ${p.programName}, universities want to see evidence that you've explored your field outside of class. Have you done any projects, competitions, or volunteering related to your program?`,
-      p => `${p.uniName} looks for students who've shown initiative. Have you ever started anything — a project, a club, a fundraiser — rather than just joining what already existed?`,
-      p => `The AIF or supplementary essay is where extracurriculars really matter. You need to be able to tell a story about what you did, your specific role, and the impact. Start documenting now if you haven't already.`,
-      p => `If you're in Grade 9 or 10, you still have time to build depth. Pick 1–2 things and stick with them for 2–3 years rather than trying 10 things. Depth matters more than breadth.`,
-      p => `If you're in Grade 11 or 12 and feel behind, don't panic. Focus on getting a leadership role in something you already do, or start a meaningful independent project you can describe clearly.`,
+      p => `Quality beats quantity. One year as president of the robotics club is worth more to ${p.uniName} than 10 clubs you barely attended. What's the one activity you're most committed to?`,
+      p => `For ${p.programName}, universities want evidence you've explored your field outside of class. Projects, competitions, and hands-on volunteering directly related to your intended field carry the most weight.`,
+      p => `${p.uniName} looks for students who've shown initiative. Have you started anything — a project, a club, a fundraiser — rather than just joining what already existed? "Founded" is the most powerful word on an application.`,
+      p => `The AIF or supplementary is where extracurriculars make or break your application. You need a story: what you did, your specific role, the challenge, the outcome. Start documenting now if you haven't already.`,
+      p => `If you're in Grade 9 or 10, you have time to build depth. Pick 1–2 things and commit for 2–3 years. Breadth looks like resume padding; depth looks like genuine passion.`,
+      p => `In Grade 11 or 12 and feel behind? Don't try to add 10 new things. Get a leadership role in something you already do — team captain, club executive, event organizer — and document what you changed.`,
     ]
   },
   app: {
-    keywords: ['ouac','apply','application','aif','form','deadline','reference','transcript','letter'],
+    keywords: ['ouac','apply','application','aif','form','deadline','reference','transcript','letter','portal','submit','mcgill','concordia','ubc','alberta','direct'],
     responses: [
-      p => `The OUAC application for ${p.uniName} should be submitted by the deadline — usually February 1 for Ontario universities. Don't wait until January to start.`,
-      p => `${p.pd && p.pd.aifRequired ? `The AIF (Admission Information Form) is MANDATORY for ${p.prog.uniName} and takes weeks to complete properly. It's as important as your grades — start at least 1–2 months before the deadline.` : `${p.prog.uniName} may have a supplementary form or essay. Check the admissions page carefully — missing a supplementary component can result in rejection even with strong grades.`}`,
-      p => `For reference letters: ask teachers who know you well in relevant subjects, give them 6–8 weeks notice, and provide them with your resume, the program you're applying to, and specific achievements you'd like them to highlight.`,
-      p => `Your OUAC application pulls grades directly from your school via the guidance office. Make sure your counsellor has submitted your transcript — confirm this before the deadline.`,
-      p => `After submitting, check the ${p.prog.uniName} student portal regularly. Universities send document requests, conditional offers, and supplementary form invitations through the portal, not always by email.`,
+      p => {
+        const prov = p.prog && p.prog.province;
+        const isON = prov === 'Ontario' || (!prov && p.uniName && !['mcgill','concordia','montréal','laval','ubc','sfu','alberta','calgary','manitoba','saskatchewan','dalhousie','mun','unb'].some(n => (p.uniName||'').toLowerCase().includes(n)));
+        return isON
+          ? `${p.uniName} uses OUAC (Ontario Universities' Application Centre) as its application portal. Create your account early — your guidance counsellor must link your school. The deadline is typically February 1. Don't wait until January.`
+          : `${p.uniName} does NOT use OUAC. Apply directly through their own portal — the link is on their admissions website. Application fees and deadlines vary, so check the specific page for ${p.programName}.`;
+      },
+      p => `${p.pd && p.pd.aifRequired ? `The AIF or supplementary form for ${p.uniName} is MANDATORY — it takes 3–6 weeks to complete properly. It's as important as your grades. Start at least 2 months before the deadline and get multiple people to review it.` : `Check whether ${p.uniName} has a supplementary form or essay for ${p.programName}. Missing a supplementary component — even an optional one — can significantly reduce your chances.`}`,
+      p => `For reference letters: ask teachers who know your work in subjects relevant to ${p.programName}. Give them 6–8 weeks notice. Provide a package: your resume, the program you're applying to, and 3 specific things you'd like highlighted.`,
+      p => `Your guidance counsellor submits your official transcript directly. Don't assume they've done it — confirm with them before the deadline. Check in October, then again in January.`,
+      p => `After submitting, monitor the ${p.uniName} applicant portal at least weekly. Document requests, conditional offers, and final decisions come through the portal — not always by email. Missing a document request can delay your entire file.`,
     ]
   },
   money: {
@@ -3417,13 +3705,23 @@ const chatKnowledge = {
   }
 };
 
-let ecChatIdx = { ec:0, app:0, money:0, general:0 };
+let ecChatIdx = { academic:0, ec:0, app:0, money:0, general:0 };
+
+const CHAT_GREETINGS = {
+  academic: p => `Hi! I'm your <strong>Academics Advisor</strong> for <strong>${p.programName}</strong> at <strong>${p.uniName}</strong>. Ask me about target averages, required courses, how grades are calculated, or how to improve a specific subject.`,
+  ec:       p => `Hi! I'm your <strong>EC Advisor</strong> for <strong>${p.programName}</strong> at <strong>${p.uniName}</strong>. Ask me about extracurriculars, how to strengthen your AIF, or what activities matter most for your program.`,
+  app:      p => `Hi! I'm your <strong>Application Advisor</strong> for <strong>${p.programName}</strong> at <strong>${p.uniName}</strong>. Ask me about ${p.uniName.toLowerCase().includes('mcgill') || p.uniName.toLowerCase().includes('concordia') || p.uniName.toLowerCase().includes('ubc') ? 'the direct application process,' : 'OUAC,'} the AIF, transcripts, reference letters, or deadlines.`,
+  money:    p => `Hi! I'm your <strong>Funding Advisor</strong> for <strong>${p.programName}</strong> at <strong>${p.uniName}</strong>. Ask me about OSAP, entrance scholarships, bursaries, or how to fund your education.`,
+  general:  p => `Hi! I'm your advisor for <strong>${p.programName}</strong> at <strong>${p.uniName}</strong>. Ask me about grades, extracurriculars, the application process, or scholarships.`,
+};
 
 function setChatContext(prog, pd) {
   chatContext = { prog, pd };
   const msgs = document.getElementById('chatMessages');
   if (msgs) {
-    msgs.innerHTML = `<div class="chat-msg bot">Hi! I'm your advisor for <strong>${prog.programName}</strong> at <strong>${prog.uniName}</strong>. Ask me about extracurriculars, the application, grades, scholarships, or anything else!</div>`;
+    const greetFn = CHAT_GREETINGS[chatMode] || CHAT_GREETINGS.general;
+    const ctx = { ...prog, pd, prog };
+    msgs.innerHTML = `<div class="chat-msg bot">${greetFn(ctx)}</div>`;
   }
 }
 function detectChatMode(msg) {
@@ -3432,10 +3730,21 @@ function detectChatMode(msg) {
     if (mode === 'general') continue;
     if (data.keywords.some(k => lm.includes(k))) return mode;
   }
-  return 'general';
+  return chatMode !== 'general' ? chatMode : 'general';
 }
 function openChat(mode) {
   chatMode = mode || 'general';
+  const modeNames = { academic:'Academics Advisor', ec:'EC Advisor', app:'Application Advisor', money:'Funding Advisor', general:'Program Advisor' };
+  const hdr = document.getElementById('chatModeLabel');
+  if (hdr) hdr.textContent = modeNames[chatMode] || 'Program Advisor';
+  if (chatContext.prog) {
+    const msgs = document.getElementById('chatMessages');
+    if (msgs) {
+      const greetFn = CHAT_GREETINGS[chatMode] || CHAT_GREETINGS.general;
+      const ctx = { ...chatContext.prog, pd: chatContext.pd, prog: chatContext.prog };
+      msgs.innerHTML = `<div class="chat-msg bot">${greetFn(ctx)}</div>`;
+    }
+  }
   document.getElementById('chatPanel').classList.add('open');
 }
 function toggleChat() {
