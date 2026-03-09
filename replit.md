@@ -16,7 +16,7 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 | `essays.html` | Essay writing guidance |
 | `tracker.html` | Application tracker |
 | `data.js` | All shared data: MAJORS (354 programs across 15 categories), UNIVERSITIES (100 schools), PROGRAM_DATA, SCHOLARSHIPS |
-| `browsing.html` | Two-pane browse page — Majors tab (354 majors, 15 categories) + Universities tab (100 unis). Contains INDIVIDUAL_MAJOR_DATA (339 unique major entries) and UNI_SUPPLEMENT (enriched university profiles). |
+| `browsing.html` | Two-pane browse page — Majors tab (354 majors, 15 categories) + Universities tab (100 unis) + **Funding tab** (113 scholarships, Cost Calculator, OSAP & Provincial Aid). Contains INDIVIDUAL_MAJOR_DATA, UNI_SUPPLEMENT, and the SCHOLARSHIPS array. |
 | `auth.js` | Auth layer + ugLoad/ugSave helpers (localStorage + Firebase fallback) |
 | `style.css` | Global design system |
 
@@ -31,7 +31,8 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 ## Key Features (browsing.html)
 - **Major detail panel**: Merges `INDIVIDUAL_MAJOR_DATA` + `MAJOR_EXTRA_DATA` (103 entries) — uses `extra.schools` for Top Canadian Schools, `extra.skills`, `extra.related` for Related Majors, `extra.desc2` appended to description, `extra.degree` for degree-specific info, `extra.outlookNote` in Job Outlook panel
 - **University detail panel**: Uses `sup.vibeExt` for extended About text; 7 enriched universities (UofT, UBC, McGill, Waterloo, McMaster, Queen's, Western) also have `researchNote`, `studentLife`, `knownFor` in `UNI_SUPPLEMENT`; Programs Offered is a collapsible `<details>` element
-- **URL deep linking**: `browsing?tab=unis&uni={id}` and `browsing?tab=majors&cat={cat}&major={major}` — handled on init via `initFromURL()` → calls `selectUni(id)` or `selectMajor(cat, major)`. Must use extension-less URL (`browsing` not `browsing.html`) — `serve` strips query strings when doing the `.html` redirect.
+- **URL deep linking**: `browsing?tab=unis&uni={id}`, `browsing?tab=majors&cat={cat}&major={major}`, and `browsing?tab=funding` — handled on init via `initFromURL()`. Must use extension-less URL (`browsing` not `browsing.html`) — `serve` strips query strings when doing the `.html` redirect.
+- **Funding tab** (`#bt-funding`): left panel = filterable scholarship list (type/province/area) with 2 pinned tool items (Cost Calculator, Provincial Aid); right panel = scholarship detail view or tool panel rendered dynamically. Functions: `renderFundingList()`, `selectSchol(idx)`, `selectFundingTool(tool)`, `renderCalcPanel()`, `renderOsapPanel()`, `calcCostInBrowse()`, `applyFundingFilters()`, `resetFundingFilters()`.
 
 ## Key Features (selections.html)
 - **Browse buttons**: Each major item in `showMajorList()` has a ⤴ icon-link (stops propagation, navigates to `browsing?tab=majors&cat=…&major=…`). Each university card has a ⤴ link button next to "Website ↗" (navigates to `browsing?tab=unis&uni=…`)
@@ -69,11 +70,9 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 - Hint text "Rate in My List →" when EC/essay scores are 0
 - Days until admission deadline, target average, your Gr12 average
 
-## Key Features (scholarships.html)
-- **100+ scholarships** across 20+ categories: National Prestige, Federal Grants, Bank/Corporate, STEM/Engineering, Health, Business, Arts, Law, Environment, Indigenous, Women in STEM, First-Generation, Disability, Sport/Athletics, Province-specific (ON, BC, AB, QC, MB, SK, NS, NB), Agriculture, Social Work, Trades, Cultural/Heritage
-- Filters: Type (merit, need, sport, stem, community), Province (9 options + National), Program Area (8 options incl. Law, Sci, Env)
-- **"Apply →" button** on every card linking to official scholarship page
-- Cost Calculator + OSAP/Provincial Aid tabs
+## Key Features (scholarships.html — legacy, no longer in nav)
+- Still accessible directly at `/scholarships.html` but removed from nav; superseded by `browsing.html` Funding tab
+- Contains its own inline scholarship array and cost calculator (kept for reference)
 
 ## data.js Key Sections
 - **MAJORS**: 17 categories including `"Law"` (30+ programs) and `"Trades & Applied Technology"` (33 programs); backward-compat `"Law & Legal Studies"` kept
@@ -88,7 +87,8 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 - Science variants → `uniId__science`
 
 ## Navigation
-All pages share nav: `Selections | My List | Funding | Essays | Tracker | [Log In] [Start YOUR plan]`
+All pages share nav: `Browse | Selections | My List | Essays | Tracker | [Log In] [Start YOUR plan]`
+("Funding" removed from nav — now accessed via Browse → 💰 Funding tab)
 When logged in: `… | [User Pill] [Profile] [Log Out] | [Start YOUR plan]`
 - Clicking the user pill or "Profile" goes to `profile.html`
 - "Start YOUR plan" → `selections.html`
