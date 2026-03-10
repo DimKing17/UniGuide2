@@ -44,16 +44,6 @@
     .strength-label { font-size:0.80rem; width:120px; flex-shrink:0; }
     .strength-pct { font-size:0.80rem; font-weight:700; width:36px; text-align:right; }
 
-    /* TIMELINE */
-    .tl-month { display:flex; gap:20px; align-items:flex-start; margin-bottom:20px; }
-    .tl-month-label { min-width:90px; font-weight:800; font-size:0.85rem; padding-top:12px; color:var(--navy); }
-    .tl-tasks { flex:1; display:flex; flex-direction:column; gap:8px; }
-    .tl-task { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:12px 14px; display:flex; align-items:flex-start; gap:12px; }
-    .tl-task-dot { width:10px; height:10px; border-radius:50%; background:var(--border); flex-shrink:0; margin-top:4px; }
-    .tl-task-dot.done { background:var(--success); }
-    .tl-task-dot.active { background:var(--red); }
-    .tl-task h4 { font-size:0.88rem; margin-bottom:2px; }
-    .tl-task p { font-size:0.80rem; color:var(--grey); }
   </style>
 </head>
 <body>
@@ -74,7 +64,7 @@
 
 <div class="page-hero">
   <div class="container">
-    <h1>Application Tracker & Timeline</h1>
+    <h1>Application Tracker</h1>
     <p>Track the status of every application, see what's missing, monitor your strength, and never miss an admission date.</p>
   </div>
 </div>
@@ -84,7 +74,6 @@
 
     <div class="tabs">
       <div class="tab active" onclick="switchTab(this,'t-tracker')">📋 Application Tracker</div>
-      <div class="tab" onclick="switchTab(this,'t-timeline')">📅 Timeline Generator</div>
       <div class="tab" onclick="switchTab(this,'t-compare')">⚖️ Decision Comparison</div>
     </div>
 
@@ -93,33 +82,6 @@
       <div id="trackerList">
         <p style="color:var(--grey);padding:32px;text-align:center;">Loading your saved programs…</p>
       </div>
-    </div>
-
-    <!-- TIMELINE -->
-    <div class="tab-panel" id="t-timeline">
-      <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;">
-        <h3 style="margin-bottom:16px;">Generate Your Timeline</h3>
-        <div class="grid-2" style="margin-bottom:16px;">
-          <div class="form-group">
-            <label>Current Grade</label>
-            <select id="gradeSelect" onchange="renderTimeline()">
-              <option value="9">Grade 9</option>
-              <option value="10">Grade 10</option>
-              <option value="11">Grade 11</option>
-              <option value="12" selected>Grade 12</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Application Year</label>
-            <select id="yearSelect" onchange="renderTimeline()">
-              <option value="2025">Applying Fall 2025</option>
-              <option value="2026" selected>Applying Fall 2026</option>
-              <option value="2027">Applying Fall 2027</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div id="timelineOutput"></div>
     </div>
 
     <!-- COMPARISON -->
@@ -346,50 +308,6 @@ function renderTrackerCards() {
 // Render on load
 document.addEventListener('DOMContentLoaded', renderTrackerCards);
 
-// Timeline generator
-const timelineData = {
-  9:  [
-    { month:'Now', tasks:[{ title:'Explore interests widely', desc:'Try clubs, activities, and courses without pressure. This is your discovery phase.' }] },
-    { month:'This semester', tasks:[{ title:'Focus on building strong habits', desc:'Consistency in Grade 9 sets the tone. Aim for 80%+ in all subjects.' }] },
-    { month:'Year-round', tasks:[{ title:'Start a few extracurriculars', desc:'Join 2–3 clubs or activities you genuinely enjoy. No need to lead yet.' }] },
-  ],
-  10: [
-    { month:'Now', tasks:[{ title:'Narrow down extracurriculars', desc:'Focus on 3–5 activities you care about. Quality over quantity starts now.' }] },
-    { month:'This semester', tasks:[{ title:'Research career areas', desc:'Browse majors that interest you. Take the UniGuide Major Quiz for direction.' }] },
-    { month:'Spring', tasks:[{ title:'Seek a leadership role or volunteer position', desc:'Even small leadership (club exec, tutoring) is worth more than many passive memberships.' }] },
-  ],
-  11: [
-    { month:'September', tasks:[{ title:'Research universities and programs seriously', desc:'Use UniGuide\'s University Finder. Build a long list, then narrow down.' }] },
-    { month:'October–November', tasks:[{ title:'Visit or attend virtual open houses', desc:'McMaster, Waterloo, UofT, and most schools hold fall open houses.' }] },
-    { month:'January', tasks:[{ title:'Identify prerequisite courses you still need', desc:'Make sure Grade 12 course selections cover all requirements for your target programs.' }] },
-    { month:'Spring', tasks:[{ title:'Start building your application narrative', desc:'What story do you want your application to tell? Start thinking about your essay topic.' }] },
-  ],
-  12: [
-    { month:'September', tasks:[{ title:'Finalize your university list', desc:'Target: 2–3 dream, 2–3 target, 2 safety schools. Max 3 reaches.' }, { title:'Begin essay drafting', desc:'Start your personal statement early — great essays take 5+ rewrites.' }] },
-    { month:'October', tasks:[{ title:'OUAC opens (Ontario)', desc:'Create your OUAC account and add your school choices.' }, { title:'Request reference letters', desc:'Ask teachers now — give them at least 4–6 weeks.' }] },
-    { month:'November', tasks:[{ title:'Submit OUAC application', desc:'Early submission = early consideration. Don\'t wait for the deadline.' }, { title:'Apply for Loran Award and other major scholarships', desc:'Loran deadline is mid-November.' }] },
-    { month:'January', tasks:[{ title:'Scholarship applications due', desc:'Most major deadlines fall in January. Apply to every scholarship you qualify for.' }, { title:'Midterm grades submitted', desc:'Your guidance counsellor sends updated grades to universities.' }] },
-    { month:'February', tasks:[{ title:'OUAC admission date', desc:'February 1 for most Ontario programs. Do not miss this.' }, { title:'OSAP opens', desc:'Apply for Ontario student financial aid as soon as it opens.' }] },
-    { month:'March–April', tasks:[{ title:'Offers begin arriving', desc:'Track them in UniGuide. Do not accept any offer yet — wait for all results.' }] },
-    { month:'June 1', tasks:[{ title:'Accept your offer', desc:'Ontario OUAC acceptance deadline. Confirm your spot. Request final transcripts.' }] },
-  ]
-};
-
-function renderTimeline() {
-  const grade = parseInt(document.getElementById('gradeSelect').value);
-  const months = timelineData[grade] || [];
-  let html = '';
-  months.forEach(m => {
-    html += `<div class="tl-month"><div class="tl-month-label">${m.month}</div><div class="tl-tasks">`;
-    m.tasks.forEach((t, i) => {
-      const dot = grade === 12 && m.month.includes('June') ? 'done' : (grade === 12 && (m.month === 'September' || m.month === 'October') ? 'done' : '');
-      html += `<div class="tl-task"><div class="tl-task-dot ${dot}"></div><div><h4>${t.title}</h4><p>${t.desc}</p></div></div>`;
-    });
-    html += `</div></div>`;
-  });
-  document.getElementById('timelineOutput').innerHTML = html;
-}
-renderTimeline();
 </script>
 <script src="data.js"></script>
 <script src="firebase-config.js"></script>
