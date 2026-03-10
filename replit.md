@@ -11,10 +11,10 @@ A static HTML/CSS/JS web app for Canadian high school students (Grades 9–12) t
 | `profile.html` | User Profile — personal info, quiz answers, background, settings, danger zone |
 | `major.html` | Legacy Majors page (still functional, nav updated) |
 | `universities.html` | Legacy Universities page (still functional, nav updated) |
-| `saved.html` | My List — saved programs with full detail dashboards |
-| `scholarships.html` | Scholarship / Funding finder (100+ scholarships, "Apply →" links) |
-| `essays.html` | Essay writing guidance |
-| `tracker.html` | Application tracker |
+| `saved.html` | My List — saved programs with 5-tab detail dashboards (Academics, EC, Application, **Essays**, Funding) |
+| `scholarships.html` | Legacy scholarship page (functional but no longer in nav) |
+| `essays.html` | Legacy essays page (functional but no longer in nav — content integrated into saved.html Essays tab) |
+| `tracker.html` | Application tracker (2 tabs: Application Tracker, Decision Comparison) |
 | `data.js` | All shared data: MAJORS (354 programs across 15 categories), UNIVERSITIES (100 schools), PROGRAM_DATA, SCHOLARSHIPS |
 | `browsing.html` | Two-pane browse page — Majors tab (354 majors, 15 categories) + Universities tab (100 unis) + **Funding tab** (113 scholarships, Cost Calculator, OSAP & Provincial Aid). Contains INDIVIDUAL_MAJOR_DATA, UNI_SUPPLEMENT, and the SCHOLARSHIPS array. |
 | `auth.js` | Auth layer + ugLoad/ugSave helpers (localStorage + Firebase fallback) |

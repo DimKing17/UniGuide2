@@ -499,6 +499,76 @@
     .tl-grade-btn { padding:7px 18px; border-radius:20px; border:2px solid var(--border); background:var(--light); font-size:.82rem; font-weight:800; cursor:pointer; transition:.15s; }
     .tl-grade-btn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
     .tl-grade-btn:hover:not(.active) { border-color:var(--navy); }
+
+    /* ── Essays Tab ── */
+    .essay-subnav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; border-bottom:2px solid var(--border); padding-bottom:14px; }
+    .essay-subbtn { padding:8px 18px; border-radius:8px; border:1.5px solid var(--border); background:var(--light); font-size:.84rem; font-weight:800; cursor:pointer; transition:.15s; font-family:inherit; color:var(--navy); }
+    .essay-subbtn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .essay-subbtn:hover:not(.active) { border-color:var(--navy); }
+    .essay-section { display:none; }
+    .essay-section.active { display:block; }
+    .essay-guide-card { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:20px 18px; margin-bottom:14px; }
+    .essay-guide-card h4 { font-size:.98rem; margin-bottom:10px; color:var(--navy); }
+    .essay-guide-card ul, .essay-guide-card ol { padding-left:18px; }
+    .essay-guide-card li { font-size:.87rem; color:var(--navy); margin-bottom:7px; line-height:1.55; }
+    .essay-tip { background:#fff4e0; border:1px solid #f7c948; border-radius:10px; padding:12px 15px; margin-top:12px; font-size:.83rem; color:#7a5200; }
+    .essay-warn { background:#fde8ec; border:1px solid #f7aab8; border-radius:10px; padding:12px 15px; margin-top:12px; font-size:.83rem; color:var(--red); }
+    .essay-highlight { background:#e8edf5; border:1px solid var(--navy); border-radius:10px; padding:12px 15px; margin-top:12px; font-size:.83rem; color:var(--navy); }
+    .essay-sample { background:var(--light); border-left:4px solid var(--navy); border-radius:0 10px 10px 0; padding:14px 16px; margin-top:12px; font-size:.86rem; font-style:italic; color:var(--navy); line-height:1.65; }
+    .essay-star-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0; }
+    .essay-star-cell { background:var(--light); border-radius:10px; padding:12px; }
+    .essay-star-cell strong { display:block; margin-bottom:4px; font-size:.88rem; }
+    .essay-star-cell span { font-size:.81rem; color:var(--grey); }
+    /* Draft workspace */
+    .es-workspace { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:20px 18px; margin-bottom:14px; }
+    .es-type-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+    .es-type-btn { padding:6px 13px; border-radius:20px; border:1.5px solid var(--border); font-size:.79rem; font-weight:800; cursor:pointer; background:#fff; transition:.15s; color:var(--navy); font-family:inherit; }
+    .es-type-btn.active { background:var(--red); color:#fff; border-color:var(--red); }
+    .es-type-btn:hover:not(.active) { border-color:var(--red); color:var(--red); }
+    .es-chip-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+    .es-chip { padding:4px 11px; border-radius:50px; border:1.5px solid var(--border); font-size:.77rem; font-weight:700; cursor:pointer; background:#fff; transition:all .15s; color:var(--navy); }
+    .es-chip:hover { border-color:var(--red); color:var(--red); background:var(--light); }
+    .es-draft-layout { display:grid; grid-template-columns:1fr; gap:14px; }
+    .es-draft-layout.with-review { grid-template-columns:1fr 300px; }
+    @media(max-width:900px) { .es-draft-layout.with-review { grid-template-columns:1fr; } }
+    .es-textarea { width:100%; min-height:300px; border:1.5px solid var(--border); border-radius:10px; padding:16px; font-size:.93rem; font-family:Georgia, serif; line-height:1.75; resize:vertical; box-sizing:border-box; color:var(--navy); background:#fdfcfb; }
+    .es-textarea:focus { outline:none; border-color:var(--navy); }
+    .es-toolbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .es-wcount { font-size:.80rem; color:var(--grey); }
+    .es-wcount strong { color:var(--navy); }
+    .es-saved-indicator { font-size:.75rem; color:var(--success); font-weight:700; opacity:0; transition:opacity .3s; margin-left:8px; }
+    .es-saved-indicator.show { opacity:1; }
+    .es-prog-bar { height:4px; border-radius:2px; background:var(--border); width:150px; margin-top:4px; overflow:hidden; }
+    .es-prog-fill { height:100%; border-radius:2px; background:var(--success); transition:width .3s; }
+    .es-wlimit-hint { font-size:.75rem; color:var(--grey); margin-bottom:10px; min-height:16px; }
+    /* AI Reviewer */
+    .ai-rev-panel { background:#fff; border:2px solid var(--navy); border-radius:12px; padding:15px; }
+    .ai-rev-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .ai-rev-title { font-weight:900; font-size:.88rem; color:var(--navy); }
+    .ai-rev-badge { font-size:.72rem; background:var(--navy); color:#fff; border-radius:20px; padding:2px 8px; font-weight:700; }
+    .ai-rev-item { display:flex; align-items:flex-start; gap:8px; padding:8px 10px; border-radius:8px; margin-bottom:6px; }
+    .ai-rev-ok { background:#e6f7f0; }
+    .ai-rev-warn { background:#fff4e0; }
+    .ai-rev-bad { background:#fde8ec; }
+    .ai-rev-dot { font-size:.90rem; flex-shrink:0; margin-top:1px; }
+    .ai-rev-label { font-weight:800; font-size:.80rem; color:var(--navy); margin-bottom:2px; }
+    .ai-rev-detail { font-size:.76rem; color:var(--grey); line-height:1.4; }
+    .ai-rev-cliche { font-size:.75rem; color:var(--red); margin-top:3px; font-style:italic; }
+    .ai-rev-score { display:flex; align-items:center; gap:8px; padding:10px; background:var(--light); border-radius:8px; margin-top:10px; }
+    .ai-rev-score-num { font-size:1.35rem; font-weight:900; color:var(--navy); }
+    .ai-rev-score-label { font-size:.77rem; color:var(--grey); line-height:1.4; }
+    .ai-toggle-btn { display:flex; align-items:center; gap:7px; padding:7px 14px; border-radius:8px; border:1.5px solid var(--navy); background:#fff; font-size:.81rem; font-weight:800; cursor:pointer; color:var(--navy); font-family:inherit; transition:.15s; }
+    .ai-toggle-btn.on { background:var(--navy); color:#fff; }
+    /* Essay version history */
+    .es-version-item { display:flex; align-items:center; justify-content:space-between; padding:7px 10px; background:var(--light); border-radius:8px; margin-bottom:5px; font-size:.80rem; }
+    .es-version-restore { font-size:.75rem; color:var(--red); font-weight:700; cursor:pointer; }
+    /* Essay checklist */
+    .es-cl-item { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:8px; margin-bottom:7px; border:1px solid var(--border); background:var(--white); cursor:pointer; transition:all .15s; }
+    .es-cl-item.done { background:#e6f7f0; border-color:#88d5b5; }
+    .es-cl-box { width:18px; height:18px; border:2px solid var(--border); border-radius:5px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:900; transition:all .15s; }
+    .es-cl-item.done .es-cl-box { background:var(--success); border-color:var(--success); color:#fff; }
+    .es-cl-text { font-size:.85rem; color:var(--navy); line-height:1.4; }
+    .es-cl-item.done .es-cl-text { text-decoration:line-through; color:var(--grey); }
   </style>
 </head>
 <body>
@@ -509,7 +579,7 @@
     <a href="browsing.html">Browse</a>
     <a href="selections.html">Selections</a>
     <a href="saved.html" class="active">My List</a>
-    <a href="essays.html">Essays</a>
+    
     <a href="tracker.html">Tracker</a>
     <span id="nav-logged-out" class="nav-auth"><a href="#" class="nav-btn-outline" onclick="ugOpenAuth('login');return false;">Log In</a></span>
     <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><a href="profile.html" class="nav-profile-link">Profile</a><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
@@ -2914,6 +2984,445 @@ function toggleAppCheck(el, key, progId, containerId) {
 }
 
 // ─────────────────────────────────────────────────────────────
+//  ESSAYS TAB — BUILDER
+// ─────────────────────────────────────────────────────────────
+
+function getUniEssayProfile(uniName, progName) {
+  const u = uniName.toLowerCase();
+  const p = progName.toLowerCase();
+  const isWaterloo    = u.includes('waterloo');
+  const isMacHealthSci= u.includes('mcmaster') && (p.includes('health sci') || p.includes('health science'));
+  const isMcMaster    = u.includes('mcmaster');
+  const isUBC         = u.includes('british columbia') || u.includes('ubc');
+  const isQueensComm  = u.includes('queen') && (p.includes('commerce') || p.includes('business'));
+  const isQueen       = u.includes('queen');
+  const isMcGill      = u.includes('mcgill');
+  const isWestern     = u.includes('western');
+
+  const baseTypes = ['Personal Statement','Why This Program?','Why This University?','Extracurricular Description','Scholarship Essay','Interview Practice Answer'];
+
+  if (isWaterloo) return {
+    schoolKey:'waterloo',
+    interviewType: null,
+    requiresAIF: true,
+    essayTypes: ['AIF — Problem-Solving Response','AIF — Extracurricular Description','AIF — Impact / Context','Why This Program?','Personal Statement','Scholarship Essay'],
+    wordLimits: { 'AIF — Problem-Solving Response':{low:250,high:400}, 'AIF — Extracurricular Description':{low:150,high:250}, 'AIF — Impact / Context':{low:100,high:200}, 'Personal Statement':{low:300,high:600}, 'Why This Program?':{low:200,high:400}, 'Scholarship Essay':{low:500,high:1000} },
+    suppName:'Admission Information Form (AIF)',
+    suppTips:[
+      'The AIF is <strong>mandatory</strong> for Engineering, Math, and CS at Waterloo — missing it disqualifies your application.',
+      'Write every AIF response in a separate document first. The AIF portal does NOT auto-save reliably.',
+      'For the activities section: include your role, hours/week, duration, and one specific outcome per activity.',
+      'Use the STAR format (Situation, Task, Action, Result) for the problem-solving and collaboration questions.',
+      'The "Context" field is read by reviewers. If your marks dipped for any reason (illness, family situation), explain it plainly here.',
+      'Do not leave any section blank — even a thoughtful sentence is better than nothing.',
+    ],
+    suppSample:`<strong>Strong AIF Response (Problem-Solving):</strong><br>"During our robotics competition, the motor controller failed 40 minutes before our match. As lead programmer, I rerouted our code to use manual PWM signals, bypassing the broken module. We competed successfully and placed 3rd. I learned that contingency thinking — not just building the plan, but knowing how to break it — is what separates engineers who ship from engineers who stall."`,
+    interviewGuide: null,
+    personalStatementNotes:[
+      `Waterloo Engineering and Math programs weigh the AIF more heavily than a traditional personal statement — focus most of your writing energy there.`,
+      `If applying to Arts programs at Waterloo, a personal statement is required. Focus on intellectual curiosity specific to your program.`,
+    ],
+    checklistExtras:[
+      `AIF fully completed — every section filled in (no blanks)`,
+      `AIF responses drafted offline first, then pasted into the portal`,
+      `AIF activities list includes hours/week and specific outcomes for each entry`,
+    ],
+  };
+
+  if (isMacHealthSci) return {
+    schoolKey:'mcmaster-hs',
+    interviewType:'MMI',
+    requiresAIF: false,
+    essayTypes: ['McMaster HealthSci Essay','Personal Statement','Why This Program?','Interview Practice Answer','Extracurricular Description','Scholarship Essay'],
+    wordLimits: { 'McMaster HealthSci Essay':{low:500,high:650}, 'Personal Statement':{low:300,high:600}, 'Why This Program?':{low:200,high:400}, 'Interview Practice Answer':{low:150,high:300}, 'Extracurricular Description':{low:100,high:250}, 'Scholarship Essay':{low:500,high:1000} },
+    suppName:'McMaster Health Sciences Essay (650 words)',
+    suppTips:[
+      'McMaster HealthSci is one of the most competitive undergrad programs in Canada — acceptance rate under 5%.',
+      'The essay should demonstrate genuine intellectual curiosity and a record of community contribution — NOT just strong grades.',
+      'Avoid the pre-med narrative ("I want to be a doctor"). Write about ideas, not career goals.',
+      'Specific is always better: name the research paper you read, the patient you shadowed, the policy debate you engaged in.',
+      'Under 650 words strictly. Use every word intentionally.',
+    ],
+    suppSample:`<strong>Strong Opening (Health Sciences):</strong><br>"I have read the same JAMA study four times — not because I didn't understand it, but because I couldn't stop disagreeing with the conclusions. The methodology was sound. But the paper treated rural health access as an infrastructure problem, when the data clearly pointed to something deeper: a cultural disconnect between the medical system and the communities it was supposed to serve. That tension — between what data says and what communities experience — is why I want to study Health Sciences."`,
+    interviewGuide:{
+      type:'MMI',
+      desc:'McMaster uses a Multiple Mini Interview (MMI) — 8–10 stations, 8 minutes each, with ethical dilemmas, policy questions, and role-play scenarios.',
+      tips:[
+        'Think out loud — interviewers score your reasoning process, not just your conclusion.',
+        'Acknowledge multiple perspectives before stating your position.',
+        'For ethical scenarios: autonomy, beneficence, non-maleficence, and justice are the four pillars. Work through them.',
+        'Do NOT be afraid to pause and say "Let me think through this."',
+        'Prepare 3–4 personal stories (leadership, resilience, ethical dilemma you faced, community contribution) — they'll fit multiple stations.',
+      ],
+      sampleQs:[
+        { q:'A patient refuses a life-saving blood transfusion for religious reasons. As their physician, what do you do?', cat:'Ethics — Autonomy', guide:'Acknowledge the tension between patient autonomy and your duty to preserve life. Confirm informed consent: does the patient understand the consequences? If competent and informed, respect their decision. Involve an ethics board if available. Show nuance — there is no "right" answer, only a reasoned process.' },
+        { q:'What is the biggest challenge facing Canadian healthcare in the next 20 years?', cat:'Policy / Critical Thinking', guide:'Strong answers: aging population strain, physician shortage, mental health access gaps, rural health disparities, long-term care failures (COVID exposed this), or preventive care underfunding. Pick ONE, argue it clearly, propose a direction — not a perfect fix.' },
+        { q:'Tell me about a time you changed your mind about something important.', cat:'Self-Awareness & Growth', guide:'Use STAR. The point is intellectual humility — that you can update your beliefs with new evidence. This is especially valued in healthcare. Pick a genuine example.' },
+        { q:'You see a volunteer colleague falsifying patient satisfaction surveys. What do you do?', cat:'Integrity / Teamwork', guide:'Address it privately first. Give them a chance to correct it. If they refuse, escalate appropriately. Don\'t report immediately without nuance — show fairness. But integrity is non-negotiable.' },
+      ],
+    },
+    personalStatementNotes:[
+      `McMaster Health Sciences does not weight a personal statement separately from the application essay — the 650-word essay IS your personal statement.`,
+      `Focus on demonstrating intellectual curiosity and real community impact, not career aspirations.`,
+    ],
+    checklistExtras:[
+      `HealthSci essay is under 650 words (strictly enforced)`,
+      `Essay demonstrates intellectual curiosity — not just medical career goals`,
+      `Community contribution is documented with specific examples and outcomes`,
+    ],
+  };
+
+  if (isUBC) return {
+    schoolKey:'ubc',
+    interviewType: null,
+    requiresAIF: false,
+    essayTypes: ['UBC Personal Profile Activity','UBC Short Answer Response','Personal Statement','Why This Program?','Scholarship Essay','Extracurricular Description'],
+    wordLimits: { 'UBC Personal Profile Activity':{low:100,high:250}, 'UBC Short Answer Response':{low:150,high:250}, 'Personal Statement':{low:300,high:600}, 'Why This Program?':{low:200,high:400}, 'Scholarship Essay':{low:500,high:1000}, 'Extracurricular Description':{low:100,high:250} },
+    suppName:'UBC Personal Profile (activities + short essays)',
+    suppTips:[
+      'UBC replaces the traditional personal statement with a Personal Profile: a set of activity entries and short-answer responses.',
+      'For each activity, UBC wants impact and leadership — not just "I was a member." Show what changed because you were there.',
+      'Short answers ask about your best qualities, academic interests, and what you\'d contribute to campus. Answer with specifics, not generalities.',
+      'UBC weighs the Personal Profile heavily for competitive programs (Sauder Commerce, Sciences, Engineering).',
+      'Write each activity entry in 250 words or under. Every word has to earn its place.',
+    ],
+    suppSample:`<strong>Strong UBC Activity Entry:</strong><br>"As co-founder of my school's Environmental Action Club, I initiated a partnership with the district school board that resulted in a waste-reduction pilot in 12 schools — diverting an estimated 3.2 tonnes of material from landfill in Year 1. The work wasn't glamorous: spreadsheets, board presentations, rejection from the first three principals I approached. What I built was a template that outlasted my own membership. The club has continued the program without me, which is exactly what impact should look like."`,
+    interviewGuide: null,
+    personalStatementNotes:[
+      `UBC uses a Personal Profile instead of a traditional personal statement. Focus on activity entries (up to 250 words each) and short answers.`,
+      `Emphasize impact and leadership over participation counts.`,
+    ],
+    checklistExtras:[
+      `UBC Personal Profile submitted (not just the OUAC/direct application)`,
+      `All activity entries are under 250 words and focus on specific outcomes`,
+      `Short answers are specific — no vague claims like "I am a natural leader"`,
+    ],
+  };
+
+  if (isQueensComm) return {
+    schoolKey:'queens-comm',
+    interviewType:'Video Interview',
+    requiresAIF: false,
+    essayTypes: ["Queen's Video Interview Script","Why This Program?","Personal Statement","Extracurricular Description","Scholarship Essay"],
+    wordLimits: { "Queen's Video Interview Script":{low:200,high:300}, 'Personal Statement':{low:300,high:600}, 'Why This Program?':{low:200,high:400}, 'Scholarship Essay':{low:500,high:1000}, 'Extracurricular Description':{low:100,high:250} },
+    suppName:"Queen's Commerce Video Interview (SOLUS)",
+    suppTips:[
+      "Queen's Commerce requires a separate video interview submitted through SOLUS — this is beyond the OUAC application.",
+      "The video asks: Why Commerce? Why Queen's? What unique perspective do you bring?",
+      "Aim for 2 minutes max. Script and rehearse, but don't read from a script on camera — know your points.",
+      "Specific > generic: name something specific about Smith School of Business, not just 'it's a great school.'",
+      "Your environment matters: film in a quiet, well-lit room. Dress professionally. Look at the camera.",
+    ],
+    suppSample:`<strong>Strong Video Script Opening:</strong><br>"I'm drawn to Queen's Commerce because of Smith's emphasis on leadership development from year one — not just business theory. When I read about the student investment fund managing real capital, and the mentorship network connecting students with Bay Street professionals, I recognized something I hadn't seen elsewhere: a program that treats students as practitioners, not just learners. That's the environment where I do my best work."`,
+    interviewGuide:{
+      type:'Video Interview',
+      desc:"Queen's Commerce uses a pre-recorded video interview through SOLUS. You'll answer 2–3 prompts with limited preparation time.",
+      tips:[
+        'Practice answering "Why Commerce?" and "Why Queen\'s?" out loud until it flows naturally.',
+        'Structure each answer: Context → What you\'ve done → Why this program connects to where you\'re going.',
+        'Film a practice video and watch it back — most people don\'t realize how fast they talk when nervous.',
+        'Keep each answer under 2 minutes. Interviewers watch many videos; be crisp.',
+        'Make genuine eye contact with the camera lens, not the screen.',
+      ],
+      sampleQs:[
+        { q:'Why do you want to study Commerce at Queen\'s?', cat:'Motivation', guide:'Lead with something specific to Smith (a professor, a program feature, a club, a case competition). Then connect to your goals. Avoid listing rankings or reputation.' },
+        { q:'What unique perspective or experience would you bring to the Commerce community?', cat:'Self-Awareness', guide:'Pick ONE specific thing about your background, identity, or experience that genuinely differentiates you. Make it real.' },
+        { q:'Describe a challenge you faced and how you overcame it.', cat:'Resilience', guide:'Use STAR. Focus on what you specifically did (not "we"). Quantify the outcome where possible.' },
+      ],
+    },
+    personalStatementNotes:[
+      `Queen's Commerce does not require a separate personal statement, but the video interview serves a similar function.`,
+      `Focus your written application energy on "Why Queen's Commerce?" and your extracurricular narrative.`,
+    ],
+    checklistExtras:[
+      `Queen's SOLUS video interview submitted (separate from OUAC)`,
+      `Video answer to "Why Commerce? Why Queen's?" is specific and rehearsed`,
+      `Video filmed in good light with no background noise`,
+    ],
+  };
+
+  if (isMcGill) return {
+    schoolKey:'mcgill',
+    interviewType: null,
+    requiresAIF: false,
+    essayTypes: ['Personal Statement','Why This Program?','Supplemental Essay','Extracurricular Description','Scholarship Essay'],
+    wordLimits: { 'Personal Statement':{low:300,high:650}, 'Why This Program?':{low:200,high:400}, 'Supplemental Essay':{low:200,high:500}, 'Scholarship Essay':{low:500,high:1000}, 'Extracurricular Description':{low:100,high:250} },
+    suppName:'McGill Supplemental Application',
+    suppTips:[
+      'McGill applies directly — not through OUAC. Apply at McGill\'s own portal at mcgill.ca/applying.',
+      'Some competitive programs (Law, Medicine, Music) require a supplemental application with essays.',
+      'McGill has a strong international culture — your personal statement can reference global awareness and multilingualism if relevant.',
+      'Refer to specific McGill departments, research groups, or professors you want to work with.',
+    ],
+    suppSample:`<strong>Strong "Why McGill" Paragraph:</strong><br>"McGill's Desautels Faculty attracts a genuinely international student body — over 30% of students come from outside Canada. That matters to me. I want my business education shaped by people who've navigated different economic systems, cultural frameworks, and market realities. Studying at McGill isn't just about what happens in the classroom; it's about what happens in the study group at 11 PM."`,
+    interviewGuide: null,
+    personalStatementNotes:[
+      `McGill requires a personal statement for most competitive programs. Focus on intellectual interests and your research or academic ambitions.`,
+      `McGill values bilingualism — if you speak French, mention it.`,
+    ],
+    checklistExtras:[
+      `Applied directly through McGill\'s portal (not OUAC)`,
+      `Supplemental application submitted if required by program`,
+      `Application fee paid (McGill charges separately)`,
+    ],
+  };
+
+  // Default profile for all other schools
+  const isOntario = !isUBC && !isMcGill && !u.includes('dalhousie') && !u.includes('alberta') && !u.includes('calgary') && !u.includes('simon fraser') && !u.includes('victoria') && !u.includes('manitoba') && !u.includes('saskatch') && !u.includes('moncton') && !u.includes('memorial') && !u.includes('acadia') && !u.includes('saint');
+  return {
+    schoolKey:'default',
+    interviewType: null,
+    requiresAIF: false,
+    essayTypes: baseTypes,
+    wordLimits: { 'Personal Statement':{low:300,high:600}, 'Why This University?':{low:200,high:400}, 'Why This Program?':{low:200,high:400}, 'Extracurricular Description':{low:100,high:250}, 'Scholarship Essay':{low:500,high:1000}, 'Interview Practice Answer':{low:150,high:300} },
+    suppName:'Why This University?',
+    suppTips:[
+      `Name specific programs, courses, professors, research labs, or campus clubs at ${uniName} — not just "it's a great school."`,
+      `Connect their specific offerings to your specific goals. Show you've done real research.`,
+      isOntario ? `${uniName} uses OUAC — your application goes through the Ontario portal. The personal statement is optional for some programs but strongly recommended for competitive ones.` : `${uniName} uses a direct application portal. Check their admissions page for supplemental essay requirements.`,
+      `Tip: visit the department page for ${progName} at ${uniName} and find one specific detail (a co-op employer, a faculty project, a student club) to reference.`,
+    ],
+    suppSample:`<strong>Weak:</strong> "I want to attend ${uniName} because it is a top school in Canada."<br><br><strong>Strong:</strong> "What drew me to ${uniName}'s ${progName} program is [specific feature]. This directly connects to my goal of [specific goal] because [reason]. The opportunity to [specific opportunity at this school] isn't available in the same form anywhere else I considered."`,
+    interviewGuide: null,
+    personalStatementNotes:[
+      `Most Canadian universities weight the personal statement for competitive programs. Even if optional, always submit one.`,
+      `Focus on one central story that answers: what shaped my interest in ${progName}, and why am I ready for it?`,
+    ],
+    checklistExtras: isOntario ? ['OUAC application submitted and confirmed', 'School linked in OUAC by guidance counsellor'] : ['Direct application submitted through the university portal', 'Application fee confirmed paid'],
+  };
+}
+
+function buildEssaysTab(prog, pd, uni) {
+  const profile = getUniEssayProfile(prog.uniName, prog.programName);
+  const pid = prog.id;
+  const uniNameEsc = prog.uniName.replace(/'/g,'&#39;');
+  const progNameEsc = prog.programName.replace(/'/g,'&#39;');
+
+  // ── Writing Guide ──────────────────────────────────────────
+  const personalStatementGuide = `
+    <div class="essay-guide-card">
+      <h4>📝 Personal Statement — What It Is &amp; Why It Matters</h4>
+      <p style="font-size:.87rem;color:var(--grey);margin-bottom:12px;">The personal statement is your one chance to speak to an admissions committee as a person, not a transcript. Most Canadian universities require one for competitive programs — and even when optional, submitting one almost always helps.</p>
+      ${profile.personalStatementNotes.map(n => `<div class="essay-highlight" style="margin-bottom:8px;">${n}</div>`).join('')}
+    </div>
+    <div class="essay-guide-card">
+      <h4>🪝 The Hook → Body → Reflection Framework</h4>
+      <ol>
+        <li><strong>Hook (opening paragraph):</strong> Start with a specific moment, scene, or question. Make the reader lean in. Avoid "I have always been passionate about…"</li>
+        <li><strong>Context (paragraph 2):</strong> Briefly explain who you are and where this interest came from. Be honest, not polished.</li>
+        <li><strong>Impact (paragraphs 3–4):</strong> What did you do, build, learn, or overcome? Use names, numbers, and real outcomes.</li>
+        <li><strong>Reflection (paragraph 5):</strong> What changed in you? How has it shaped your goals for ${progNameEsc}?</li>
+        <li><strong>Forward close:</strong> Connect your past to what you'll do at ${uniNameEsc}. End with where you're going, not where you've been.</li>
+      </ol>
+      <div class="essay-sample"><strong>Sample Hook (Engineering):</strong><br>"The motor burned out at 11:43 PM, two hours before our robotics regional. My team looked at me — I was the lead engineer. I had no replacement part, no time, and no plan B. What happened in the next two hours changed how I think about engineering entirely."</div>
+    </div>
+    <div class="essay-guide-card">
+      <h4>❌ Mistakes to Avoid</h4>
+      <ul>
+        <li>Starting with <em>"I have always been passionate…"</em> or <em>"Since I was young…"</em></li>
+        <li>Listing your résumé in paragraph form — that's what the activities section is for.</li>
+        <li>Writing what you <em>think</em> they want to hear instead of what's actually true.</li>
+        <li>Using "we" when you mean "I" — your individual role must be clear.</li>
+        <li>Not leaving time to revise — great essays are rewritten 5+ times.</li>
+      </ul>
+      <div class="essay-tip"><strong>💡 Word Count:</strong> Most Canadian personal statements are 300–600 words. Aim for the upper half of the limit. Every sentence should earn its place.</div>
+    </div>`;
+
+  const suppGuide = `
+    <div class="essay-guide-card">
+      <h4>🎓 ${profile.suppName} — Guide for ${uniNameEsc}</h4>
+      <ul>${profile.suppTips.map(t => `<li>${t}</li>`).join('')}</ul>
+      <div class="essay-sample">${profile.suppSample}</div>
+    </div>`;
+
+  const interviewGuide = profile.interviewGuide ? `
+    <div class="essay-guide-card">
+      <h4>🎤 Interview Prep — ${profile.interviewGuide.type} at ${uniNameEsc}</h4>
+      <p style="font-size:.87rem;color:var(--grey);margin-bottom:12px;">${profile.interviewGuide.desc}</p>
+      <ul>${profile.interviewGuide.tips.map(t => `<li>${t}</li>`).join('')}</ul>
+      <div class="essay-star-grid">
+        <div class="essay-star-cell"><strong style="color:var(--red);">S — Situation</strong><span>Set the scene. Where, when, who was involved?</span></div>
+        <div class="essay-star-cell"><strong style="color:var(--accent);">T — Task</strong><span>What was your specific responsibility?</span></div>
+        <div class="essay-star-cell"><strong style="color:var(--navy);">A — Action</strong><span>What did YOU do? (Not "we" — "I")</span></div>
+        <div class="essay-star-cell"><strong style="color:var(--success);">R — Result</strong><span>What was the outcome? Quantify if possible.</span></div>
+      </div>
+      ${profile.interviewGuide.sampleQs.map(sq => `
+        <div style="border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-top:10px;">
+          <div style="font-weight:800;font-size:.88rem;color:var(--navy);margin-bottom:4px;">${sq.q}</div>
+          <div style="font-size:.76rem;color:var(--grey);margin-bottom:8px;">${sq.cat}</div>
+          <div style="font-size:.83rem;color:var(--navy);">${sq.guide}</div>
+        </div>`).join('')}
+    </div>` : `
+    <div class="essay-guide-card">
+      <h4>🎤 Interview Prep — General Behavioural Interviews</h4>
+      <p style="font-size:.87rem;color:var(--grey);margin-bottom:12px;">${uniNameEsc} does not typically conduct admissions interviews for ${progNameEsc}, but scholarship interviews and post-offer conversations happen. Preparing the STAR method is always worthwhile.</p>
+      <div class="essay-star-grid">
+        <div class="essay-star-cell"><strong style="color:var(--red);">S — Situation</strong><span>Set the scene. Where, when, who was involved?</span></div>
+        <div class="essay-star-cell"><strong style="color:var(--accent);">T — Task</strong><span>What was your specific responsibility?</span></div>
+        <div class="essay-star-cell"><strong style="color:var(--navy);">A — Action</strong><span>What did YOU do? (Not "we" — "I")</span></div>
+        <div class="essay-star-cell"><strong style="color:var(--success);">R — Result</strong><span>What was the outcome? Quantify if possible.</span></div>
+      </div>
+      <ul style="margin-top:12px;">
+        <li>Practice out loud — thinking an answer isn't the same as saying one coherently.</li>
+        <li>Prepare 3–4 personal stories covering: leadership, resilience, ethical dilemma, and community contribution.</li>
+        <li>For scholarship interviews: know why you chose ${progNameEsc} specifically, and have a clear 5-year vision.</li>
+      </ul>
+    </div>`;
+
+  // ── Draft Workspace ──────────────────────────────────────────
+  const typeButtons = profile.essayTypes.map((t, i) =>
+    `<button class="es-type-btn${i===0?' active':''}" onclick="esSelectType('${t.replace(/'/g,"\\'")}',this)">${t}</button>`
+  ).join('');
+
+  const starterChips = [
+    { label:'Defining Moment', text:`The moment I knew I wanted to study ${prog.programName} was when...` },
+    { label:`Why ${prog.uniName.split(' ')[0]}`, text:`What drew me to ${prog.uniName}'s ${prog.programName} program is specifically...` },
+    { label:'Overcoming Challenge', text:`The challenge that tested me most was...\n\nI responded by...\n\nWhat I learned was...` },
+    { label:'Leadership / EC', text:`In my role as [position] at [organization], I was responsible for...\n\nThe specific impact I had was...` },
+    { label:'STAR Format', text:`Situation: \nTask: \nAction I took: \nResult: ` },
+  ].map(c => `<button class="es-chip" onclick="esInsertChip(${JSON.stringify(c.text)})">${c.label}</button>`).join('');
+
+  // ── Final Checklist ──────────────────────────────────────────
+  const universalChecklist = [
+    'Read your essay out loud — your ear catches what your eye misses',
+    'Have at least one trusted reader (teacher, mentor) review it for clarity and authenticity',
+    'Word count confirmed within the stated limit for this essay type',
+    `Mentioned ${uniNameEsc} specifically by name — not a generic "this university"`,
+    `Mentioned ${progNameEsc} specifically and why you chose it`,
+    'Used "I" throughout — your individual role is unmistakably clear',
+    'Opening line creates immediate interest (no clichés)',
+    'Every paragraph answers: what did I do, and what was the impact?',
+    'Waited at least 24 hours after last revision before final read',
+    'Submitted via the correct portal (OUAC, direct, or supplemental — as required)',
+  ];
+  const allChecklistItems = [...universalChecklist, ...profile.checklistExtras];
+  const clKey = `es_cl_${pid}`;
+  const clState = (() => { try { return JSON.parse(localStorage.getItem(clKey) || '{}'); } catch(e) { return {}; } })();
+  const checklistHtml = allChecklistItems.map((item, i) => {
+    const done = clState[i];
+    return `<div class="es-cl-item${done?' done':''}" onclick="esToggleCl('${clKey}',${i},this)">
+      <div class="es-cl-box">${done ? '✓' : ''}</div>
+      <div class="es-cl-text">${item}</div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="essay-subnav">
+      <button class="essay-subbtn active" onclick="switchEssaySection('es-guide',this)">📖 Writing Guide</button>
+      <button class="essay-subbtn" onclick="switchEssaySection('es-draft',this)">✏️ Draft Workspace</button>
+      <button class="essay-subbtn" onclick="switchEssaySection('es-interview',this)">${profile.interviewGuide ? '🎤 ' + profile.interviewGuide.type + ' Prep' : '🎤 Interview Prep'}</button>
+      <button class="essay-subbtn" onclick="switchEssaySection('es-checklist',this)">✅ Final Checklist</button>
+    </div>
+
+    <!-- Writing Guide -->
+    <div class="essay-section active" id="es-guide">
+      ${personalStatementGuide}
+      ${suppGuide}
+    </div>
+
+    <!-- Draft Workspace -->
+    <div class="essay-section" id="es-draft">
+      <div class="es-workspace">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+          <div>
+            <h3 style="margin:0 0 3px;">Essay Drafts — ${uniNameEsc}</h3>
+            <p style="font-size:.82rem;color:var(--grey);margin:0;">Drafts save automatically to your browser, tagged to this program.</p>
+          </div>
+          <button class="ai-toggle-btn" id="aiToggleBtn" onclick="esToggleAI()">🤖 AI Review: Off</button>
+        </div>
+
+        <div style="font-size:.78rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Essay Type</div>
+        <div class="es-type-row">${typeButtons}</div>
+        <div class="es-wlimit-hint" id="esWlimitHint"></div>
+
+        <div style="font-size:.78rem;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">Writing Starters</div>
+        <div class="es-chip-row">${starterChips}</div>
+
+        <div class="es-draft-layout" id="esDraftLayout">
+          <div>
+            <textarea class="es-textarea" id="esTextarea"
+              placeholder="Start writing here… your draft saves automatically."
+              oninput="onEssayInput()"
+              data-progid="${pid}"
+              data-uniname="${uniNameEsc}"
+              data-progname="${progNameEsc}"
+            ></textarea>
+            <div class="es-toolbar">
+              <div>
+                <div class="es-wcount"><strong id="esWordCount">0</strong> words <span class="es-saved-indicator" id="esSavedIndicator">✓ Saved</span></div>
+                <div class="es-prog-bar"><div class="es-prog-fill" id="esProgFill" style="width:0%;"></div></div>
+              </div>
+              <div style="display:flex;gap:7px;flex-wrap:wrap;">
+                <button class="btn btn-outline btn-sm" onclick="esSaveVersion()">💾 Save Version</button>
+                <button class="btn btn-outline btn-sm" onclick="esCopyText()">📋 Copy</button>
+                <button class="btn btn-outline btn-sm" onclick="esClearDraft()" style="color:var(--grey);">Clear</button>
+              </div>
+            </div>
+          </div>
+          <div class="ai-rev-panel" id="aiRevPanel" style="display:none;">
+            <div class="ai-rev-header">
+              <div class="ai-rev-title">🤖 AI Essay Review</div>
+              <div class="ai-rev-badge" id="aiRevScore">—</div>
+            </div>
+            <div id="aiRevContent"><div style="font-size:.82rem;color:var(--grey);text-align:center;padding:20px 0;">Start writing to see feedback.</div></div>
+          </div>
+        </div>
+
+        <div id="esVersionPanel" style="display:none;margin-top:14px;">
+          <div style="font-weight:800;font-size:.82rem;color:var(--navy);margin-bottom:8px;">📂 Saved Versions</div>
+          <div id="esVersionList"></div>
+        </div>
+      </div>
+
+      <div class="essay-guide-card">
+        <h4>📏 Reference — Word Limits &amp; What Reviewers Look For</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;">
+          <div style="background:var(--light);border-radius:10px;padding:13px;">
+            <div style="font-weight:800;font-size:.86rem;margin-bottom:8px;">Typical Limits for ${uniNameEsc}</div>
+            <ul style="padding-left:16px;font-size:.81rem;color:var(--navy);line-height:1.75;margin:0;">
+              ${Object.entries(profile.wordLimits).map(([type,lim]) => `<li>${type}: ${lim.low}–${lim.high} words</li>`).join('')}
+            </ul>
+          </div>
+          <div style="background:var(--light);border-radius:10px;padding:13px;">
+            <div style="font-weight:800;font-size:.86rem;margin-bottom:8px;">What Reviewers Score</div>
+            <ul style="padding-left:16px;font-size:.81rem;color:var(--navy);line-height:1.75;margin:0;">
+              <li><strong>Specificity</strong> — names, numbers, outcomes</li>
+              <li><strong>Authenticity</strong> — sounds like <em>you</em></li>
+              <li><strong>Agency</strong> — what <em>you</em> did, not "we"</li>
+              <li><strong>Growth</strong> — what changed after the experience</li>
+              <li><strong>Connection</strong> — ties to this program &amp; school</li>
+            </ul>
+          </div>
+        </div>
+        <div class="essay-tip" style="margin-top:12px;"><strong>💡 Revision tip:</strong> After your first draft, wait 24 hours before revising. You'll catch things you missed. Use "Save Version" to keep each major revision.</div>
+      </div>
+    </div>
+
+    <!-- Interview Section -->
+    <div class="essay-section" id="es-interview">
+      ${interviewGuide}
+      <div style="background:var(--navy);border-radius:12px;padding:14px 18px;display:flex;gap:14px;align-items:center;cursor:pointer;margin-top:4px;" onclick="openChat('app')">
+        <span style="font-size:1.4rem;">🤖</span>
+        <div>
+          <div style="color:#fff;font-weight:800;font-size:.92rem;">Application Advisor</div>
+          <div style="color:rgba(255,255,255,.65);font-size:.81rem;">Ask for interview practice questions or essay feedback for ${uniNameEsc}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final Checklist -->
+    <div class="essay-section" id="es-checklist">
+      <div class="essay-guide-card">
+        <h4>✅ Pre-Submission Checklist — ${uniNameEsc}</h4>
+        <p style="font-size:.83rem;color:var(--grey);margin-bottom:14px;">Check off each item before you hit submit. This checklist is personalized to ${uniNameEsc}.</p>
+        ${checklistHtml}
+        <div style="font-size:.78rem;color:var(--grey);margin-top:12px;">Progress saves automatically in your browser.</div>
+      </div>
+    </div>
+  `;
+}
+
+// ─────────────────────────────────────────────────────────────
 //  MAIN RENDER
 // ─────────────────────────────────────────────────────────────
 function renderDetail() {
@@ -3459,6 +3968,9 @@ ${(()=>{
   // App checklist
   const { html: appHtml } = buildAppChecklist(prog, pd, uni);
 
+  // Essays tab
+  const essaysTabHtml = buildEssaysTab(prog, pd, uni);
+
   panel.innerHTML = `
     <!-- Header: institution name is the primary heading, program is secondary -->
     <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
@@ -3492,6 +4004,7 @@ ${(()=>{
       <div class="tab active" onclick="switchTab(this,'tab-academics')">📚 Academics</div>
       <div class="tab" onclick="switchTab(this,'tab-ec')">⚽ Extracurriculars</div>
       <div class="tab" onclick="switchTab(this,'tab-application')">✅ Application</div>
+      <div class="tab" onclick="switchTab(this,'tab-essays')">✏️ Essays</div>
       <div class="tab" onclick="switchTab(this,'tab-money')">💰 Funding</div>
     </div>
 
@@ -3596,6 +4109,11 @@ ${(()=>{
       </div>
     </div>
 
+    <!-- ── ESSAYS TAB ── -->
+    <div class="tab-panel" id="tab-essays">
+      ${essaysTabHtml}
+    </div>
+
     <!-- ── FUNDING TAB ── -->
     <div class="tab-panel" id="tab-money">
       ${fundingHtml}
@@ -3617,7 +4135,7 @@ ${(()=>{
 // ─────────────────────────────────────────────────────────────
 //  TAB SWITCHING
 // ─────────────────────────────────────────────────────────────
-const TAB_CHAT_MODE = { 'tab-academics':'academic', 'tab-ec':'ec', 'tab-application':'app', 'tab-money':'money' };
+const TAB_CHAT_MODE = { 'tab-academics':'academic', 'tab-ec':'ec', 'tab-application':'app', 'tab-essays':'app', 'tab-money':'money' };
 function switchTab(el, tabId) {
   _saveChatHistory();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -3628,6 +4146,10 @@ function switchTab(el, tabId) {
   const hdr = document.getElementById('chatModeLabel');
   const modeNames = { academic:'Academics Advisor', ec:'EC Advisor', app:'Application Advisor', money:'Funding Advisor', general:'Program Advisor' };
   if (hdr) hdr.textContent = modeNames[chatMode] || 'Program Advisor';
+  if (tabId === 'tab-essays') {
+    const ta = document.getElementById('esTextarea');
+    if (ta && ta.dataset.progid) _esLoadDraft(ta.dataset.progid);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -3877,6 +4399,332 @@ if (typeof _onReady === 'function') {
       } catch(e) {}
     }
   });
+}
+
+// ─────────────────────────────────────────────────────────────
+//  ESSAYS TAB — INTERACTION
+// ─────────────────────────────────────────────────────────────
+
+function switchEssaySection(id, btn) {
+  document.querySelectorAll('.essay-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.essay-subbtn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ── Essay type selection ──────────────────────────────────────
+let _esCurrentType = '';
+const _ES_WORD_LIMITS = {
+  'Personal Statement':{low:300,high:600},
+  'Why This University?':{low:200,high:400},
+  'Why This Program?':{low:200,high:400},
+  'Extracurricular Description':{low:100,high:250},
+  'Scholarship Essay':{low:500,high:1000},
+  'Interview Practice Answer':{low:150,high:300},
+  'AIF — Problem-Solving Response':{low:250,high:400},
+  'AIF — Extracurricular Description':{low:150,high:250},
+  'AIF — Impact / Context':{low:100,high:200},
+  'McMaster HealthSci Essay':{low:500,high:650},
+  "Queen's Video Interview Script":{low:200,high:300},
+  'UBC Personal Profile Activity':{low:100,high:250},
+  'UBC Short Answer Response':{low:150,high:250},
+};
+
+function esSelectType(type, btn) {
+  _esCurrentType = type;
+  document.querySelectorAll('.es-type-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const limit = _ES_WORD_LIMITS[type];
+  const hint = document.getElementById('esWlimitHint');
+  if (hint) hint.textContent = limit ? `Target: ${limit.low}–${limit.high} words` : '';
+  updateEsProgressBar();
+  _esSaveCurrentDraft();
+}
+
+function esInsertChip(text) {
+  const ta = document.getElementById('esTextarea');
+  if (!ta) return;
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const current = ta.value;
+  ta.value = current.slice(0, start) + (current.slice(0,start) && !current.slice(0,start).endsWith('\n') ? '\n\n' : '') + text + current.slice(end);
+  ta.focus();
+  onEssayInput();
+}
+
+// ── Draft persistence ─────────────────────────────────────────
+let _esSaveTimer = null;
+function _esKey(progId) { return 'es_draft_' + progId; }
+
+function _esLoadDraft(progId) {
+  const ta = document.getElementById('esTextarea');
+  if (!ta) return;
+  try {
+    const d = JSON.parse(localStorage.getItem(_esKey(progId)) || '{}');
+    ta.value = d.text || '';
+    _esCurrentType = d.type || '';
+    // Restore type button
+    if (_esCurrentType) {
+      document.querySelectorAll('.es-type-btn').forEach(b => {
+        if (b.textContent.trim() === _esCurrentType) { b.classList.add('active'); }
+        else b.classList.remove('active');
+      });
+      const limit = _ES_WORD_LIMITS[_esCurrentType];
+      const hint = document.getElementById('esWlimitHint');
+      if (hint) hint.textContent = limit ? `Target: ${limit.low}–${limit.high} words` : '';
+    }
+    _esLoadVersionList(progId, d.versions || []);
+  } catch(e) {}
+  updateEsWordCount();
+  updateEsProgressBar();
+}
+
+function _esSaveCurrentDraft() {
+  const ta = document.getElementById('esTextarea');
+  if (!ta) return;
+  const progId = ta.dataset.progid;
+  if (!progId) return;
+  try {
+    const existing = JSON.parse(localStorage.getItem(_esKey(progId)) || '{}');
+    existing.text = ta.value;
+    existing.type = _esCurrentType;
+    existing.updatedAt = Date.now();
+    localStorage.setItem(_esKey(progId), JSON.stringify(existing));
+    if (typeof ugSave === 'function') ugSave(_esKey(progId), existing);
+  } catch(e) {}
+  const ind = document.getElementById('esSavedIndicator');
+  if (ind) { ind.classList.add('show'); setTimeout(() => ind.classList.remove('show'), 1500); }
+}
+
+function onEssayInput() {
+  updateEsWordCount();
+  updateEsProgressBar();
+  clearTimeout(_esSaveTimer);
+  _esSaveTimer = setTimeout(() => { _esSaveCurrentDraft(); }, 600);
+  if (_esAiOn) {
+    clearTimeout(_esReviewTimer);
+    _esReviewTimer = setTimeout(runEssayReview, 900);
+  }
+}
+
+function updateEsWordCount() {
+  const ta = document.getElementById('esTextarea');
+  const el = document.getElementById('esWordCount');
+  if (!ta || !el) return;
+  const wc = ta.value.trim() ? ta.value.trim().split(/\s+/).filter(Boolean).length : 0;
+  el.textContent = wc;
+}
+
+function updateEsProgressBar() {
+  const ta = document.getElementById('esTextarea');
+  const bar = document.getElementById('esProgFill');
+  if (!ta || !bar) return;
+  const wc = ta.value.trim() ? ta.value.trim().split(/\s+/).filter(Boolean).length : 0;
+  const limit = _ES_WORD_LIMITS[_esCurrentType];
+  if (!limit) { bar.style.width = '0%'; return; }
+  const pct = Math.min(100, Math.round((wc / limit.high) * 100));
+  bar.style.width = pct + '%';
+  bar.style.background = pct > 110 ? 'var(--red)' : (pct >= 80 ? 'var(--success)' : 'var(--accent)');
+}
+
+function esSaveVersion() {
+  const ta = document.getElementById('esTextarea');
+  if (!ta || !ta.value.trim()) return;
+  const progId = ta.dataset.progid;
+  if (!progId) return;
+  try {
+    const existing = JSON.parse(localStorage.getItem(_esKey(progId)) || '{}');
+    const versions = existing.versions || [];
+    const wc = ta.value.trim().split(/\s+/).filter(Boolean).length;
+    versions.unshift({ text: ta.value, type: _esCurrentType, wc, savedAt: Date.now() });
+    if (versions.length > 10) versions.length = 10;
+    existing.versions = versions;
+    localStorage.setItem(_esKey(progId), JSON.stringify(existing));
+    _esLoadVersionList(progId, versions);
+    const ind = document.getElementById('esSavedIndicator');
+    if (ind) { ind.textContent = '✓ Version saved'; ind.classList.add('show'); setTimeout(() => { ind.textContent = '✓ Saved'; ind.classList.remove('show'); }, 2000); }
+  } catch(e) {}
+}
+
+function _esLoadVersionList(progId, versions) {
+  const panel = document.getElementById('esVersionPanel');
+  const list  = document.getElementById('esVersionList');
+  if (!panel || !list) return;
+  if (!versions.length) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  list.innerHTML = versions.map((v, i) => {
+    const d = new Date(v.savedAt);
+    const label = `${v.type || 'Draft'} · ${v.wc} words · ${d.toLocaleDateString('en-CA', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})}`;
+    return `<div class="es-version-item"><span>${label}</span><span class="es-version-restore" onclick="esRestoreVersion(${i})">Restore</span></div>`;
+  }).join('');
+}
+
+function esRestoreVersion(idx) {
+  const ta = document.getElementById('esTextarea');
+  if (!ta) return;
+  const progId = ta.dataset.progid;
+  try {
+    const existing = JSON.parse(localStorage.getItem(_esKey(progId)) || '{}');
+    const v = (existing.versions || [])[idx];
+    if (!v) return;
+    ta.value = v.text;
+    _esCurrentType = v.type || '';
+    onEssayInput();
+  } catch(e) {}
+}
+
+function esCopyText() {
+  const ta = document.getElementById('esTextarea');
+  if (!ta || !ta.value) return;
+  navigator.clipboard.writeText(ta.value).catch(() => {
+    ta.select(); document.execCommand('copy');
+  });
+  const ind = document.getElementById('esSavedIndicator');
+  if (ind) { ind.textContent = '✓ Copied'; ind.classList.add('show'); setTimeout(() => { ind.textContent = '✓ Saved'; ind.classList.remove('show'); }, 1500); }
+}
+
+function esClearDraft() {
+  const ta = document.getElementById('esTextarea');
+  if (!ta || !ta.value) return;
+  if (!confirm('Clear draft? This cannot be undone (use Save Version first to preserve it).')) return;
+  ta.value = '';
+  onEssayInput();
+}
+
+// ── AI Reviewer ───────────────────────────────────────────────
+let _esAiOn = false;
+let _esReviewTimer = null;
+const ES_CLICHES = [
+  'i have always been passionate','i am passionate about','ever since i was young','since i was a child',
+  'i was born','i have always known','i have always dreamed','it has always been my dream',
+  'i love helping people','i want to make a difference','i am a hard worker','team player',
+  'my whole life','i am very dedicated','from a young age','i have always had a passion',
+];
+
+function esToggleAI() {
+  _esAiOn = !_esAiOn;
+  const btn = document.getElementById('aiToggleBtn');
+  const panel = document.getElementById('aiRevPanel');
+  const layout = document.getElementById('esDraftLayout');
+  if (btn) { btn.textContent = `🤖 AI Review: ${_esAiOn ? 'On' : 'Off'}`; btn.classList.toggle('on', _esAiOn); }
+  if (panel) panel.style.display = _esAiOn ? 'block' : 'none';
+  if (layout) layout.classList.toggle('with-review', _esAiOn);
+  if (_esAiOn) runEssayReview();
+}
+
+function runEssayReview() {
+  const ta = document.getElementById('esTextarea');
+  const content = document.getElementById('aiRevContent');
+  const scoreEl = document.getElementById('aiRevScore');
+  if (!ta || !content || !scoreEl) return;
+  const text = ta.value;
+  const lower = text.toLowerCase();
+  const words = text.trim() ? text.trim().split(/\s+/).filter(Boolean) : [];
+  const wc = words.length;
+  const uniName = (ta.dataset.uniname || '').toLowerCase();
+  const progName = (ta.dataset.progname || '').toLowerCase();
+
+  if (wc < 20) {
+    content.innerHTML = '<div style="font-size:.82rem;color:var(--grey);text-align:center;padding:20px 0;">Write at least 20 words to get feedback.</div>';
+    scoreEl.textContent = '—';
+    return;
+  }
+
+  let score = 0;
+  const items = [];
+
+  // 1. Clichés
+  const found = ES_CLICHES.filter(c => lower.includes(c));
+  if (!found.length) {
+    score += 20; items.push({ cls:'ai-rev-ok', dot:'✅', label:'No clichés found', detail:'Good — your opening doesn\'t rely on overused phrases.' });
+  } else {
+    score += Math.max(0, 20 - found.length * 7);
+    items.push({ cls:'ai-rev-bad', dot:'🔴', label:`${found.length} cliché${found.length>1?'s':''} found`, detail:'Remove or rewrite these before submitting.', cliches: found });
+  }
+
+  // 2. Opening strength
+  const firstSentence = (text.split(/[.!?]/)[0] || '').toLowerCase().trim();
+  const weakStart = ['i have always','my name is','since i was','i was born','growing up i','from a young','i am a student','i want to be','ever since'];
+  const hasWeakOpen = weakStart.some(w => firstSentence.startsWith(w));
+  if (!hasWeakOpen && firstSentence.length > 30) {
+    score += 15; items.push({ cls:'ai-rev-ok', dot:'✅', label:'Strong opening', detail:'Your first sentence creates interest without a generic opener.' });
+  } else if (hasWeakOpen) {
+    items.push({ cls:'ai-rev-bad', dot:'🔴', label:'Weak opening', detail:'Your essay starts with a generic phrase. Drop the reader into a specific scene or moment instead.' });
+  } else {
+    score += 8; items.push({ cls:'ai-rev-warn', dot:'⚠️', label:'Opening could be stronger', detail:'Your opening is okay, but starting with a vivid scene or unexpected question creates more immediate impact.' });
+  }
+
+  // 3. Personalization (university & program named)
+  const uniWord = uniName.split(' ').find(w => w.length > 3) || '';
+  const progWord = progName.split(' ').find(w => w.length > 3) || '';
+  const mentionsUni  = uniWord && lower.includes(uniWord);
+  const mentionsProg = progWord && lower.includes(progWord);
+  if (mentionsUni && mentionsProg) {
+    score += 20; items.push({ cls:'ai-rev-ok', dot:'✅', label:'Well personalized', detail:'This essay names the specific university and program — exactly what reviewers want to see.' });
+  } else if (mentionsUni || mentionsProg) {
+    score += 10; items.push({ cls:'ai-rev-warn', dot:'⚠️', label:'Partially personalized', detail:`Name both the university and the specific program. Right now only one is explicitly mentioned.` });
+  } else {
+    items.push({ cls:'ai-rev-bad', dot:'🔴', label:'Missing personalization', detail:`The essay doesn't name the specific school or program. A reviewer reading this can't tell it wasn't written for a different university.` });
+  }
+
+  // 4. Agency (I vs we)
+  const iCount  = (text.match(/\bI\b/g) || []).length;
+  const weCount = (text.match(/\bwe\b/gi) || []).length;
+  if (iCount >= weCount * 2 || weCount === 0) {
+    score += 10; items.push({ cls:'ai-rev-ok', dot:'✅', label:'Strong agency', detail:`Good "I" usage — your individual role comes through clearly.` });
+  } else {
+    items.push({ cls:'ai-rev-warn', dot:'⚠️', label:`Too much "we"`, detail:`You used "we" ${weCount} times vs "I" ${iCount} times. Admissions wants to know what YOU specifically did, not your team.` });
+  }
+
+  // 5. Specificity (numbers, proper nouns, named examples)
+  const hasNumbers = /\d+/.test(text);
+  const titleCaseWords = (text.match(/\b[A-Z][a-z]{2,}\b/g) || []).filter(w => !['The','And','But','For','With','That','This','They','When','Then','From','Into','Over','Also','Some','Many','Most','Each','Your','Their','Have','Will','Been','Were','What','How'].includes(w));
+  const specificScore = (hasNumbers ? 1 : 0) + Math.min(3, Math.floor(titleCaseWords.length / 4));
+  if (specificScore >= 3) {
+    score += 15; items.push({ cls:'ai-rev-ok', dot:'✅', label:'Good specificity', detail:'You\'ve included numbers, names, or concrete details — this builds credibility.' });
+  } else if (specificScore >= 1) {
+    score += 7; items.push({ cls:'ai-rev-warn', dot:'⚠️', label:'Add more specifics', detail:'Include at least one number (hours, dates, results), one named organization or person, and one concrete outcome.' });
+  } else {
+    items.push({ cls:'ai-rev-bad', dot:'🔴', label:'Too vague', detail:'The essay makes claims without evidence. Name specific things: programs, outcomes, numbers, people. "I improved our process" → "I cut our response time from 48h to 6h by building a shared tracking sheet."' });
+  }
+
+  // 6. Word count vs target
+  const limit = _ES_WORD_LIMITS[_esCurrentType];
+  if (!limit) {
+    score += 10; items.push({ cls:'ai-rev-ok', dot:'✅', label:'Select an essay type', detail:'Choose an essay type above to check your word count against the target.' });
+  } else if (wc >= limit.low && wc <= limit.high) {
+    score += 20; items.push({ cls:'ai-rev-ok', dot:'✅', label:`Word count: ${wc} (on target)`, detail:`Target is ${limit.low}–${limit.high} words — you're right in range.` });
+  } else if (wc < limit.low) {
+    score += 8; items.push({ cls:'ai-rev-warn', dot:'⚠️', label:`Word count: ${wc} (below target)`, detail:`Target is ${limit.low}–${limit.high} words. You need about ${limit.low - wc} more words. Expand your impact or reflection section.` });
+  } else {
+    items.push({ cls:'ai-rev-warn', dot:'⚠️', label:`Word count: ${wc} (over limit)`, detail:`You're ${wc - limit.high} words over the ${limit.high}-word limit. Cut aggressively — every sentence should earn its place.` });
+  }
+
+  // Render
+  const scoreLabel = score >= 80 ? 'Strong draft — polish &amp; submit' : score >= 60 ? 'Good start — keep revising' : score >= 40 ? 'Keep going — needs work' : 'Early draft — much to improve';
+  scoreEl.textContent = `${score}/100`;
+  content.innerHTML = items.map(item => `
+    <div class="ai-rev-item ${item.cls}">
+      <div class="ai-rev-dot">${item.dot}</div>
+      <div>
+        <div class="ai-rev-label">${item.label}</div>
+        <div class="ai-rev-detail">${item.detail}</div>
+        ${item.cliches ? `<div class="ai-rev-cliche">${item.cliches.map(c => `"${c}"`).join(', ')}</div>` : ''}
+      </div>
+    </div>`).join('') +
+    `<div class="ai-rev-score"><div class="ai-rev-score-num">${score}</div><div class="ai-rev-score-label"><strong>/100</strong><br>${scoreLabel}</div></div>`;
+}
+
+// ── Essay final checklist ─────────────────────────────────────
+function esToggleCl(key, idx, el) {
+  try {
+    const d = JSON.parse(localStorage.getItem(key) || '{}');
+    d[idx] = !d[idx];
+    localStorage.setItem(key, JSON.stringify(d));
+    el.classList.toggle('done', d[idx]);
+    el.querySelector('.es-cl-box').textContent = d[idx] ? '✓' : '';
+  } catch(e) {}
 }
 
 // Planning Timeline (moved from Tracker page)
