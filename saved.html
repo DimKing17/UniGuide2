@@ -663,9 +663,9 @@
 
 <script>
 // ─────────────────────────────────────────────────────────────
-//  SAVED PROGRAMS  (pulled from localStorage; fallback demo)
+//  SAVED PROGRAMS  (pulled from localStorage; synced with cloud)
 // ─────────────────────────────────────────────────────────────
-function getSavedPrograms() {
+function getSavedProgramsFromStorage() {
   try {
     const raw = localStorage.getItem('savedPrograms');
     if (raw) {
@@ -673,7 +673,6 @@ function getSavedPrograms() {
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
   } catch(e){}
-  // No demo fallback — show empty state so users browse and save their own programs
   return [];
 }
 function saveProgramsToStorage(list) {
@@ -681,9 +680,43 @@ function saveProgramsToStorage(list) {
   // Also sync to Firestore if logged in
   if (typeof ugSave === 'function') ugSave('savedPrograms', list);
 }
-let savedPrograms = getSavedPrograms();
+// Initialize with localStorage data immediately (for fast initial render)
+let savedPrograms = getSavedProgramsFromStorage();
 let activeProgramId = savedPrograms.length ? savedPrograms[0].id : null;
 let tagTargetId = null;
+
+// Async function to load from cloud/localStorage via ugLoad (properly waits for auth)
+async function loadSavedProgramsAsync() {
+  if (typeof ugLoad === 'function') {
+    try {
+      const loaded = await ugLoad('savedPrograms', []);
+      if (Array.isArray(loaded) && loaded.length > 0) {
+        savedPrograms = loaded;
+        // Also update localStorage to keep in sync
+        localStorage.setItem('savedPrograms', JSON.stringify(loaded));
+        // Re-resolve active program
+        const params = new URLSearchParams(window.location.search);
+        const reqId = params.get('prog');
+        if (reqId && savedPrograms.some(p => p.id === reqId)) {
+          activeProgramId = reqId;
+        } else if (!activeProgramId || !savedPrograms.some(p => p.id === activeProgramId)) {
+          activeProgramId = savedPrograms[0]?.id || null;
+        }
+        renderSidebar();
+        renderDetail();
+        // Update hero if a program is selected
+        const prog = savedPrograms.find(p => p.id === activeProgramId);
+        if (prog) {
+          const heroTitle = document.getElementById('heroTitle');
+          const heroSub = document.getElementById('heroSub');
+          if (heroTitle) heroTitle.textContent = prog.programName;
+          if (heroSub) heroSub.innerHTML = `<strong>${prog.uniName}</strong> — Your personalized planning dashboard`;
+          document.title = `${prog.programName} · UniGuide`;
+        }
+      }
+    } catch(e) { console.warn('loadSavedProgramsAsync error:', e); }
+  }
+}
 
 // ─────────────────────────────────────────────────────────────
 //  CHECKLIST STATE  (course check + grade inputs)
@@ -905,7 +938,7 @@ function buildGrade11Section(progId, pd) {
     </div>`;
 }
 
-// ── Build the Grade 12 subject picker section ──────────────────
+// ── Build the Grade 12 subject picker section ───────────��──────
 function buildGrade12Section(progId, pd) {
   const state    = getCLState(progId);
   const gr11Set  = new Set(JSON.parse(state['gr11_selected'] || '[]').map(c => c.code));
@@ -1768,7 +1801,7 @@ const EC_LIBRARY = [
     howToShow:['Describe your research question and the dataset you used','Explain the method (regression, visualization, clustering)','State what you found and whether it was what you expected','Note if you published it (GitHub, personal blog, or school presentation)'],
     projectTemplate:`Month 1: Go to kaggle.com/datasets or statcan.gc.ca and find a dataset on a topic you find interesting. Install Python + pandas + matplotlib. Month 2: Clean the data and make 5 basic visualizations. Month 3: Identify a pattern or anomaly. Form a hypothesis. Month 4: Run a simple statistical test (correlation, regression). Month 5: Write a 700-word analysis report. Month 6: Post to GitHub with a readable README and share in a relevant subreddit for feedback.` },
 
-  // ── VOLUNTEERING ─────────────────────────────────────────────────────────────
+  // ── VOLUNTEERING ────────────────��────────────────────────────────────────────
   { icon:'🧑‍🦼', title:'Disability / Accessibility Support Volunteering',
     type:'volunteer', majors:['health','social','any'], impact:7, cost:'free', remote:false, hoursPerWeek:3, gradeMin:10,
     desc:'Working with individuals with physical or cognitive disabilities — through school boards, community centres, or disability organizations — shows empathy, adaptability, and commitment that health sciences programs value highly.',
@@ -4376,29 +4409,15 @@ if (arrivedFromSave && activeProgramId) {
   }
 }
 
-// ── Cloud sync: reload from Firestore when logged in ──────────
+// ── Cloud sync: reload from cloud/localStorage when auth is ready ──────────
+// This handles BOTH logged-in users (loads from Firestore) AND logged-out users (loads from localStorage via ugLoad)
 if (typeof _onReady === 'function') {
   _onReady(async () => {
-    if (typeof ugIsLoggedIn === 'function' && ugIsLoggedIn()) {
-      try {
-        const cloudProgs = await ugLoad('savedPrograms', null);
-        if (cloudProgs && Array.isArray(cloudProgs) && cloudProgs.length > 0) {
-          savedPrograms = cloudProgs;
-          localStorage.setItem('savedPrograms', JSON.stringify(cloudProgs));
-          // Re-resolve active program
-          const params = new URLSearchParams(window.location.search);
-          const reqId = params.get('prog');
-          if (reqId && savedPrograms.some(p => p.id === reqId)) {
-            activeProgramId = reqId;
-          } else if (!savedPrograms.some(p => p.id === activeProgramId)) {
-            activeProgramId = savedPrograms[0].id;
-          }
-          renderSidebar();
-          renderDetail();
-        }
-      } catch(e) {}
-    }
+    await loadSavedProgramsAsync();
   });
+} else {
+  // Fallback: if _onReady isn't available, try loading after a short delay
+  setTimeout(() => { loadSavedProgramsAsync(); }, 100);
 }
 
 // ─────────────────────────────────────────────────────────────
