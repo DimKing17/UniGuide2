@@ -313,6 +313,22 @@
     <a class="auth-back" href="index.html">Back to UniGuide</a>
   </div>
 
+  <!-- Already Signed In View (shown when user is logged in) -->
+  <div class="auth-container" id="alreadySignedIn" style="display: none;">
+    <div class="auth-logo"><span>Uni</span>Guide</div>
+    <p class="auth-subtitle">You're already signed in</p>
+    
+    <div style="text-align: center; margin: 24px 0;">
+      <div style="font-size: 3rem; margin-bottom: 12px;">&#10003;</div>
+      <p style="color: var(--navy); font-weight: 600; margin-bottom: 4px;" id="signedInEmail"></p>
+      <p style="color: var(--grey); font-size: 0.85rem;">You're currently logged in</p>
+    </div>
+    
+    <button class="auth-btn" onclick="window.location.href='index.html'">Continue to UniGuide</button>
+    
+    <button class="auth-google" style="margin-top: 12px;" onclick="signOutUser()">Sign Out</button>
+  </div>
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -323,20 +339,29 @@
     firebase.initializeApp(FIREBASE_CONFIG);
     const auth = firebase.auth();
 
-    console.log("[v0] Firebase initialized, FIREBASE_CONFIGURED:", typeof FIREBASE_CONFIGURED !== 'undefined' ? FIREBASE_CONFIGURED : 'undefined');
-    console.log("[v0] auth object:", auth);
-
     // Check if already logged in
     auth.onAuthStateChanged(user => {
-      console.log("[v0] onAuthStateChanged fired, user:", user);
       if (user) {
-        console.log("[v0] User is signed in, redirecting to index.html");
-        // User is signed in, redirect to home
-        window.location.href = 'index.html';
+        // User is already signed in - show the "already signed in" view
+        document.querySelector('.auth-container:not(#alreadySignedIn)').style.display = 'none';
+        document.getElementById('alreadySignedIn').style.display = 'block';
+        document.getElementById('signedInEmail').textContent = user.email || 'Signed in with Google';
       } else {
-        console.log("[v0] User is NOT signed in, staying on login page");
+        // User is not signed in - show the login form
+        document.querySelector('.auth-container:not(#alreadySignedIn)').style.display = 'block';
+        document.getElementById('alreadySignedIn').style.display = 'none';
       }
     });
+
+    // Sign out function
+    async function signOutUser() {
+      try {
+        await auth.signOut();
+        // onAuthStateChanged will handle showing the login form
+      } catch (e) {
+        alert('Error signing out. Please try again.');
+      }
+    }
 
     // Tab switching
     function switchAuthTab(tab) {
