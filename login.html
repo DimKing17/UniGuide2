@@ -1,61 +1,40 @@
-<!-- public/login.html -->
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>UniGuide — Login</title>
+  <title>UniGuide Login</title>
 
-  <!-- Firebase (compat) and FirebaseUI -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
-  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/6.0.2/firebaseui.css" />
+  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/6.0.2/firebaseui.css">
   <script src="https://cdn.firebase.com/libs/firebaseui/6.0.2/firebaseui.js"></script>
-
-  <style>
-    body { font-family: system-ui, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; }
-    #firebaseui-auth-container { width: 320px; }
-  </style>
 </head>
+
 <body>
 
-  <div id="firebaseui-auth-container"></div>
-  <div id="loader">Loading...</div>
+<h2>Login to UniGuide</h2>
 
-  <script>
-    // 1) Paste your firebaseConfig here (from Firebase Console)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDD-036QmunaoGfSEem0hO2FLSrUaiKKlo",
-      authDomain: "uniguide2-41a4b.firebaseapp.com",
-      projectId: "uniguide2-41a4b",
-      appId: "1:11867097005:web:7ff1775dfab3a739568324"
-    };
+<div id="firebaseui-auth-container"></div>
 
-    // 2) Init Firebase (compat mode works with FirebaseUI)
-    firebase.initializeApp(firebaseConfig);
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDD-036QmunaoGfSEem0hO2FLSrUaiKKlo",
+  authDomain: "uniguide2-41a4b.firebaseapp.com",
+  projectId: "uniguide2-41a4b"
+};
 
-    // 3) FirebaseUI config
-    const uiConfig = {
-      callbacks: {
-        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-          // User successfully signed in.
-          // Redirect to dashboard or close popup
-          window.location.href = "/dashboard.html"; // change to your dashboard route
-          return false; // prevent automatic redirect (we handle it)
-        }
-      },
-      signInFlow: 'popup', // popup or redirect
-      signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID
-      ],
-      tosUrl: '/terms.html', // optional
-      privacyPolicyUrl: '/privacy.html' // optional
-    };
+firebase.initializeApp(firebaseConfig);
 
-    // 4) Start FirebaseUI
-    const ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
-  </script>
+var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+ui.start('#firebaseui-auth-container', {
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.EmailAuthProvider.PROVIDER_ID
+  ],
+  signInSuccessUrl: "index.html"
+});
+</script>
+
 </body>
 </html>
