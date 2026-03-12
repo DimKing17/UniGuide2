@@ -1,43 +1,504 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login to UniGuide</title>
-  <!-- Firebase CSS (optional for styling) -->
-  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - UniGuide</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--navy) 0%, #2d4a7c 100%);
+      padding: 20px;
+    }
+    .auth-container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 36px 32px 28px;
+      width: 400px;
+      max-width: 100%;
+      box-shadow: 0 20px 60px rgba(26,42,74,0.25);
+    }
+    .auth-logo {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .auth-logo span { color: var(--red); }
+    .auth-subtitle {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--grey);
+      margin-bottom: 24px;
+    }
+    .auth-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+    }
+    .auth-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 12px 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--grey);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .auth-tab:hover { color: var(--navy); }
+    .auth-tab.active { color: var(--red); border-bottom-color: var(--red); }
+    
+    .auth-panel { display: none; }
+    .auth-panel.active { display: block; }
+    
+    .auth-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+    .auth-label:first-child { margin-top: 0; }
+    .auth-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--navy);
+      transition: border-color 0.15s;
+      box-sizing: border-box;
+    }
+    .auth-input:focus { outline: none; border-color: var(--red); }
+    
+    .auth-btn {
+      width: 100%;
+      padding: 13px 0;
+      margin-top: 20px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .auth-btn:hover { background: var(--red-dk); }
+    .auth-btn:disabled { opacity: 0.6; cursor: wait; }
+    
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--grey);
+      font-size: 0.8rem;
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    
+    .auth-google {
+      width: 100%;
+      padding: 12px 0;
+      background: #fff;
+      color: var(--navy);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .auth-google:hover { background: #f8f9fa; border-color: #ccc; }
+    .auth-google svg { width: 18px; height: 18px; }
+    
+    .auth-error {
+      color: #c8102e;
+      background: #fde8ec;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .auth-error:not(:empty) { display: block; }
+    
+    .auth-success {
+      color: #1a7a52;
+      background: #e6f7f0;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .auth-success:not(:empty) { display: block; }
+    
+    .auth-footer {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--grey);
+      margin-top: 20px;
+    }
+    .auth-footer a {
+      color: var(--red);
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .auth-footer a:hover { text-decoration: underline; }
+    
+    .auth-back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: var(--grey);
+      text-decoration: none;
+    }
+    .auth-back:hover { color: var(--navy); }
+    
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: 0.78rem;
+      color: var(--red);
+      text-decoration: none;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+    .forgot-link:hover { text-decoration: underline; }
+
+    /* Password visibility toggle */
+    .password-wrap {
+      position: relative;
+    }
+    .password-wrap input {
+      padding-right: 44px;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--grey);
+      padding: 4px;
+    }
+    .password-toggle:hover { color: var(--navy); }
+
+    /* Reset password panel */
+    .reset-panel { display: none; }
+    .reset-panel.active { display: block; }
+    .reset-panel .auth-subtitle { margin-bottom: 16px; }
+  </style>
 </head>
 <body>
-  <h1>Login to UniGuide</h1>
+  <div class="auth-container">
+    <!-- Main Auth View -->
+    <div id="mainAuth">
+      <div class="auth-logo"><span>Uni</span>Guide</div>
+      <p class="auth-subtitle">Your path to Canadian universities</p>
+      
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="auth-tab" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+      
+      <!-- Sign In Panel -->
+      <div class="auth-panel active" id="signinPanel">
+        <div class="auth-error" id="signinError"></div>
+        
+        <label class="auth-label">Email</label>
+        <input type="email" class="auth-input" id="signinEmail" placeholder="you@example.com" autocomplete="email">
+        
+        <label class="auth-label">Password</label>
+        <div class="password-wrap">
+          <input type="password" class="auth-input" id="signinPassword" placeholder="Enter your password" autocomplete="current-password">
+          <button type="button" class="password-toggle" onclick="togglePassword('signinPassword', this)">👁</button>
+        </div>
+        <a class="forgot-link" onclick="showResetPanel()">Forgot password?</a>
+        
+        <button class="auth-btn" id="signinBtn" onclick="signInWithEmail()">Sign In</button>
+        
+        <div class="auth-divider">or</div>
+        
+        <button class="auth-google" onclick="signInWithGoogle()">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+        
+        <p class="auth-footer">
+          Don't have an account? <a onclick="switchAuthTab('signup')">Create one</a>
+        </p>
+      </div>
+      
+      <!-- Sign Up Panel -->
+      <div class="auth-panel" id="signupPanel">
+        <div class="auth-error" id="signupError"></div>
+        <div class="auth-success" id="signupSuccess"></div>
+        
+        <label class="auth-label">Email</label>
+        <input type="email" class="auth-input" id="signupEmail" placeholder="you@example.com" autocomplete="email">
+        
+        <label class="auth-label">Password</label>
+        <div class="password-wrap">
+          <input type="password" class="auth-input" id="signupPassword" placeholder="At least 6 characters" autocomplete="new-password">
+          <button type="button" class="password-toggle" onclick="togglePassword('signupPassword', this)">👁</button>
+        </div>
+        
+        <label class="auth-label">Confirm Password</label>
+        <div class="password-wrap">
+          <input type="password" class="auth-input" id="signupConfirm" placeholder="Re-enter your password" autocomplete="new-password">
+          <button type="button" class="password-toggle" onclick="togglePassword('signupConfirm', this)">👁</button>
+        </div>
+        
+        <button class="auth-btn" id="signupBtn" onclick="signUpWithEmail()">Create Account</button>
+        
+        <div class="auth-divider">or</div>
+        
+        <button class="auth-google" onclick="signInWithGoogle()">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+        
+        <p class="auth-footer">
+          Already have an account? <a onclick="switchAuthTab('signin')">Sign in</a>
+        </p>
+      </div>
+    </div>
+    
+    <!-- Reset Password Panel -->
+    <div class="reset-panel" id="resetPanel">
+      <div class="auth-logo"><span>Uni</span>Guide</div>
+      <p class="auth-subtitle">Enter your email and we'll send you a link to reset your password.</p>
+      
+      <div class="auth-error" id="resetError"></div>
+      <div class="auth-success" id="resetSuccess"></div>
+      
+      <label class="auth-label">Email</label>
+      <input type="email" class="auth-input" id="resetEmail" placeholder="you@example.com" autocomplete="email">
+      
+      <button class="auth-btn" id="resetBtn" onclick="sendResetEmail()">Send Reset Link</button>
+      
+      <a class="auth-back" onclick="hideResetPanel()">Back to Sign In</a>
+    </div>
+    
+    <a class="auth-back" href="index.html">Back to UniGuide</a>
+  </div>
 
-  <!-- FirebaseUI container -->
-  <div id="firebaseui-auth-container"></div>
-
-  <!-- Firebase App (the core Firebase SDK) -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
+  <script src="firebase-config.js"></script>
 
   <script>
-    // TODO: Replace with your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyDD-036QmunaoGfSEem0hO2FLSrUaiKKlo",
-      authDomain: "uniguide2-41a4b.firebaseapp.com",
-      projectId: "uniguide2-41a4b",
-      appId: "1:11867097005:web:7ff1775dfab3a739568324"
-    };
+    // Initialize Firebase
+    firebase.initializeApp(FIREBASE_CONFIG);
+    const auth = firebase.auth();
 
-    firebase.initializeApp(firebaseConfig);
+    // Check if already logged in
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in, redirect to home
+        window.location.href = 'index.html';
+      }
+    });
 
-    const uiConfig = {
-      signInSuccessUrl: 'index.html', // where to go after login
-      signInOptions: [
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        // add other providers if needed
-      ],
-    };
+    // Tab switching
+    function switchAuthTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach((t, i) => {
+        t.classList.toggle('active', (tab === 'signin' && i === 0) || (tab === 'signup' && i === 1));
+      });
+      document.getElementById('signinPanel').classList.toggle('active', tab === 'signin');
+      document.getElementById('signupPanel').classList.toggle('active', tab === 'signup');
+      // Clear errors
+      document.getElementById('signinError').textContent = '';
+      document.getElementById('signupError').textContent = '';
+      document.getElementById('signupSuccess').textContent = '';
+    }
 
-    const ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
+    // Password visibility toggle
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      btn.textContent = isHidden ? '🙈' : '👁';
+    }
+
+    // Show/hide reset panel
+    function showResetPanel() {
+      document.getElementById('mainAuth').style.display = 'none';
+      document.getElementById('resetPanel').classList.add('active');
+      document.getElementById('resetError').textContent = '';
+      document.getElementById('resetSuccess').textContent = '';
+      document.querySelector('.auth-back[href="index.html"]').style.display = 'none';
+    }
+
+    function hideResetPanel() {
+      document.getElementById('mainAuth').style.display = 'block';
+      document.getElementById('resetPanel').classList.remove('active');
+      document.querySelector('.auth-back[href="index.html"]').style.display = 'block';
+    }
+
+    // Friendly error messages
+    function getFriendlyError(code) {
+      const errors = {
+        'auth/email-already-in-use': 'This email is already registered. Try signing in instead.',
+        'auth/invalid-email': 'Please enter a valid email address.',
+        'auth/user-disabled': 'This account has been disabled. Contact support.',
+        'auth/user-not-found': 'No account found with this email. Create one?',
+        'auth/wrong-password': 'Incorrect password. Try again or reset it.',
+        'auth/weak-password': 'Password must be at least 6 characters.',
+        'auth/too-many-requests': 'Too many attempts. Please wait a few minutes.',
+        'auth/network-request-failed': 'Network error. Check your connection.',
+        'auth/popup-closed-by-user': 'Sign in cancelled. Try again when ready.',
+        'auth/cancelled-popup-request': 'Sign in cancelled.',
+        'auth/invalid-credential': 'Invalid credentials. Please check your email and password.',
+      };
+      return errors[code] || 'Something went wrong. Please try again.';
+    }
+
+    // Sign in with email
+    async function signInWithEmail() {
+      const email = document.getElementById('signinEmail').value.trim();
+      const password = document.getElementById('signinPassword').value;
+      const errorEl = document.getElementById('signinError');
+      const btn = document.getElementById('signinBtn');
+
+      errorEl.textContent = '';
+
+      if (!email) { errorEl.textContent = 'Please enter your email.'; return; }
+      if (!password) { errorEl.textContent = 'Please enter your password.'; return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        // Redirect happens automatically via onAuthStateChanged
+      } catch (e) {
+        errorEl.textContent = getFriendlyError(e.code);
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    }
+
+    // Sign up with email
+    async function signUpWithEmail() {
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const confirm = document.getElementById('signupConfirm').value;
+      const errorEl = document.getElementById('signupError');
+      const successEl = document.getElementById('signupSuccess');
+      const btn = document.getElementById('signupBtn');
+
+      errorEl.textContent = '';
+      successEl.textContent = '';
+
+      if (!email) { errorEl.textContent = 'Please enter your email.'; return; }
+      if (!password) { errorEl.textContent = 'Please enter a password.'; return; }
+      if (password.length < 6) { errorEl.textContent = 'Password must be at least 6 characters.'; return; }
+      if (password !== confirm) { errorEl.textContent = 'Passwords do not match.'; return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
+
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        // Redirect happens automatically via onAuthStateChanged
+      } catch (e) {
+        errorEl.textContent = getFriendlyError(e.code);
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+    }
+
+    // Sign in with Google
+    async function signInWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        await auth.signInWithPopup(provider);
+        // Redirect happens automatically via onAuthStateChanged
+      } catch (e) {
+        // Show error in whichever panel is active
+        const errorEl = document.getElementById('signinPanel').classList.contains('active') 
+          ? document.getElementById('signinError') 
+          : document.getElementById('signupError');
+        errorEl.textContent = getFriendlyError(e.code);
+      }
+    }
+
+    // Send password reset email
+    async function sendResetEmail() {
+      const email = document.getElementById('resetEmail').value.trim();
+      const errorEl = document.getElementById('resetError');
+      const successEl = document.getElementById('resetSuccess');
+      const btn = document.getElementById('resetBtn');
+
+      errorEl.textContent = '';
+      successEl.textContent = '';
+
+      if (!email) { errorEl.textContent = 'Please enter your email.'; return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      try {
+        await auth.sendPasswordResetEmail(email);
+        successEl.textContent = 'Reset link sent! Check your inbox (and spam folder).';
+        btn.textContent = 'Email Sent';
+        // Keep button disabled to prevent spam
+      } catch (e) {
+        errorEl.textContent = getFriendlyError(e.code);
+        btn.disabled = false;
+        btn.textContent = 'Send Reset Link';
+      }
+    }
+
+    // Allow Enter key to submit forms
+    document.getElementById('signinPassword').addEventListener('keydown', e => {
+      if (e.key === 'Enter') signInWithEmail();
+    });
+    document.getElementById('signupConfirm').addEventListener('keydown', e => {
+      if (e.key === 'Enter') signUpWithEmail();
+    });
+    document.getElementById('resetEmail').addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendResetEmail();
+    });
+
+    // Check URL params for mode (e.g., login.html?mode=signup)
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    if (mode === 'signup') {
+      switchAuthTab('signup');
+    }
   </script>
 </body>
 </html>
