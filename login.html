@@ -323,11 +323,18 @@
     firebase.initializeApp(FIREBASE_CONFIG);
     const auth = firebase.auth();
 
+    console.log("[v0] Firebase initialized, FIREBASE_CONFIGURED:", typeof FIREBASE_CONFIGURED !== 'undefined' ? FIREBASE_CONFIGURED : 'undefined');
+    console.log("[v0] auth object:", auth);
+
     // Check if already logged in
     auth.onAuthStateChanged(user => {
+      console.log("[v0] onAuthStateChanged fired, user:", user);
       if (user) {
+        console.log("[v0] User is signed in, redirecting to index.html");
         // User is signed in, redirect to home
         window.location.href = 'index.html';
+      } else {
+        console.log("[v0] User is NOT signed in, staying on login page");
       }
     });
 
