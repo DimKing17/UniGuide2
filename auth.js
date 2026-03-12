@@ -70,6 +70,38 @@ function _initFirebase() {
 
 // ════════════════════════════════════════════════════════════════
 //  AUTH FUNCTIONS
+
+// ── Google sign-in (popup) ─────────────────────────────────────
+async function ugSignInWithGoogle() {
+  if (!_auth) { _setAuthError('Authentication is not configured.'); throw new Error('Firebase not configured'); }
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await _auth.signInWithPopup(provider); // compat API
+    const user = result.user;
+    if (user && _db) {
+      // Upsert minimal profile (merge with existing)
+      const profile = {
+        displayName: user.displayName || '',
+        email: user.email || null,
+        photoURL: user.photoURL || null,
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      await _db.collection('users').doc(user.uid).set(profile, { merge: true });
+    }
+    // update local state & UI
+    _user = user;
+    _updateNavUI();
+    _migrateLocalToCloud();
+    // close modal if open
+    ugCloseAuth();
+    return user;
+  } catch(err) {
+    // show friendly error in modal UI
+    _setAuthError(_friendlyError(err.code));
+    console.warn('Google sign-in error:', err);
+    throw err;
+  }
+}
 // ════════════════════════════════════════════════════════════════
 
 async function ugSignUp(email, password, displayName, extraProfile) {
