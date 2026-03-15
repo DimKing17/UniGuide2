@@ -89,7 +89,7 @@
       font-size:.83rem;
     }
     .snap-close-btn {
-      display:inline-block; float:right; margin-top:-4px;
+      float:right; margin-top:-4px;
       font-size:.75rem; color:var(--grey); cursor:pointer; padding:2px 8px;
       border:1px solid var(--border); border-radius:50px;
     }
@@ -270,7 +270,7 @@
     .roadmap-month { font-weight:800; font-size:.82rem; color:var(--red); min-width:90px; }
 
     /* ── EC Guide v2 ── */
-    .ec-guide { }
+    .ec-guide { min-height: 0; }
     .ec-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
     .ec-filter-sel { font-size:.78rem; padding:5px 10px; border-radius:8px; border:1.5px solid var(--border);
       background:#fff; color:var(--navy); cursor:pointer; font-family:inherit; }
@@ -582,7 +582,8 @@
     
     <a href="tracker.html">Tracker</a>
     <span id="nav-logged-out" class="nav-auth">
-  <a href="login.html" class="nav-btn-outline">Log In</a> 
+      <a href="login.html" class="nav-btn-outline">Log In</a>
+      <a href="login.html?mode=signup" class="nav-btn-outline" style="background:rgba(255,255,255,0.08)">Sign Up</a>
     </span>
     <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><a href="profile.html" class="nav-profile-link">Profile</a><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
     <a href="selections.html" class="nav-btn">Start YOUR plan</a>
@@ -659,8 +660,12 @@
 </div>
 
 <!-- ═══ DATA + SHARED ═══ -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="data.js"></script>
 <script src="firebase-config.js"></script>
+<script src="auth.js"></script>
 
 <script>
 // ─────────────────────────────────────────────────────────────
@@ -683,7 +688,7 @@ function saveProgramsToStorage(list) {
   if (typeof ugSave === 'function') ugSave('savedPrograms', list);
 }
 let savedPrograms = getSavedPrograms();
-let activeProgramId = savedPrograms.length ? savedPrograms[0].id : null;
+let activeProgramId = savedPrograms.length ? savedPrograms[savedPrograms.length - 1].id : null;
 let tagTargetId = null;
 
 // ─────────────────────────────────────────────────────────────
@@ -3053,7 +3058,7 @@ function getUniEssayProfile(uniName, progName) {
         'Acknowledge multiple perspectives before stating your position.',
         'For ethical scenarios: autonomy, beneficence, non-maleficence, and justice are the four pillars. Work through them.',
         'Do NOT be afraid to pause and say "Let me think through this."',
-        'Prepare 3–4 personal stories (leadership, resilience, ethical dilemma you faced, community contribution) — they'll fit multiple stations.',
+        'Prepare 3–4 personal stories (leadership, resilience, ethical dilemma you faced, community contribution) — they\'ll fit multiple stations.',
       ],
       sampleQs:[
         { q:'A patient refuses a life-saving blood transfusion for religious reasons. As their physician, what do you do?', cat:'Ethics — Autonomy', guide:'Acknowledge the tension between patient autonomy and your duty to preserve life. Confirm informed consent: does the patient understand the consequences? If competent and informed, respect their decision. Involve an ethics board if available. Show nuance — there is no "right" answer, only a reasoned process.' },
@@ -4384,8 +4389,19 @@ if (typeof _onReady === 'function') {
       try {
         const cloudProgs = await ugLoad('savedPrograms', null);
         if (cloudProgs && Array.isArray(cloudProgs) && cloudProgs.length > 0) {
-          savedPrograms = cloudProgs;
-          localStorage.setItem('savedPrograms', JSON.stringify(cloudProgs));
+          // Merge: keep any local programs not in cloud, plus all cloud programs
+          const localProgs = getSavedPrograms();
+          const cloudIds = new Set(cloudProgs.map(p => p.id));
+          const merged = [...cloudProgs];
+          localProgs.forEach(lp => {
+            if (!cloudIds.has(lp.id)) merged.push(lp);
+          });
+          savedPrograms = merged;
+          localStorage.setItem('savedPrograms', JSON.stringify(merged));
+          // Push merged list back to cloud so both are in sync
+          if (typeof ugSave === 'function') {
+            try { await ugSave('savedPrograms', merged); } catch(e) {}
+          }
           // Re-resolve active program
           const params = new URLSearchParams(window.location.search);
           const reqId = params.get('prog');

@@ -217,10 +217,10 @@
     <a href="saved.html">My List</a>
     
     <a href="tracker.html">Tracker</a>
-    <!-- Nav login link -->
-<span id="nav-logged-out" class="nav-auth">
-  <a href="login.html" class="nav-btn-outline">Log In</a>
-</span>
+    <span id="nav-logged-out" class="nav-auth">
+      <a href="login.html" class="nav-btn-outline">Log In</a>
+      <a href="login.html?mode=signup" class="nav-btn-outline" style="background:rgba(255,255,255,0.08)">Sign Up</a>
+    </span>
     <span id="nav-logged-in" class="nav-auth" style="display:none;">
       <span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span>
       <a href="profile.html" class="nav-links-profile active">Profile</a>
@@ -236,11 +236,9 @@
     <div style="font-size:3rem;margin-bottom:16px;">🔒</div>
     <h2>Sign in to view your profile</h2>
     <p>Your profile saves your personal info, quiz answers, and settings across devices.</p>
-    <!-- Sign in button -->
-<button class="btn btn-red" onclick="location.href='login.html'">Sign In</button>
+    <button class="btn btn-red" onclick="location.href='login.html'">Sign In</button>
     &nbsp;
-    <!-- Create account button (also goes to login page with signup option) -->
-<button class="btn btn-outline" onclick="location.href='login.html'">Create Account</button>
+    <button class="btn btn-outline" onclick="location.href='login.html?mode=signup'">Create Account</button>
   </div>
 </div>
 
@@ -537,7 +535,11 @@
   </div><!-- /profile-body -->
 </div><!-- /profileContent -->
 
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
+<script src="auth.js"></script>
 <script>
 // ── Labels for quiz answer display ──────────────────────
 const QUIZ_LABELS = {

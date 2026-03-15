@@ -1,43 +1,334 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Login to UniGuide</title>
-  <!-- Firebase CSS (optional for styling) -->
-  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In — UniGuide</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .auth-page {
+      min-height: calc(100vh - 62px);
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--navy) 0%, #1e3a6e 100%);
+      padding: 40px 20px;
+    }
+    .auth-card {
+      background: var(--white); border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 420px;
+      padding: 0;
+      overflow: hidden;
+    }
+    .auth-tabs {
+      display: flex; border-bottom: 2px solid var(--border);
+    }
+    .auth-tab {
+      flex: 1; padding: 16px; text-align: center;
+      font-weight: 700; font-size: 0.95rem;
+      color: var(--grey); background: var(--light);
+      cursor: pointer; border: none; font-family: inherit;
+      transition: color 0.2s, background 0.2s;
+    }
+    .auth-tab:hover { color: var(--navy); }
+    .auth-tab.active {
+      color: var(--navy); background: var(--white);
+      border-bottom: 3px solid var(--red);
+      margin-bottom: -2px;
+    }
+    .auth-body { padding: 32px 28px 28px; }
+    .auth-body h2 {
+      font-size: 1.3rem; margin-bottom: 6px; color: var(--navy);
+    }
+    .auth-body .auth-sub {
+      font-size: 0.88rem; color: var(--grey); margin-bottom: 24px;
+    }
+    .auth-field { margin-bottom: 16px; }
+    .auth-field label {
+      display: block; font-size: 0.82rem; font-weight: 700;
+      color: var(--navy); margin-bottom: 5px;
+    }
+    .auth-field input {
+      width: 100%; padding: 11px 14px; font-size: 0.95rem;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; color: var(--navy);
+      transition: border-color 0.2s;
+    }
+    .auth-field input:focus {
+      outline: none; border-color: var(--red);
+    }
+    .auth-submit {
+      width: 100%; padding: 13px; font-size: 1rem;
+      font-weight: 700; font-family: inherit;
+      border: none; border-radius: 10px; cursor: pointer;
+      color: #fff; background: var(--red);
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 4px;
+    }
+    .auth-submit:hover { background: var(--red-dk); transform: translateY(-1px); }
+    .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .auth-msg {
+      font-size: 0.84rem; margin-top: 12px; text-align: center;
+      min-height: 1.2em;
+    }
+    .auth-msg.err { color: #c0392b; }
+    .auth-msg.ok  { color: var(--success); }
+    .auth-footer {
+      text-align: center; padding: 18px 28px;
+      border-top: 1px solid var(--border);
+      font-size: 0.84rem; color: var(--grey);
+    }
+    .auth-footer a { color: var(--red); font-weight: 700; text-decoration: none; cursor: pointer; }
+    .auth-footer a:hover { text-decoration: underline; }
+    .auth-forgot {
+      text-align: right; margin-top: -8px; margin-bottom: 16px;
+    }
+    .auth-forgot a {
+      font-size: 0.8rem; color: var(--red); text-decoration: none; cursor: pointer;
+    }
+    .auth-forgot a:hover { text-decoration: underline; }
+    .auth-panel { display: none; }
+    .auth-panel.active { display: block; }
+    .auth-logo {
+      text-align: center; padding: 24px 0 0;
+      font-size: 1.4rem; font-weight: 900;
+    }
+    .auth-logo span { color: var(--red); }
+    .auth-back {
+      display: block; text-align: center; margin-top: 20px;
+      font-size: 0.88rem; color: rgba(255,255,255,0.7);
+      text-decoration: none;
+    }
+    .auth-back:hover { color: #fff; }
+    /* Reset panel */
+    .auth-reset-info {
+      background: var(--light); border-radius: 10px;
+      padding: 14px 16px; margin-bottom: 20px;
+      font-size: 0.85rem; color: var(--grey);
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
-  <h1>Login to UniGuide</h1>
 
-  <!-- FirebaseUI container -->
-  <div id="firebaseui-auth-container"></div>
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span>Uni</span>Guide 🍁</a>
+  <div class="nav-links">
+    <a href="browsing.html">Browse</a>
+    <a href="selections.html">Selections</a>
+    <a href="saved.html">My List</a>
+    <a href="tracker.html">Tracker</a>
+    <a href="selections.html" class="nav-btn">Start YOUR plan</a>
+  </div>
+</nav>
 
-  <!-- Firebase App (the core Firebase SDK) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
+<main class="auth-page">
+  <div>
+    <div class="auth-card">
+      <div class="auth-logo"><span>Uni</span>Guide 🍁</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="showPanel('signin')">Sign In</button>
+        <button class="auth-tab" onclick="showPanel('signup')">Create Account</button>
+      </div>
 
-  <script>
-    // TODO: Replace with your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyDD-036QmunaoGfSEem0hO2FLSrUaiKKlo",
-      authDomain: "uniguide2-41a4b.firebaseapp.com",
-      projectId: "uniguide2-41a4b",
-      appId: "1:11867097005:web:7ff1775dfab3a739568324"
+      <!-- ═══ SIGN IN ═══ -->
+      <div id="panel-signin" class="auth-panel active">
+        <div class="auth-body">
+          <h2>Welcome back</h2>
+          <p class="auth-sub">Sign in with your email and password.</p>
+          <form onsubmit="handleSignIn(event)">
+            <div class="auth-field">
+              <label for="si-email">Email</label>
+              <input type="email" id="si-email" required autocomplete="email" placeholder="you@example.com"/>
+            </div>
+            <div class="auth-field">
+              <label for="si-password">Password</label>
+              <input type="password" id="si-password" required autocomplete="current-password" placeholder="Your password" minlength="6"/>
+            </div>
+            <div class="auth-forgot"><a onclick="showPanel('reset')">Forgot password?</a></div>
+            <button type="submit" class="auth-submit" id="si-btn">Sign In</button>
+            <div class="auth-msg" id="si-msg"></div>
+          </form>
+        </div>
+        <div class="auth-footer">
+          Don't have an account? <a onclick="showPanel('signup')">Create one</a>
+        </div>
+      </div>
+
+      <!-- ═══ SIGN UP ═══ -->
+      <div id="panel-signup" class="auth-panel">
+        <div class="auth-body">
+          <h2>Create your account</h2>
+          <p class="auth-sub">It's free — no credit card, no catches.</p>
+          <form onsubmit="handleSignUp(event)">
+            <div class="auth-field">
+              <label for="su-name">Display Name</label>
+              <input type="text" id="su-name" required placeholder="Your name" autocomplete="name"/>
+            </div>
+            <div class="auth-field">
+              <label for="su-email">Email</label>
+              <input type="email" id="su-email" required autocomplete="email" placeholder="you@example.com"/>
+            </div>
+            <div class="auth-field">
+              <label for="su-password">Password</label>
+              <input type="password" id="su-password" required autocomplete="new-password" placeholder="At least 6 characters" minlength="6"/>
+            </div>
+            <div class="auth-field">
+              <label for="su-confirm">Confirm Password</label>
+              <input type="password" id="su-confirm" required autocomplete="new-password" placeholder="Re-enter your password" minlength="6"/>
+            </div>
+            <button type="submit" class="auth-submit" id="su-btn">Create Account</button>
+            <div class="auth-msg" id="su-msg"></div>
+          </form>
+        </div>
+        <div class="auth-footer">
+          Already have an account? <a onclick="showPanel('signin')">Sign in</a>
+        </div>
+      </div>
+
+      <!-- ═══ FORGOT PASSWORD ═══ -->
+      <div id="panel-reset" class="auth-panel">
+        <div class="auth-body">
+          <h2>Reset your password</h2>
+          <div class="auth-reset-info">
+            Enter the email you signed up with. We'll send a link to reset your password.
+          </div>
+          <form onsubmit="handleReset(event)">
+            <div class="auth-field">
+              <label for="rs-email">Email</label>
+              <input type="email" id="rs-email" required autocomplete="email" placeholder="you@example.com"/>
+            </div>
+            <button type="submit" class="auth-submit" id="rs-btn">Send Reset Link</button>
+            <div class="auth-msg" id="rs-msg"></div>
+          </form>
+        </div>
+        <div class="auth-footer">
+          <a onclick="showPanel('signin')">← Back to Sign In</a>
+        </div>
+      </div>
+    </div>
+    <a href="index.html" class="auth-back">← Back to UniGuide</a>
+  </div>
+</main>
+
+<!-- Firebase SDK (compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+  // ── Init Firebase ──
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  const auth = firebase.auth();
+
+  // If already signed in, redirect
+  auth.onAuthStateChanged(user => {
+    if (user) window.location.href = 'index.html';
+  });
+
+  // ── Panel switching ──
+  function showPanel(name) {
+    document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    // Highlight the right tab (only signin and signup have tabs)
+    const tabs = document.querySelectorAll('.auth-tab');
+    if (name === 'signin') tabs[0].classList.add('active');
+    else if (name === 'signup') tabs[1].classList.add('active');
+    // Clear messages
+    document.querySelectorAll('.auth-msg').forEach(m => { m.textContent = ''; m.className = 'auth-msg'; });
+    // Update page title
+    const titles = { signin: 'Sign In', signup: 'Create Account', reset: 'Reset Password' };
+    document.title = (titles[name] || 'Sign In') + ' — UniGuide';
+  }
+
+  // Check URL params for initial panel (e.g. login.html?mode=signup)
+  const urlMode = new URLSearchParams(window.location.search).get('mode');
+  if (urlMode === 'signup') showPanel('signup');
+
+  // ── Friendly error messages ──
+  function friendlyError(code) {
+    const map = {
+      'auth/user-not-found':        'No account found with that email. Want to create one?',
+      'auth/wrong-password':        'Incorrect password. Try again or reset it.',
+      'auth/invalid-email':         'Please enter a valid email address.',
+      'auth/email-already-in-use':  'An account with that email already exists. Try signing in.',
+      'auth/weak-password':         'Password is too weak — use at least 6 characters.',
+      'auth/too-many-requests':     'Too many attempts. Please wait a few minutes.',
+      'auth/network-request-failed':'Network error. Check your connection.',
+      'auth/invalid-credential':    'Incorrect email or password. Try again or reset it.',
     };
+    return map[code] || 'Something went wrong. Please try again.';
+  }
 
-    firebase.initializeApp(firebaseConfig);
+  // ── Sign In ──
+  async function handleSignIn(e) {
+    e.preventDefault();
+    const email = document.getElementById('si-email').value.trim();
+    const password = document.getElementById('si-password').value;
+    const btn = document.getElementById('si-btn');
+    const msg = document.getElementById('si-msg');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    msg.textContent = ''; msg.className = 'auth-msg';
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      msg.className = 'auth-msg ok'; msg.textContent = '✓ Signed in! Redirecting…';
+      // onAuthStateChanged will redirect
+    } catch (err) {
+      msg.className = 'auth-msg err';
+      msg.textContent = friendlyError(err.code);
+      btn.disabled = false; btn.textContent = 'Sign In';
+    }
+  }
 
-    const uiConfig = {
-      signInSuccessUrl: 'index.html', // where to go after login
-      signInOptions: [
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        // add other providers if needed
-      ],
-    };
+  // ── Sign Up ──
+  async function handleSignUp(e) {
+    e.preventDefault();
+    const name = document.getElementById('su-name').value.trim();
+    const email = document.getElementById('su-email').value.trim();
+    const password = document.getElementById('su-password').value;
+    const confirm = document.getElementById('su-confirm').value;
+    const btn = document.getElementById('su-btn');
+    const msg = document.getElementById('su-msg');
 
-    const ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
-  </script>
+    msg.textContent = ''; msg.className = 'auth-msg';
+
+    if (password !== confirm) {
+      msg.className = 'auth-msg err';
+      msg.textContent = 'Passwords do not match.';
+      return;
+    }
+
+    btn.disabled = true; btn.textContent = 'Creating account…';
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      if (name) await cred.user.updateProfile({ displayName: name });
+      msg.className = 'auth-msg ok'; msg.textContent = '✓ Account created! Redirecting…';
+      // onAuthStateChanged will redirect
+    } catch (err) {
+      msg.className = 'auth-msg err';
+      msg.textContent = friendlyError(err.code);
+      btn.disabled = false; btn.textContent = 'Create Account';
+    }
+  }
+
+  // ── Password Reset ──
+  async function handleReset(e) {
+    e.preventDefault();
+    const email = document.getElementById('rs-email').value.trim();
+    const btn = document.getElementById('rs-btn');
+    const msg = document.getElementById('rs-msg');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    msg.textContent = ''; msg.className = 'auth-msg';
+    try {
+      await auth.sendPasswordResetEmail(email);
+      msg.className = 'auth-msg ok';
+      msg.textContent = '✓ Reset link sent! Check your inbox.';
+    } catch (err) {
+      msg.className = 'auth-msg err';
+      msg.textContent = friendlyError(err.code);
+    }
+    btn.disabled = false; btn.textContent = 'Send Reset Link';
+  }
+</script>
 </body>
 </html>

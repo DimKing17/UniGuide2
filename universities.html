@@ -74,8 +74,9 @@
     
     <a href="tracker.html">Tracker</a>
     <span id="nav-logged-out" class="nav-auth">
-  <a href="login.html" class="nav-btn-outline">Log In</a>
-</span>
+      <a href="login.html" class="nav-btn-outline">Log In</a>
+      <a href="login.html?mode=signup" class="nav-btn-outline" style="background:rgba(255,255,255,0.08)">Sign Up</a>
+    </span>
     <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><a href="profile.html" class="nav-profile-link">Profile</a><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
     <a href="selections.html" class="nav-btn">Start YOUR plan</a>
   </div>
@@ -192,6 +193,9 @@
   <strong>UniGuide 🍁</strong> — Free Canadian University Planning · Built for Grades 9–12
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="data.js"></script>
 <script src="firebase-config.js"></script>
 <script src="auth.js"></script>
@@ -290,38 +294,72 @@ function getSelectedProgram(uniId) {
   return { programName, programSlug };
 }
 
-async function saveToList(uniId, uniName) {
-  const { programName, programSlug } = getSelectedProgram(uniId);
+function getSavedProgramsLocal() {
   try {
-    const list = await ugLoad('savedPrograms', []);
-    const alreadySaved = list.some(p => p.uniId === uniId && p.programSlug === programSlug);
-    if (!alreadySaved) {
-      list.push({
-        id: 'prog-' + Date.now(),
-        uniId, uniName, programName, programSlug,
-        tag: 'target'
-      });
-      await ugSave('savedPrograms', list);
-    }
-    showToast(alreadySaved
-      ? `${programName} at ${uniName} is already saved! → <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`
-      : `✓ ${programName} at ${uniName} saved! → <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`
-    );
-  } catch(e) { showToast('Saved!'); }
+    const parsed = JSON.parse(localStorage.getItem('savedPrograms') || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
 }
 
-async function saveAndView(uniId, uniName) {
+function saveToList(uniId, uniName) {
   const { programName, programSlug } = getSelectedProgram(uniId);
-  try {
-    const list = await ugLoad('savedPrograms', []);
-    const existing = list.find(p => p.uniId === uniId && p.programSlug === programSlug);
-    const progId = existing ? existing.id : 'prog-' + Date.now();
-    if (!existing) {
-      list.push({ id: progId, uniId, uniName, programName, programSlug, tag: 'target' });
-      await ugSave('savedPrograms', list);
+  if (!programName) {
+    showToast('Please select a program first.');
+    return null;
+  }
+
+  const list = getSavedProgramsLocal();
+  const alreadySaved = list.some(p => p.uniId === uniId && p.programSlug === programSlug);
+  let progId = null;
+
+  if (!alreadySaved) {
+    progId = 'prog-' + Date.now();
+    let selectedMajors = [];
+    try {
+      const majors = JSON.parse(localStorage.getItem('selectedMajors') || '[]');
+      if (Array.isArray(majors)) selectedMajors = majors;
+    } catch (e) {}
+
+    list.push({
+      id: progId,
+      uniId,
+      uniName,
+      programName: `${uniName} — ${programName}`,
+      programSlug,
+      tag: 'target',
+      savedMajors: selectedMajors
+    });
+    localStorage.setItem('savedPrograms', JSON.stringify(list));
+    if (typeof ugSave === 'function') {
+      try { ugSave('savedPrograms', list).catch(function () {}); } catch (e) {}
     }
+  } else {
+    const existing = list.find(p => p.uniId === uniId && p.programSlug === programSlug);
+    progId = existing ? existing.id : null;
+  }
+
+  showToast(alreadySaved
+    ? `${programName} at ${uniName} is already saved! → <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`
+    : `✓ ${programName} at ${uniName} saved! → <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`
+  );
+  return progId;
+}
+
+function saveAndView(uniId, uniName) {
+  const progId = saveToList(uniId, uniName);
+  if (progId) {
     window.location.href = `saved.html?prog=${progId}`;
-  } catch(e) { window.location.href = 'saved.html'; }
+  } else {
+    window.location.href = 'saved.html';
+  }
+}
+
+function autoSaveFromProgramSelect(uniId, uniName) {
+  const sel = document.getElementById('prog-' + uniId);
+  if (!sel || !sel.value) return;
+  saveToList(uniId, uniName);
 }
 function showToast(msg) {
   const t = document.getElementById('saveToast');
@@ -419,7 +457,7 @@ function renderUnis(list) {
 
         <div class="uni-desc">${u.vibe}</div>
         <div style="font-size:.78rem;color:var(--grey);margin-bottom:10px;"><strong>Programs offered:</strong></div>
-        <select id="prog-${u.id}" style="width:100%;margin-bottom:12px;font-size:.84rem;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--navy);cursor:pointer;">
+        <select id="prog-${u.id}" onchange="autoSaveFromProgramSelect('${u.id}','${u.name.replace(/'/g,"\\'")}')" style="width:100%;margin-bottom:12px;font-size:.84rem;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--navy);cursor:pointer;">
           ${u.programs.map(p => `<option value="${p}">${p}</option>`).join('')}
         </select>
 

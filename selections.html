@@ -327,8 +327,9 @@
     
     <a href="tracker.html">Tracker</a>
     <span id="nav-logged-out" class="nav-auth">
-  <a href="login.html" class="nav-btn-outline">Log In</a>
-</span>
+      <a href="login.html" class="nav-btn-outline">Log In</a>
+      <a href="login.html?mode=signup" class="nav-btn-outline" style="background:rgba(255,255,255,0.08)">Sign Up</a>
+    </span>
     <span id="nav-logged-in" class="nav-auth" style="display:none;"><span class="nav-user-pill"><span class="nav-avatar" id="nav-avatar">U</span><span id="nav-user-name">User</span></span><a href="profile.html" class="nav-profile-link">Profile</a><button class="nav-logout-btn" onclick="ugLogOut()">Log Out</button></span>
     <a href="selections.html" class="nav-btn">Start YOUR plan</a>
   </div>
@@ -909,8 +910,12 @@
   <strong>UniGuide 🍁</strong> — Free Canadian University Planning · Built for Grades 9–12
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="data.js"></script>
 <script src="firebase-config.js"></script>
+<script src="auth.js"></script>
 <script>
 // ════════════════════════════════════════════════════════
 //  SHARED STATE
@@ -1639,7 +1644,7 @@ function fitScoreHtml(fit){
 }
 
 // ── Save to My List ──────────────────────────────────────
-async function saveToList(uniId, uniName){
+function saveToList(uniId, uniName){
   const sel=document.getElementById('prog-'+uniId);
   const programName=sel?sel.value:'';
   const noteEl=document.getElementById('noprog-note-'+uniId);
@@ -1659,31 +1664,47 @@ async function saveToList(uniId, uniName){
   }
   const label=`${uniName} — ${labelMajor}`;
   const programSlug=labelMajor.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
-  try {
-    const list=await ugLoad('savedPrograms',[]);
-    const alreadySaved=list.some(p=>p.uniId===uniId&&p.programSlug===programSlug);
-    if(alreadySaved){ showToast(`Already saved! <a href="saved.html" style="color:#fff;text-decoration:underline;">View My List</a>`,false); return; }
-    const itemId='prog-'+Date.now();
-    list.push({id:itemId, uniId, uniName, programName:label, programSlug, tag:'target', savedMajors:[...selectedMajors]});
-    await ugSave('savedPrograms',list);
-    lastSaved={itemId};
-    showToast(`✓ Saved: ${label}`, true);
-  } catch(e){ showToast('Saved!', false); }
+
+  // Read existing list from localStorage (synchronous — guaranteed to work)
+  let list=[];
+  try { list=JSON.parse(localStorage.getItem('savedPrograms')||'[]'); } catch(e){ list=[]; }
+  if(!Array.isArray(list)) list=[];
+
+  const existing=list.find(p=>p.uniId===uniId&&p.programSlug===programSlug);
+  if(existing){ showToast(`Already saved! <a href="saved.html?prog=${existing.id}" style="color:#fff;text-decoration:underline;">View My List</a>`,false); return existing.id; }
+
+  const itemId='prog-'+Date.now();
+  list.push({id:itemId, uniId, uniName, programName:label, programSlug, tag:'target', savedMajors:[...selectedMajors]});
+
+  // Write to localStorage synchronously (this is the critical save)
+  localStorage.setItem('savedPrograms', JSON.stringify(list));
+
+  // Fire-and-forget cloud sync — don't block the UI
+  if(typeof ugSave==='function'){
+    try { ugSave('savedPrograms',list).catch(function(){}); } catch(e){}
+  }
+  lastSaved={itemId};
+  showToast(`✓ Saved: ${label}`, true);
+  return itemId;
 }
 
-async function saveAndView(uniId, uniName){
-  await saveToList(uniId, uniName);
-  setTimeout(()=>window.location.href='saved.html', 400);
+function saveAndView(uniId, uniName){
+  const progId = saveToList(uniId, uniName);
+  const url = progId ? `saved.html?prog=${progId}` : 'saved.html';
+  setTimeout(()=>window.location.href=url, 400);
 }
 
-async function undoSave(){
+function undoSave(){
   if(!lastSaved) return;
-  try {
-    const list=await ugLoad('savedPrograms',[]);
-    await ugSave('savedPrograms', list.filter(p=>p.id!==lastSaved.itemId));
-    lastSaved=null;
-    showToast('Removed from My List.',false);
-  } catch(e){ showToast('Could not undo.',false); }
+  let list=[];
+  try { list=JSON.parse(localStorage.getItem('savedPrograms')||'[]'); } catch(e){ list=[]; }
+  list=list.filter(p=>p.id!==lastSaved.itemId);
+  localStorage.setItem('savedPrograms', JSON.stringify(list));
+  if(typeof ugSave==='function'){
+    try { ugSave('savedPrograms',list).catch(function(){}); } catch(e){}
+  }
+  lastSaved=null;
+  showToast('Removed from My List.',false);
 }
 
 function showToast(msg, showUndo){
@@ -1727,6 +1748,13 @@ function refreshDetails(uniId){
   if(!u) return;
   const body=document.getElementById('dbody-'+uniId);
   if(body) body.innerHTML=buildDetailsHtml(u);
+}
+
+function handleProgramSelect(uniId, uniName){
+  refreshDetails(uniId);
+  const sel=document.getElementById('prog-'+uniId);
+  if(!sel || !sel.value) return;
+  saveToList(uniId, uniName);
 }
 
 // ── Filter + Render ──────────────────────────────────────
@@ -1818,7 +1846,7 @@ function renderUnis(list){
 
         <div style="font-size:.74rem;color:var(--grey);margin-bottom:5px;"><strong>Select program:</strong></div>
         <select id="prog-${u.id}" style="width:100%;margin-bottom:0;font-size:.82rem;padding:6px 9px;border:1px solid var(--border);border-radius:8px;background:var(--white);color:var(--navy);"
-          onchange="refreshDetails('${u.id}')">
+          onchange="handleProgramSelect('${u.id}','${u.name.replace(/'/g,"\\'")}')">
           <option value="">— I'll choose my program later —</option>
           ${u.programs.map(p=>`<option value="${p}"${fit&&fit.matchedProg===p?' selected':''}>${p}</option>`).join('')}
         </select>
